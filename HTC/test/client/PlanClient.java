@@ -73,4 +73,6 @@ public class PlanClient {
 	void displayMsg(String msg) {
 		
 	}
+	
+	// 이반석 테스트
 }
