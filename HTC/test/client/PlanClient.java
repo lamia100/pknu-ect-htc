@@ -69,12 +69,18 @@ public class PlanClient {
 	// To Child - End
 	
 	
+	// To CertainClient
+	void sendFile() {
+		// 특정 클라이언트에게 파일을 보냄
+	}
+	
+	// From CertainClient
+	void receiveFile() {
+		// 특정 클라이언트로부터 파일을 받음
+	}
+	
 	// Self Function
 	void displayMsg(String msg) {
 		
 	}
-	
-	// 이반석 테스트
-	// 테스트1
-	// 김성현 우분투 테스트
 }
