@@ -2,19 +2,20 @@ package client;
 
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.StringTokenizer;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-public class ConnectServer {
-	String serverIP;
-	int serverPort;
+public class ConnectServer implements Runnable {
+	private String serverIP;
+	private int serverPort;
 	
-	Socket toServerSocket;
-	BufferedReader fromServerMsg;
-	BufferedWriter toServerMsg;
+	private Socket toServerSocket;
+	private BufferedReader fromServerMsg;
+	private BufferedWriter toServerMsg;
 	
 	public ConnectServer(String serverIP, int serverPort) {
 		this.serverIP = serverIP;
@@ -40,10 +41,6 @@ public class ConnectServer {
 		}
 		
 		return true;
-	}
-	
-	public boolean isConnectServer() {
-		return toServerSocket.isConnected();
 	}
 	
 	public boolean reqeustJoinChannel(int channel) {
@@ -100,5 +97,28 @@ public class ConnectServer {
 		}
 		
 		return true;
+	}
+
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		
+		try {
+			login();
+			
+			while (toServerSocket.isConnected()) {
+				String fromServer = fromServerMsg.readLine();
+				while (fromServer != null) {
+					StringTokenizer receiveFromServer = new StringTokenizer(fromServer);
+					
+					while (receiveFromServer.hasMoreTokens()) {
+						
+					}
+				}
+			}
+		}
+		catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
