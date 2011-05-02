@@ -10,7 +10,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
-public class ConnectServer  implements Runnable {
+import util.PacketDefinition;
+
+public class ConnectServer  implements Runnable {	
 	private String serverIP;
 	private int serverPort;
 	
@@ -23,26 +25,21 @@ public class ConnectServer  implements Runnable {
 	public ConnectServer(String serverIP, int serverPort, String nickName) {
 		this.serverIP = serverIP;
 		this.serverPort = serverPort;
-		this.nickName = nickName;
+		this.nickName = nickName; 
 	}
 	
-	public boolean login(String nickName) {
+	public boolean login() {
 		try {
 			toServerSocket = new Socket(serverIP, serverPort);
 			
 			fromServerMsg = new BufferedReader(new InputStreamReader(toServerSocket.getInputStream()));
 			toServerMsg = new BufferedWriter(new OutputStreamWriter(toServerSocket.getOutputStream()));
-			
-			toServerMsg.write(nickName);
-			toServerMsg.flush();
 		}
 		catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -52,11 +49,10 @@ public class ConnectServer  implements Runnable {
 	
 	public boolean reqeustJoinChannel(int channel) {
 		try {
-			toServerMsg.write("/join " + channel);
+			toServerMsg.write(PacketDefinition.JOIN + " " + channel + " " + nickName);
 			toServerMsg.flush();
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -66,11 +62,10 @@ public class ConnectServer  implements Runnable {
 	
 	public boolean requestMsg(int channel, String msg) {
 		try {
-			toServerMsg.write("/sendMsg " + channel + " " + msg);
+			toServerMsg.write(PacketDefinition.SEND_MSG + " " + channel + " " + nickName + " " + msg);
 			toServerMsg.flush();
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -78,13 +73,12 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean requestCertainClientIP(String certainNick) {
+	public boolean requestOtherClientIP(String otherNickName) {
 		try {
-			toServerMsg.write("/getIP " + certainNick);
+			toServerMsg.write(PacketDefinition.GET_IP + " " + otherNickName);
 			toServerMsg.flush();
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -94,7 +88,7 @@ public class ConnectServer  implements Runnable {
 	
 	public boolean reportImExit(int channel) {
 		try {
-			toServerMsg.write("/exit " + channel);
+			toServerMsg.write(PacketDefinition.EXIT + " " + channel + " " + nickName);
 			toServerMsg.flush();
 			
 			if (channel == 0) {
@@ -104,7 +98,6 @@ public class ConnectServer  implements Runnable {
 			}
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -112,13 +105,12 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 
-	public boolean reportMyFamilyDisconnect(int channel, String who, String ip) {
+	public boolean reportMyFarentDisconnect(int channel, String parentIp) {
 		try {
-			toServerMsg.write("/disconnet " + channel + " " + who + " " + ip);
+			toServerMsg.write(PacketDefinition.DISCONNECT_PARENT + " " + channel + " " + parentIp);
 			toServerMsg.flush();
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -126,31 +118,94 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean receiveMyFamilyInfo(int channel, String who, String ip) {
+	public boolean reportMyLeftSonDisconnect(int channel, String leftSonIp) {
+		try {
+			toServerMsg.write(PacketDefinition.DISCONNECT_LEFT_SON + " " + channel + " " + leftSonIp);
+			toServerMsg.flush();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean reportMyRightSonDisconnect(int channel, String rightSonIp) {
+		try {
+			toServerMsg.write(PacketDefinition.DISCONNECT_RIGHT_SON + " " + channel + " " + rightSonIp);
+			toServerMsg.flush();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean receiveMyParentApply(int channel, String ip) {
 		try {
 			boolean apply = false;
 			
-			if ("parent".equals(who)) {
-				apply = true; // 나의 부모를 바꾸고
-			}
-			else if ("leftSon".equals(who)) {
-				apply = true; // 나의 왼쪽 자식을 바꾸고
-			}
-			else if ("rightSon".equals(who)) {
-				apply = true; // 나의 오른쪽 자식을 바꾸고
-			}
+			// apply = 나의 부모를 바꾸고
 			
 			if (apply) {
-				toServerMsg.write("/ack " + channel + " " + who + " " + ip);
+				toServerMsg.write(PacketDefinition.ACK_APPLY_PARENT + " " + channel + " " + ip);
 			}
 			else {
-				toServerMsg.write("/nak " + channel + " " + who + " " + ip);
+				toServerMsg.write(PacketDefinition.NAK_APPLY_PARENT + " " + channel + " " + ip);
 			}
 			
 			toServerMsg.flush();
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean receiveMyLeftSonApply(int channel, String ip) {
+		try {
+			boolean apply = false;
+			
+			// apply = 나의 왼쪽 자식을 바꾸고
+			
+			if (apply) {
+				toServerMsg.write(PacketDefinition.ACK_APPLY_LEFT_SON + " " + channel + " " + ip);
+			}
+			else {
+				toServerMsg.write(PacketDefinition.NAK_APPLY_LEFT_SON + " " + channel + " " + ip);
+			}
+			
+			toServerMsg.flush();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean receiveMyRightSonApply(int channel, String ip) {
+		try {
+			boolean apply = false;
+			
+			// apply = 나의 오른쪽 자식을 바꾸고
+			
+			if (apply) {
+				toServerMsg.write(PacketDefinition.ACK_APPLY_RIGHT_SON + " " + channel + " " + ip);
+			}
+			else {
+				toServerMsg.write(PacketDefinition.NAK_APPLY_RIGHT_SON + " " + channel + " " + ip);
+			}
+			
+			toServerMsg.flush();
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -159,49 +214,27 @@ public class ConnectServer  implements Runnable {
 	}
 	
 	public boolean receiveOtherClientIP(String nick, String ip) {
+		// 파일 전송하고
 		
+		return true;
 	}
 
 	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		
+	public void run() {		
 		try {
-			login(nickName);
+			login();
 			
 			while (toServerSocket.isConnected()) {
 				String fromServer = fromServerMsg.readLine();
 				
 				while (fromServer != null) {
-					StringTokenizer fromServerToken = new StringTokenizer(" ");
-					ArrayList<String> parseFromServerMsg = new ArrayList<String>();
-					
-					while (fromServerToken.hasMoreTokens()) {
-						parseFromServerMsg.add(fromServerToken.nextToken());
-					}
-					
-					if ("/yourParentIs".equals(parseFromServerMsg.get(0))) {
-						receiveMyFamilyInfo("parent", parseFromServerMsg.get(1));
-					}
-					else if ("/yourLeftSonIs".equals(parseFromServerMsg.get(0))) {
-						receiveMyFamilyInfo("leftSon", parseFromServerMsg.get(1));
-					}
-					else if ("/yourRightSonIs".equals(parseFromServerMsg.get(0))) {
-						receiveMyFamilyInfo("rightSon", parseFromServerMsg.get(1));
-					}
-					else if ("/responseOtherClientIP".equals(parseFromServerMsg.get(0))) {
-						receiveMyFamilyInfo("parent", parseFromServerMsg.get(1));
-					}
-					else {
-						
-					}
+					// StringTokenizer fromServerToken = new StringTokenizer(" ");
 					
 					fromServer = fromServerMsg.readLine();
 				}
 			}
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

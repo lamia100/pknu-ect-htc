@@ -68,12 +68,10 @@ public class ConnectFamily {
 			toLeftSonMsg = new BufferedWriter(new OutputStreamWriter(toLeftSonSocket.getOutputStream()));
 		}
 		catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -89,12 +87,10 @@ public class ConnectFamily {
 			toRightSonMsg = new BufferedWriter(new OutputStreamWriter(toRightSonSocket.getOutputStream()));
 		}
 		catch (UnknownHostException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
 		catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -107,7 +103,6 @@ public class ConnectFamily {
 			toParentMsg.write("/requestSeq");
 			toParentMsg.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -120,7 +115,6 @@ public class ConnectFamily {
 			toParentMsg.write("/requestBufMsg " + startSeq + " " + endSeq);
 			toParentMsg.flush();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return false;
 		}
@@ -128,6 +122,7 @@ public class ConnectFamily {
 		return true;
 	}
 	
+	/*
 	public boolean receiveSequenceNumber(int startSeq, int endSeq) {
 		
 	}
@@ -143,4 +138,5 @@ public class ConnectFamily {
 	public boolean sendMsg(String msg) {
 		
 	}
+	*/
 }

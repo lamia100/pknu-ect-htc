@@ -11,6 +11,7 @@ public class ConnectOtherClient {
 		this.otherClientPort = otherClientPort;
 	}
 	
+	/*
 	public boolean sendFile(File file) {
 		
 	}
@@ -18,4 +19,5 @@ public class ConnectOtherClient {
 	public boolean receiveFile(String filePath) {
 		
 	}
+	*/
 }
