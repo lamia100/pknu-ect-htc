@@ -7,12 +7,19 @@ Add your content here.
 
 = Details =
 TYPE : ABCD\n
+
 CH : #ABCD\n
+
 SEQ : #1234\n
+
 MSG : abc\n
+
 def\n
+
 ghi\n
+
 #EOM\n
+
 
 \n은 개행.
 #EOF는 메세지의 끝
