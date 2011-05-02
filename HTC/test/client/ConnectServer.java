@@ -2,6 +2,7 @@ package client;
 
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -110,10 +111,6 @@ public class ConnectServer implements Runnable {
 				String fromServer = fromServerMsg.readLine();
 				while (fromServer != null) {
 					StringTokenizer receiveFromServer = new StringTokenizer(fromServer);
-					
-					while (receiveFromServer.hasMoreTokens()) {
-						
-					}
 				}
 			}
 		}
