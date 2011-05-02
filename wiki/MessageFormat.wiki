@@ -22,7 +22,7 @@ ghi\n
 
 
 \n은 개행.
-#EOF는 메세지의 끝
+#EOM은 End Of Message/메세지의 끝
 
 Add your content here.  Format your content with:
   * Text in *bold* or _italic_
