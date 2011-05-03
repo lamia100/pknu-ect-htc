@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.StringTokenizer;
 
 import util.PacketDefinition;
@@ -42,6 +43,22 @@ public class ConnectChild implements Runnable {
 		return true;
 	}
 
+	// ------------------------------------------------- S E N D -------------------------------------------------
+	
+	public boolean sendMsgToAllChild(String channel, String seq, String nickName, String msg) {
+		Iterator<Child> it = childList.iterator();
+		Child child;
+		
+		while (it.hasNext()) {
+			child = it.next();
+			
+			child.sendMsgToChild(channel, seq, nickName, msg);
+		}
+		
+		return false;
+	}
+	
+	
 	@Override
 	public void run() {
 		if(readyForChild()) {
@@ -68,20 +85,6 @@ public class ConnectChild implements Runnable {
 				}
 			}
 		}
-		
-		// 작성해야 함
-	}
-	
-	public boolean responseSequenceNumber() {
-		// 작성해야 함
-		
-		return true;
-	}
-	
-	public boolean sendMsg(String msg) {
-		// 작성해야 함
-		
-		return true;
 	}
 	
 	private class Child implements Runnable {
@@ -106,6 +109,24 @@ public class ConnectChild implements Runnable {
 			return true;
 		}
 		
+		// ------------------------------------------------- S E N D -------------------------------------------------
+		
+		public boolean sendMsgToChild(String channel, String seq, String nickName, String msg) {
+			try {
+				// toChildMsg.write(PacketDefinition.SEND_MSG + TOKEN + channel + TOKEN + seq + TOKEN + nickName + TOKEN + msg);
+				toChildMsg.flush();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+			
+			return true;
+		}
+		
+		
+		// ------------------------------------------------- R E C E I V E -------------------------------------------------
+		
 		@Override
 		public void run() {
 			if (readyFromChild()) {
@@ -123,14 +144,11 @@ public class ConnectChild implements Runnable {
 							
 							String packetType = parsePacket.get(0);
 							if (packetType == PacketDefinition.REQ_SEQ_MSG) {
-								String channel = parsePacket.get(1);
-								String startSeq = parsePacket.get(2);
-								String endSeq = parsePacket.get(3);
-								
-								receiveSequenceNumber(channel, startSeq, endSeq);
+																
+								// receiveSequenceNumber(channel, seq);
 							}
 							
-							fromChildPacket = fromParentMsg.readLine();
+							fromChildPacket = fromChildMsg.readLine();
 						}
 					}
 					catch (IOException e) {
@@ -138,6 +156,12 @@ public class ConnectChild implements Runnable {
 					}
 				}
 			}
+		}
+		
+		public boolean receiveSeqenceNumber(String channel, String seq) {
+			// 작성해야 함
+			
+			return false;
 		}
 	}
 }

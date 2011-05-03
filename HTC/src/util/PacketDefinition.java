@@ -7,8 +7,9 @@ public class PacketDefinition {
 	// public final static String HEAD_TYPE = "type";
 	public final static String HEAD_TYPE_SEND = "send";
 	public final static String HEAD_TYPE_REQUEST = "req";
-	public final static String HEAD_TYPE_ACK = "ack";
 	public final static String HEAD_TYPE_SET = "set";
+	public final static String HEAD_TYPE_SUCCESS = "suc";
+	public final static String HEAD_TYPE_FAIL = "fail";
 	public final static String HEAD_TYPE_JOIN = "join";
 	public final static String HEAD_TYPE_EXIT = "exit";
 	public final static String HEAD_TYPE_SCRIPT = "sc";

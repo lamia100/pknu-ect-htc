@@ -207,10 +207,10 @@ public class ConnectServer  implements Runnable {
 			// apply = 나의 부모를 바꾸고
 			
 			if (apply) {
-				toServerMsg.write(PacketDefinition.ACK_APPLY_PARENT + TOKEN + channel + TOKEN + parentIP);
+				// toServerMsg.write(PacketDefinition.ACK_APPLY_PARENT + TOKEN + channel + TOKEN + parentIP);
 			}
 			else {
-				toServerMsg.write(PacketDefinition.NAK_APPLY_PARENT + TOKEN + channel + TOKEN + parentIP);
+				// toServerMsg.write(PacketDefinition.NAK_APPLY_PARENT + TOKEN + channel + TOKEN + parentIP);
 			}
 			
 			toServerMsg.flush();
@@ -230,10 +230,10 @@ public class ConnectServer  implements Runnable {
 			// apply = 나의 자식을 더하고
 			
 			if (apply) {
-				toServerMsg.write(PacketDefinition.ACK_APPLY_CHILD + TOKEN + channel + TOKEN + oldChildIP + TOKEN + newChildIP);
+				// toServerMsg.write(PacketDefinition.ACK_APPLY_CHILD + TOKEN + channel + TOKEN + oldChildIP + TOKEN + newChildIP);
 			}
 			else {
-				toServerMsg.write(PacketDefinition.NAK_APPLY_CHILD + TOKEN + channel + TOKEN + oldChildIP + TOKEN + newChildIP);
+				// toServerMsg.write(PacketDefinition.NAK_APPLY_CHILD + TOKEN + channel + TOKEN + oldChildIP + TOKEN + newChildIP);
 			}
 			
 			toServerMsg.flush();

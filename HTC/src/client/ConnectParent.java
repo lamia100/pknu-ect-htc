@@ -47,11 +47,12 @@ public class ConnectParent implements Runnable {
 		return true;
 	}
 	
-	public boolean sendMsg(String channel, String seq, String nickName, String msg) {
+	public boolean requestMsg(String channel, String seq, String nickName, String msg) {
 		try {
-			toParentMsg.write(PacketDefinition.SEND_MSG + TOKEN + channel + TOKEN + seq + TOKEN + nickName + TOKEN + msg);
+			// toParentMsg.write(PacketDefinition.SEND_MSG + TOKEN + channel + TOKEN + seq + TOKEN + nickName + TOKEN + msg);
 			toParentMsg.flush();
-		} catch (IOException e) {
+		}
+		catch (IOException e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -78,11 +79,9 @@ public class ConnectParent implements Runnable {
 						}
 						
 						String packetType = parsePacket.get(0);
-						if (packetType == PacketDefinition.SEND_MSG) {
-							String channel = parsePacket.get(1);
-							String seq = parsePacket.get(2);
-							
-							receiveSequenceNumber(channel, seq);
+						if (packetType == PacketDefinition.HEAD_TYPE_SEND) {
+														
+							// receiveMsg(channel, seq, nickName, msg);
 						}
 						
 						fromParentPacket = fromParentMsg.readLine();
@@ -95,7 +94,7 @@ public class ConnectParent implements Runnable {
 		}
 	}
 	
-	public boolean receiveSequenceNumber(String channel, String seq) {
+	public boolean receiveMsg(String channel, String seq, String nickName, String msg) {
 		// 작성해야 함
 		
 		return true;
