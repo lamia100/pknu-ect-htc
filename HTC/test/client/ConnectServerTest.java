@@ -8,6 +8,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+@SuppressWarnings("unused")
 public class ConnectServerTest {
 	private final static int serverPort = 3244;
 	private static ServerSocket serverSocket;

@@ -8,6 +8,7 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+@SuppressWarnings("unused")
 public class ConnectLeftChild implements Runnable {
 	private String leftChildIP;
 	private int leftChildPort;

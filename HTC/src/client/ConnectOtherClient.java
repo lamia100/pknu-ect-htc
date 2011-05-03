@@ -2,6 +2,7 @@ package client;
 
 import java.io.File;
 
+@SuppressWarnings("unused")
 public class ConnectOtherClient {
 	private String otherClientIP;
 	private int otherClientPort;
