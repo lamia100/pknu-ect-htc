@@ -9,11 +9,10 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-
 import util.PacketDefinition;
 
 public class ConnectParent implements Runnable {
-	private final static String TOKEN = PacketDefinition.TOKEN;
+	private final static String TOKEN = PacketDefinition.TOKEN_HEAD;
 	
 	private String parentIP;
 	private int parentPort;
@@ -48,21 +47,9 @@ public class ConnectParent implements Runnable {
 		return true;
 	}
 	
-	public boolean requestSequenceNumber(String channel) {		
+	public boolean sendMsg(String channel, String seq, String nickName, String msg) {
 		try {
-			toParentMsg.write(PacketDefinition.GET_SEQ + TOKEN + channel);
-			toParentMsg.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-		return true;
-	}
-	
-	public boolean requestBufferMsg(String channel, String startSeq, String endSeq) {
-		try {
-			toParentMsg.write(PacketDefinition.GET_MSG + TOKEN + channel + TOKEN + startSeq + TOKEN + endSeq);
+			toParentMsg.write(PacketDefinition.SEND_MSG + TOKEN + channel + TOKEN + seq + TOKEN + nickName + TOKEN + msg);
 			toParentMsg.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -77,57 +64,38 @@ public class ConnectParent implements Runnable {
 	
 	@Override
 	public void run() {
-		try {
-			loginToParent();
-			
+		if (loginToParent()) {
 			while (toParentSocket.isConnected()) {
-				String fromParentPacket = fromParentMsg.readLine();
-				
-				while (fromParentPacket != null) {
-					StringTokenizer fromServerToken = new StringTokenizer(fromParentPacket, TOKEN);
-					
-					ArrayList<String> parsePacket = new ArrayList<String>();
-					while (fromServerToken.hasMoreTokens()) {
-						parsePacket.add(fromServerToken.nextToken());
-					}
-					
-					String packetType = parsePacket.get(0);
-					if (packetType == PacketDefinition.RES_SEQ) {
-						String channel = parsePacket.get(1);
-						String startSeq = parsePacket.get(2);
-						String endSeq = parsePacket.get(3);
+				String fromParentPacket;
+				try {
+					fromParentPacket = fromParentMsg.readLine();
+					while (fromParentPacket != null) {
+						StringTokenizer fromServerToken = new StringTokenizer(fromParentPacket, TOKEN);
 						
-						receiveSequenceNumber(channel, startSeq, endSeq);
-					}
-					else if (packetType == PacketDefinition.RES_MSG) {
-						String channel = parsePacket.get(1);
-						String seqNum = parsePacket.get(2);
-						String nickName = parsePacket.get(3);
-						String msg = parsePacket.get(4);
-						
-						for (int i = 5; i < parsePacket.size(); i++) {
-							msg.concat(TOKEN + parsePacket.get(i));
+						ArrayList<String> parsePacket = new ArrayList<String>();
+						while (fromServerToken.hasMoreTokens()) {
+							parsePacket.add(fromServerToken.nextToken());
 						}
 						
-						receiveMsg(channel, seqNum, nickName, msg);
+						String packetType = parsePacket.get(0);
+						if (packetType == PacketDefinition.SEND_MSG) {
+							String channel = parsePacket.get(1);
+							String seq = parsePacket.get(2);
+							
+							receiveSequenceNumber(channel, seq);
+						}
+						
+						fromParentPacket = fromParentMsg.readLine();
 					}
-					
-					fromParentPacket = fromParentMsg.readLine();
+				}
+				catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
-	public boolean receiveSequenceNumber(String channel, String startSeq, String endSeq) {
-		// 작성해야 함
-		
-		return true;
-	}
-	
-	public boolean receiveMsg(String channel, String seqNum, String nickName, String msg) {
+	public boolean receiveSequenceNumber(String channel, String seq) {
 		// 작성해야 함
 		
 		return true;

@@ -1,7 +1,43 @@
 package util;
 
 public class PacketDefinition {
-	public final static String TOKEN = "|=|";
+	public final static String TOKEN_MEAN = ":";
+	public final static String TOKEN_HEAD = "|=|";
+	
+	// public final static String HEAD_TYPE = "type";
+	public final static String HEAD_TYPE_SEND = "send";
+	public final static String HEAD_TYPE_REQUEST = "req";
+	public final static String HEAD_TYPE_ACK = "ack";
+	public final static String HEAD_TYPE_SET = "set";
+	public final static String HEAD_TYPE_JOIN = "join";
+	public final static String HEAD_TYPE_EXIT = "exit";
+	public final static String HEAD_TYPE_SCRIPT = "sc";
+	
+	public final static String HEAD_CAST = "cast";
+	public final static String HEAD_CAST_BROAD = "broad";
+	public final static String HEAD_CAST_UNI = "uni";
+	
+	public final static String HEAD_CHANNEL = "ch";
+	
+	public final static String HEAD_SEQ = "seq";
+	
+	public final static String HEAD_NICK = "nick";
+	
+	public final static String HEAD_FAMILY = "fam";
+	public final static String HEAD_FAMILY_PARENT = "p";
+	public final static String HEAD_FAMILY_CHILD = "c";
+	
+	public final static String HEAD_MSG = "msg";
+	
+	/*
+	 * ex) SEND 예제
+	 * 
+	 * HEAD_TYPE_SEND + TOKEN_HEAD
+	 * + HEAD_CHANNEL + ":" + "3245" + TOKEN_HEAD
+	 * + HEAD_SEQ + ":" + "123423" + TOKEN_HEAD
+	 * + HEAD_NICK + ":" + "닉네임" + TOKEN_HEAD
+	 * + HEAD_MSG + ":" "메세지" + TOKEN_HEAD + "\n"
+	 */
 	
 	// ---------------------------------------------- C L I E N T -> S E R V E R ---------------------------------------------- 
 	
@@ -21,7 +57,7 @@ public class PacketDefinition {
 	 * -- 이 때 채널번호가 0이면 전체 채널
 	 * ex) 101 1 inter6 Hello
 	 */
-	public final static String SEND_MSG = "101";
+	public final static String REQ_MSG = "101";
 	
 	/*
 	 * 분류 : 클라이언트 -> 서버
@@ -35,7 +71,7 @@ public class PacketDefinition {
 	 * 분류 : 클라이언트 -> 서버
 	 * 용도 : 알림 / 클라이언트가 특정 채널에서 접속을 종료할 때
 	 * 패킷 형태 : EXIT 채널번호 닉네임
-	 * -- 이 때 채널번호가 0이면 전체 채널
+	 * -- 이 때 채널번호가 0이면 전체 채널(모든 채널에서 접속 종료)
 	 * ex) 103 1 inter6
 	 */
 	public final static String EXIT = "103";
@@ -133,7 +169,7 @@ public class PacketDefinition {
 	 * -- 이 때 채널번호가 0이면 전체 채널
 	 * ex) 300 1
 	 */
-	public final static String GET_SEQ = "300";
+	// public final static String GET_SEQ = "300";
 	
 	/*
 	 * 분류 : 자식 -> 부모
@@ -142,26 +178,34 @@ public class PacketDefinition {
 	 * -- 이 때 채널번호가 0이면 전체 채널
 	 * ex) 301 1 2348 2458
 	 */
-	public final static String GET_MSG = "301";
+	// public final static String GET_MSG = "301";
 	
+	/*
+	 * 분류 : 자식 -> 부모
+	 * 용도 : 요구 / 부모가 가지고있는 버퍼 메세지를 요구
+	 * 패킷 형태 : REQ_SEQ_MSG 채널번호 요구메세지번호
+	 * -- 이 때 채널번호가 0이면 전체 채널
+	 * ex) 301 1 2348
+	 */
+	public final static String REQ_SEQ_MSG = "302";	
 	
 	// ---------------------------------------------- P A R E N T -> C H I L D ----------------------------------------------
 	
 	/*
 	 * 분류 : 부모 -> 자식
-	 * 용도 : 요구 / 부모(내)가 가지고있는 버퍼의 시작과 끝번호를 알려줌
+	 * 용도 : 응답 / 부모(내)가 가지고있는 버퍼의 시작과 끝번호를 알려줌
 	 * 패킷 형태 : RES_SEQ 채널번호 시작번호 끝번호
 	 * -- 이 때 채널번호가 0이면 전체 채널
 	 * ex) 401 1 2348 2458
 	 */
-	public final static String RES_SEQ = "401";
+	// public final static String RES_SEQ = "401";
 	
 	/*
 	 * 분류 : 부모 -> 자식
-	 * 용도 : 요구 / 부모(내)가 가지고있는 메세지를 전송
+	 * 용도 : 응답 / 부모(내)가 가지고있는 메세지를 전송
 	 * 패킷 형태 : RES_SEQ 채널번호 메세지번호 닉네임 메세지
 	 * -- 이 때 채널번호가 0이면 전체 채널
 	 * ex) 402 1 2348 inter6 Hello
 	 */
-	public final static String RES_MSG = "402";
+	public final static String SEND_MSG = "402";
 }

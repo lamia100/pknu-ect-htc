@@ -3,19 +3,16 @@ package client;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.StringTokenizer;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-
 import util.PacketDefinition;
 
 public class ConnectServer  implements Runnable {
-	private final static String TOKEN = PacketDefinition.TOKEN;
+	private final static String TOKEN = PacketDefinition.TOKEN_HEAD;
 	
 	private String serverIP;
 	private int serverPort;
@@ -55,7 +52,9 @@ public class ConnectServer  implements Runnable {
 	
 	public boolean reqeustJoinChannel(String channel) {
 		try {
-			toServerMsg.write(PacketDefinition.JOIN + TOKEN + channel + TOKEN + nickName);
+			toServerMsg.write(PacketDefinition.HEAD_TYPE_JOIN + TOKEN
+					+ PacketDefinition.HEAD_CHANNEL + ":" + channel + TOKEN
+					+ PacketDefinition.HEAD_NICK + ":" + nickName + TOKEN);
 			toServerMsg.flush();
 		}
 		catch (IOException e) {
@@ -66,9 +65,12 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean requestMsg(String channel, String msg) {
+	public boolean sendMsgToServer(String channel, String msg) {
 		try {
-			toServerMsg.write(PacketDefinition.SEND_MSG + TOKEN + channel + TOKEN + nickName + " " + msg);
+			toServerMsg.write(PacketDefinition.HEAD_TYPE_SEND + TOKEN
+					+ PacketDefinition.HEAD_CAST + ":" + PacketDefinition.HEAD_CAST_BROAD + TOKEN
+					+ PacketDefinition.HEAD_CHANNEL + ":" + channel + TOKEN
+					+ PacketDefinition.HEAD_NICK + ":" + nickName + TOKEN);
 			toServerMsg.flush();
 		}
 		catch (IOException e) {
@@ -79,6 +81,7 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
+	/*
 	public boolean requestOtherIP(String otherNick) {
 		try {
 			toServerMsg.write(PacketDefinition.GET_IP + TOKEN + otherNick);
@@ -91,10 +94,13 @@ public class ConnectServer  implements Runnable {
 		
 		return true;
 	}
+	*/
 	
 	public boolean reportImExit(String channel) {
 		try {
-			toServerMsg.write(PacketDefinition.EXIT + TOKEN + channel + TOKEN + nickName);
+			toServerMsg.write(PacketDefinition.HEAD_TYPE_EXIT + TOKEN
+					+ PacketDefinition.HEAD_CHANNEL + ":" + channel + TOKEN
+					+ PacketDefinition.HEAD_NICK + ":" + nickName + TOKEN);
 			toServerMsg.flush();
 			
 			if ("0".equals(channel)) {
@@ -111,6 +117,7 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 
+	/*
 	public boolean reportMyFarentDisconnect(String channel, String parentIP) {
 		try {
 			toServerMsg.write(PacketDefinition.DISCONNECT_PARENT + TOKEN + channel + TOKEN + parentIP);
@@ -136,58 +143,62 @@ public class ConnectServer  implements Runnable {
 		
 		return true;
 	}
+	*/
 	
 	// ------------------------------------------------- R E C E I V E -------------------------------------------------
 	
 	@Override
-	public void run() {		
-		try {
-			loginToServer();
-			
+	public void run() {
+		if (loginToServer()) {
 			while (toServerSocket.isConnected()) {
-				String fromServerPacket = fromServerMsg.readLine();
-				
-				while (fromServerPacket != null) {
-					StringTokenizer fromServerToken = new StringTokenizer(fromServerPacket, TOKEN);
-					
-					ArrayList<String> parsePacket = new ArrayList<String>();
-					while (fromServerToken.hasMoreTokens()) {
-						parsePacket.add(fromServerToken.nextToken());
-					}
-					
-					String packetType = parsePacket.get(0);
-					if (packetType == PacketDefinition.RESPONSE_IP) {
-						String otherNick = parsePacket.get(1);
-						String otherIP = parsePacket.get(2);
-						
-						receiveOtherClientIP(otherNick, otherIP);
-					}
-					else if (packetType == PacketDefinition.APPLY_PARENT) {
-						String channel = parsePacket.get(1);
-						String parentIP = parsePacket.get(2);
-						
-						receiveMyParentApply(channel, parentIP);
-					}
-					else if (packetType == PacketDefinition.APPLY_CHILD) {
-						String channel = parsePacket.get(1);
-						String oldChildIP = parsePacket.get(2);
-						String newChildIP = parsePacket.get(3);
-						
-						receiveMyChildApply(channel, oldChildIP, newChildIP);
-					}
-					
+				String fromServerPacket;
+				try {
 					fromServerPacket = fromServerMsg.readLine();
+					while (fromServerPacket != null) {
+						StringTokenizer fromServerToken = new StringTokenizer(fromServerPacket, TOKEN);
+						
+						ArrayList<String> parsePacket = new ArrayList<String>();
+						while (fromServerToken.hasMoreTokens()) {
+							parsePacket.add(fromServerToken.nextToken());
+						}
+						
+						String packetType = parsePacket.get(0);
+						if (packetType == PacketDefinition.HEAD_TYPE_SEND) {
+														
+							// receiveOtherClientIP(otherNick, otherIP);
+						}
+						else if (packetType == PacketDefinition.HEAD_TYPE_SET) {
+														
+							// receiveMyParentApply(channel, parentIP);
+							
+							// receiveMyChildApply(channel, oldChildIP, newChildIP);
+						}
+						else if (packetType == PacketDefinition.HEAD_TYPE_JOIN) {
+							
+							// receiveWhoJoin(channel, whoNick);
+						}
+						else if (packetType == PacketDefinition.HEAD_TYPE_EXIT) {
+							
+							// receiveWhoExit(channel, whoNick);
+						}
+						
+						fromServerPacket = fromServerMsg.readLine();
+					}
+				}
+				catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
 	}
 	
-	public void receiveOtherClientIP(String otherNick, String otherIP) {
+	/*
+	public boolean receiveOtherClientIP(String otherNick, String otherIP) {
 		// 작성해야 함
+		
+		return false;
 	}
+	*/
 	
 	public boolean receiveMyParentApply(String channel, String parentIP) {
 		try {
@@ -216,7 +227,7 @@ public class ConnectServer  implements Runnable {
 		try {
 			boolean apply = false;
 			
-			// apply = 나의 왼쪽 자식을 바꾸고
+			// apply = 나의 자식을 더하고
 			
 			if (apply) {
 				toServerMsg.write(PacketDefinition.ACK_APPLY_CHILD + TOKEN + channel + TOKEN + oldChildIP + TOKEN + newChildIP);
@@ -233,5 +244,17 @@ public class ConnectServer  implements Runnable {
 		}
 		
 		return true;
+	}
+	
+	public boolean receiveWhoJoin(String channel, String whoNick) {
+		// 작성해야 함
+		
+		return false;
+	}
+	
+	public boolean receiveWhoExit(String channel, String whoNick) {
+		// 작성해야 함
+		
+		return false;
 	}
 }
