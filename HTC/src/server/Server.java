@@ -7,22 +7,26 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.TreeSet;
 
+@SuppressWarnings("unused")
 public class Server implements Runnable {
 	public static final int port = 30000;
-	public TreeSet<User> users=null;
-	public Queue <Message> messageQ=null;
-	private ServerSocket sSocket;
+	private final TreeSet<User> users;
+	private final Queue<Message> messageQ;
+	private final ServerSocket sSocket;
+	private static Server server = null;
 	
-	private Server()
-	{
-		try {
-			sSocket = new ServerSocket(port);
-			users=new TreeSet<User>();
-			messageQ=new LinkedList<Message>();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	
+	
+	private Server() throws IOException {
+		sSocket = new ServerSocket(port);
+		users = new TreeSet<User>();
+		messageQ = new LinkedList<Message>();
+	}
+
+	public static Server getServer() {
+		if(server==null)
+			throw new NullPointerException("서버가 없다");
+		return server;
 	}
 
 	@Override
@@ -33,12 +37,8 @@ public class Server implements Runnable {
 			while (true) {
 				Socket socket = sSocket.accept();
 				System.out.println("입장 : " + socket);
-				User user = new User(socket);
-				new Thread(user).start();
+				new Thread(new User(socket)).start();
 			}
-		} catch (NumberFormatException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -46,7 +46,16 @@ public class Server implements Runnable {
 	}
 
 	public static void main(String args) {
-		new Thread(new Server()).start();
+
+		Server s=null;
+		try {
+			s=new Server();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(1);
+		}
+		new Thread(s).start();
 	}
 
 }
