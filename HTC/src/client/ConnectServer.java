@@ -109,9 +109,9 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 
-	public boolean reportMyFarentDisconnect(int channel, String parentIp) {
+	public boolean reportMyFarentDisconnect(int channel, String parentIP) {
 		try {
-			toServerMsg.write(PacketDefinition.DISCONNECT_PARENT + TOKEN + channel + TOKEN + parentIp);
+			toServerMsg.write(PacketDefinition.DISCONNECT_PARENT + TOKEN + channel + TOKEN + parentIP);
 			toServerMsg.flush();
 		}
 		catch (IOException e) {
@@ -122,9 +122,9 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean reportMyLeftSonDisconnect(int channel, String leftSonIp) {
+	public boolean reportMyLeftChildDisconnect(int channel, String leftChildIP) {
 		try {
-			toServerMsg.write(PacketDefinition.DISCONNECT_LEFT_SON + TOKEN + channel + TOKEN + leftSonIp);
+			toServerMsg.write(PacketDefinition.DISCONNECT_LEFT_SON + TOKEN + channel + TOKEN + leftChildIP);
 			toServerMsg.flush();
 		}
 		catch (IOException e) {
@@ -135,9 +135,9 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean reportMyRightSonDisconnect(int channel, String rightSonIp) {
+	public boolean reportMyRightChildDisconnect(int channel, String rightChildIP) {
 		try {
-			toServerMsg.write(PacketDefinition.DISCONNECT_RIGHT_SON + TOKEN + channel + TOKEN + rightSonIp);
+			toServerMsg.write(PacketDefinition.DISCONNECT_RIGHT_SON + TOKEN + channel + TOKEN + rightChildIP);
 			toServerMsg.flush();
 		}
 		catch (IOException e) {
@@ -175,21 +175,21 @@ public class ConnectServer  implements Runnable {
 					}
 					else if (packetType == PacketDefinition.APPLY_PARENT) {
 						String channel = parsePacket.get(1);
-						String parentIp = parsePacket.get(2);
+						String parentIP = parsePacket.get(2);
 						
-						receiveMyParentApply(channel, parentIp);
+						receiveMyParentApply(channel, parentIP);
 					}
 					else if (packetType == PacketDefinition.APPLY_LEFT_SON) {
 						String channel = parsePacket.get(1);
-						String leftSonIp = parsePacket.get(2);
+						String leftChildIP = parsePacket.get(2);
 						
-						receiveMyLeftSonApply(channel, leftSonIp);
+						receiveMyLeftChildApply(channel, leftChildIP);
 					}
 					else if (packetType == PacketDefinition.APPLY_RIGHT_SON) {
 						String channel = parsePacket.get(1);
-						String rightSonIp = parsePacket.get(2);
+						String rightChildIP = parsePacket.get(2);
 						
-						receiveMyRightSonApply(channel, rightSonIp);
+						receiveMyRightChildApply(channel, rightChildIP);
 					}
 					
 					fromServerPacket = fromServerMsg.readLine();
@@ -201,17 +201,21 @@ public class ConnectServer  implements Runnable {
 		}
 	}
 	
-	public boolean receiveMyParentApply(String channel, String parentIp) {
+	public void receiveOtherClientIP(String otherNick, String otherIP) {
+		// 작성해야 함
+	}
+	
+	public boolean receiveMyParentApply(String channel, String parentIP) {
 		try {
 			boolean apply = false;
 			
 			// apply = 나의 부모를 바꾸고
 			
 			if (apply) {
-				toServerMsg.write(PacketDefinition.ACK_APPLY_PARENT + TOKEN + channel + TOKEN + parentIp);
+				toServerMsg.write(PacketDefinition.ACK_APPLY_PARENT + TOKEN + channel + TOKEN + parentIP);
 			}
 			else {
-				toServerMsg.write(PacketDefinition.NAK_APPLY_PARENT + TOKEN + channel + TOKEN + parentIp);
+				toServerMsg.write(PacketDefinition.NAK_APPLY_PARENT + TOKEN + channel + TOKEN + parentIP);
 			}
 			
 			toServerMsg.flush();
@@ -224,17 +228,17 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean receiveMyLeftSonApply(String channel, String leftSonIp) {
+	public boolean receiveMyLeftChildApply(String channel, String leftChildIP) {
 		try {
 			boolean apply = false;
 			
 			// apply = 나의 왼쪽 자식을 바꾸고
 			
 			if (apply) {
-				toServerMsg.write(PacketDefinition.ACK_APPLY_LEFT_SON + TOKEN + channel + TOKEN + leftSonIp);
+				toServerMsg.write(PacketDefinition.ACK_APPLY_LEFT_SON + TOKEN + channel + TOKEN + leftChildIP);
 			}
 			else {
-				toServerMsg.write(PacketDefinition.NAK_APPLY_LEFT_SON + TOKEN + channel + TOKEN + leftSonIp);
+				toServerMsg.write(PacketDefinition.NAK_APPLY_LEFT_SON + TOKEN + channel + TOKEN + leftChildIP);
 			}
 			
 			toServerMsg.flush();
@@ -247,17 +251,17 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean receiveMyRightSonApply(String channel, String rightSonIp) {
+	public boolean receiveMyRightChildApply(String channel, String rightChildIP) {
 		try {
 			boolean apply = false;
 			
 			// apply = 나의 오른쪽 자식을 바꾸고
 			
 			if (apply) {
-				toServerMsg.write(PacketDefinition.ACK_APPLY_RIGHT_SON + TOKEN + channel + TOKEN + rightSonIp);
+				toServerMsg.write(PacketDefinition.ACK_APPLY_RIGHT_SON + TOKEN + channel + TOKEN + rightChildIP);
 			}
 			else {
-				toServerMsg.write(PacketDefinition.NAK_APPLY_RIGHT_SON + TOKEN + channel + TOKEN + rightSonIp);
+				toServerMsg.write(PacketDefinition.NAK_APPLY_RIGHT_SON + TOKEN + channel + TOKEN + rightChildIP);
 			}
 			
 			toServerMsg.flush();
@@ -268,9 +272,5 @@ public class ConnectServer  implements Runnable {
 		}
 		
 		return true;
-	}
-	
-	public void receiveOtherClientIP(String otherNick, String otherIp) {
-		
 	}
 }
