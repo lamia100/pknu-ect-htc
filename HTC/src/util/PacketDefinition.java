@@ -1,6 +1,8 @@
 package util;
 
 public class PacketDefinition {
+	// ---------------------------------------------- NEW Packet Definition ----------------------------------------------
+	
 	public final static String TOKEN_MEAN = ":";
 	public final static String TOKEN_HEAD = "|=|";
 	
@@ -39,6 +41,9 @@ public class PacketDefinition {
 	 * + HEAD_NICK + ":" + "닉네임" + TOKEN_HEAD
 	 * + HEAD_MSG + ":" "메세지" + TOKEN_HEAD + "\n"
 	 */
+	
+	
+	// ---------------------------------------------- OLD Packet Definition ----------------------------------------------
 	
 	// ---------------------------------------------- C L I E N T -> S E R V E R ---------------------------------------------- 
 	
