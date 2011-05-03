@@ -1,6 +1,8 @@
 package util;
 
 public class PacketDefinition {
+	public final static String TOKEN = "|=|";
+	
 	/*
 	 * 분류 : 클라이언트 -> 서버
 	 * 용도 : 요청 / 채널에 접속하고자할 때

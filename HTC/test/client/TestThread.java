@@ -1,5 +1,7 @@
 package client;
 
+import java.util.StringTokenizer;
+
 public class TestThread implements Runnable {
 
 	@Override
@@ -8,6 +10,14 @@ public class TestThread implements Runnable {
 	
 		while (true) {
 			System.out.println("쓰레드에서 while문으로 돌아가는 영역");
+			
+			String str = "ffsa|=|asf|=|asdf";
+			
+			StringTokenizer st = new StringTokenizer(str, "|=|");
+			
+			while(st.hasMoreTokens()) {
+				System.out.println(st.nextToken());
+			}
 			
 			try {
 				Thread.sleep(1000);
