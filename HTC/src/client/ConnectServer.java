@@ -51,7 +51,7 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean reqeustJoinChannel(int channel) {
+	public boolean reqeustJoinChannel(String channel) {
 		try {
 			toServerMsg.write(PacketDefinition.JOIN + TOKEN + channel + TOKEN + nickName);
 			toServerMsg.flush();
@@ -64,7 +64,7 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean requestMsg(int channel, String msg) {
+	public boolean requestMsg(String channel, String msg) {
 		try {
 			toServerMsg.write(PacketDefinition.SEND_MSG + TOKEN + channel + TOKEN + nickName + " " + msg);
 			toServerMsg.flush();
@@ -90,12 +90,12 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean reportImExit(int channel) {
+	public boolean reportImExit(String channel) {
 		try {
 			toServerMsg.write(PacketDefinition.EXIT + TOKEN + channel + TOKEN + nickName);
 			toServerMsg.flush();
 			
-			if (channel == 0) {
+			if ("0".equals(channel)) {
 				toServerMsg.close();
 				fromServerMsg.close();
 				toServerSocket.close();
@@ -109,7 +109,7 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 
-	public boolean reportMyFarentDisconnect(int channel, String parentIP) {
+	public boolean reportMyFarentDisconnect(String channel, String parentIP) {
 		try {
 			toServerMsg.write(PacketDefinition.DISCONNECT_PARENT + TOKEN + channel + TOKEN + parentIP);
 			toServerMsg.flush();
@@ -122,7 +122,7 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean reportMyLeftChildDisconnect(int channel, String leftChildIP) {
+	public boolean reportMyLeftChildDisconnect(String channel, String leftChildIP) {
 		try {
 			toServerMsg.write(PacketDefinition.DISCONNECT_LEFT_SON + TOKEN + channel + TOKEN + leftChildIP);
 			toServerMsg.flush();
@@ -135,7 +135,7 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean reportMyRightChildDisconnect(int channel, String rightChildIP) {
+	public boolean reportMyRightChildDisconnect(String channel, String rightChildIP) {
 		try {
 			toServerMsg.write(PacketDefinition.DISCONNECT_RIGHT_SON + TOKEN + channel + TOKEN + rightChildIP);
 			toServerMsg.flush();
