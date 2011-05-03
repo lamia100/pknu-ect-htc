@@ -29,7 +29,7 @@ public class ConnectParent implements Runnable {
 	
 	// ------------------------------------------------- S E N D -------------------------------------------------
 	
-	public boolean connectParent() {
+	public boolean loginToParent() {
 		try {
 			toParentSocket = new Socket(parentIP, parentPort);
 			
@@ -78,7 +78,7 @@ public class ConnectParent implements Runnable {
 	@Override
 	public void run() {
 		try {
-			connectParent();
+			loginToParent();
 			
 			while (toParentSocket.isConnected()) {
 				String fromParentPacket = fromParentMsg.readLine();
@@ -95,7 +95,7 @@ public class ConnectParent implements Runnable {
 					if (packetType == PacketDefinition.RES_SEQ) {
 						String channel = parsePacket.get(1);
 						String startSeq = parsePacket.get(2);
-						String endSeq = parsePacket.get(2);
+						String endSeq = parsePacket.get(3);
 						
 						receiveSequenceNumber(channel, startSeq, endSeq);
 					}
@@ -105,10 +105,8 @@ public class ConnectParent implements Runnable {
 						String nickName = parsePacket.get(3);
 						String msg = parsePacket.get(4);
 						
-						if (parsePacket.size() > 4) {
-							for (int i = 5; i < parsePacket.size(); i++) {
-								msg.concat(TOKEN + parsePacket.get(i));
-							}
+						for (int i = 5; i < parsePacket.size(); i++) {
+							msg.concat(TOKEN + parsePacket.get(i));
 						}
 						
 						receiveMsg(channel, seqNum, nickName, msg);

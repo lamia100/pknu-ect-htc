@@ -1,23 +1,17 @@
 package client;
 
-import java.util.StringTokenizer;
-
 public class TestThread implements Runnable {
 
+	public String shareData;
+	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 	
 		while (true) {
-			System.out.println("쓰레드에서 while문으로 돌아가는 영역");
+			shareData = "쓰레드에서 while";
 			
-			String str = "ffsa|=|asf|=|asdf";
-			
-			StringTokenizer st = new StringTokenizer(str, "|=|");
-			
-			while(st.hasMoreTokens()) {
-				System.out.println(st.nextToken());
-			}
+			System.out.println(shareData + "문으로 돌아가는 영역");
 			
 			try {
 				Thread.sleep(1000);
@@ -29,6 +23,6 @@ public class TestThread implements Runnable {
 	}
 	
 	public void print() {
-		System.out.println("외부에서 호출한 메쏘드");
+		System.out.println(shareData + "에서 호출한 메쏘드");
 	}
 }

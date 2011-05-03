@@ -12,6 +12,8 @@ public class Test {
 		new Thread(test).start();
 		
 		while (true) {
+			test.shareData = "¿ÜºÎ";
+			
 			test.print();
 			
 			try {

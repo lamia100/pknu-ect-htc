@@ -56,16 +56,7 @@ public class PacketDefinition {
 	 * -- 이 때 채널번호가 0이면 전체 채널
 	 * ex) 105 1 123.213.123.32
 	 */
-	public final static String DISCONNECT_LEFT_SON = "105";
-	
-	/*
-	 * 분류 : 클라이언트 -> 서버
-	 * 용도 : 알림 / 클라이언트의 오른쪽 자식이 접속이 끊겼을 때
-	 * 패킷 형태 : DISCONNECT_LEFT_SON 채널번호 부모IP
-	 * -- 이 때 채널번호가 0이면 전체 채널
-	 * ex) 106 1 123.213.123.32
-	 */
-	public final static String DISCONNECT_RIGHT_SON = "106";
+	public final static String DISCONNECT_CHILD = "105";
 	
 	/*
 	 * 분류 : 클라이언트 -> 서버
@@ -78,21 +69,12 @@ public class PacketDefinition {
 	
 	/*
 	 * 분류 : 클라이언트 -> 서버
-	 * 용도 : 응답 / 클라이언트의 왼쪽 자식을 정상적으로 연결했을 때
-	 * 패킷 형태 : ACK_APPLY_LEFT_SON 채널번호 왼쪽자식IP
+	 * 용도 : 응답 / 클라이언트의 새로운 자식을 정상적으로 연결했을 때
+	 * 패킷 형태 : ACK_APPLY_LEFT_SON 채널번호 이전자식IP 새로운자식IP
 	 * -- 이 때 채널번호가 0이면 전체 채널
-	 * ex) 108 1 123.213.123.32
+	 * ex) 108 1 123.213.123.32 123.213.123.33
 	 */
-	public final static String ACK_APPLY_LEFT_SON = "108";
-	
-	/*
-	 * 분류 : 클라이언트 -> 서버
-	 * 용도 : 응답 / 클라이언트의 오른쪽 자식을 정상적으로 연결했을 때
-	 * 패킷 형태 : ACK_APPLY_RIGHT_SON 채널번호 오른쪽자식IP
-	 * -- 이 때 채널번호가 0이면 전체 채널
-	 * ex) 109 1 123.213.123.32
-	 */
-	public final static String ACK_APPLY_RIGHT_SON = "109";
+	public final static String ACK_APPLY_CHILD = "108";
 	
 	/*
 	 * 분류 : 클라이언트 -> 서버
@@ -105,21 +87,12 @@ public class PacketDefinition {
 	
 	/*
 	 * 분류 : 클라이언트 -> 서버
-	 * 용도 : 응답 / 클라이언트의 왼쪽 자식을 연결하지 못했을 때
-	 * 패킷 형태 : NAK_APPLY_LEFT_SON 채널번호 왼쪽자식IP
+	 * 용도 : 응답 / 클라이언트의 새로운 자식을 연결하지 못했을 때
+	 * 패킷 형태 : NAK_APPLY_LEFT_SON 채널번호 이전자식IP 새로운자식IP
 	 * -- 이 때 채널번호가 0이면 전체 채널
 	 * ex) 111 1 123.213.123.32
 	 */
-	public final static String NAK_APPLY_LEFT_SON = "111";
-	
-	/*
-	 * 분류 : 클라이언트 -> 서버
-	 * 용도 : 응답 / 클라이언트의 오른쪽 자식을 연결하지 못했을 때
-	 * 패킷 형태 : NAK_APPLY_RIGHT_SON 채널번호 오른쪽자식IP
-	 * -- 이 때 채널번호가 0이면 전체 채널
-	 * ex) 112 1 123.213.123.32
-	 */
-	public final static String NAK_APPLY_RIGHT_SON = "112";
+	public final static String NAK_APPLY_CHILD = "111";
 	
 	
 	// ---------------------------------------------- S E R V E R -> C L I E N T ----------------------------------------------
@@ -144,20 +117,11 @@ public class PacketDefinition {
 	/*
 	 * 분류 : 서버 -> 클라이언트
 	 * 용도 : 응답 / 클라이언트의 왼쪽 자식을 가르쳐줌
-	 * 패킷 형태 : APPLY_LEFT_SON 채널번호 왼쪽자식IP
+	 * 패킷 형태 : APPLY_LEFT_SON 채널번호 이전자식IP 새로운자식IP
 	 * -- 이 때 채널번호가 0이면 전체 채널
 	 * ex) 202 1 123.213.123.32
 	 */
-	public final static String APPLY_LEFT_SON = "202";
-	
-	/*
-	 * 분류 : 서버 -> 클라이언트
-	 * 용도 : 응답 / 클라이언트의 오른쪽 자식를 가르쳐줌
-	 * 패킷 형태 : APPLY_RIGHT_SON 채널번호 오른쪽자식IP
-	 * -- 이 때 채널번호가 0이면 전체 채널
-	 * ex) 203 1 123.213.123.32
-	 */
-	public final static String APPLY_RIGHT_SON = "203";
+	public final static String APPLY_CHILD = "202";
 	
 	
 	// ---------------------------------------------- C H I L D -> P A R E N T ----------------------------------------------
