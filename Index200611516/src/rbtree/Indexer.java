@@ -61,7 +61,7 @@ public class Indexer {
 		for (IndexWord word : list) {
 			if (word.getCount() < 6) {
 				words.remove(word);
-				System.out.println(word);
+				//System.out.println(word);
 			}
 		}
 	}

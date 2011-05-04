@@ -151,7 +151,7 @@ public class IndexMain extends JFrame {
 				public void valueChanged(javax.swing.event.ListSelectionEvent e) {
 					if (!e.getValueIsAdjusting()) {
 						IndexWord word = (IndexWord) getJList().getSelectedValue();
-						System.out.println(getJList().getSelectedIndex());
+						//System.out.println(getJList().getSelectedIndex());
 						getJTextArea().setText(word.toString() + "\n");
 						getJTextArea().append("count : "+ word.getCount()+"\nlines : ");
 						ArrayList<Integer> lines = word.getLine();
@@ -227,7 +227,7 @@ public class IndexMain extends JFrame {
 			jTextField.setColumns(20);
 			jTextField.addKeyListener(new java.awt.event.KeyAdapter() {
 				public void keyTyped(java.awt.event.KeyEvent e) {
-					System.out.println("keyTyped()"); // TODO Auto-generated Event stub keyTyped()
+					//System.out.println("keyTyped()"); // TODO Auto-generated Event stub keyTyped()
 					if (list == null)
 						return;
 					int c = getJTextField().getCaretPosition();
@@ -265,10 +265,12 @@ public class IndexMain extends JFrame {
 		while (s <= e) {
 			m = (s + e) / 2;
 			cmp = list.get(m).getWord().compareToIgnoreCase(str);
-			if (cmp >= 0) {
+			if (cmp > 0) {
 				e = m - 1;
 			} else if (cmp < 0) {
 				s = m + 1;
+			} else{
+				break;
 			}
 		}
 		cmp = list.get(m).getWord().compareToIgnoreCase(str);
