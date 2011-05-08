@@ -9,23 +9,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.StringTokenizer;
-
-import util.PacketDefinition;
+import static util.PacketDefinition.*;
 
 public class ConnectChild implements Runnable {
-	private final static String TOKEN = PacketDefinition.TOKEN_HEAD;	
-	private final static int MAX_CHILD = 2;
-	
-	private String myIP;
 	private int myPort;
-	
 	private ServerSocket forChildSocket;
-	
 	private ArrayList<Child> childList;
 	
-	public ConnectChild(String myIP, int myPort) {
-		this.myIP = myIP;
+	public ConnectChild(int myPort) {
 		this.myPort = myPort;
 		
 		childList = new ArrayList<Child>();
@@ -45,19 +36,47 @@ public class ConnectChild implements Runnable {
 
 	// ------------------------------------------------- S E N D -------------------------------------------------
 	
-	public boolean sendMsgToAllChild(String channel, String seq, String nickName, String msg) {
+	public boolean whoJoinToAllChild(String channel, String nickName) {
 		Iterator<Child> it = childList.iterator();
 		Child child;
 		
 		while (it.hasNext()) {
 			child = it.next();
 			
-			child.sendMsgToChild(channel, seq, nickName, msg);
+			child.whoJoinToChild(channel, nickName);
 		}
 		
-		return false;
+		return true;
 	}
 	
+	public boolean whoExitToAllChild(String channel, String nickName) {
+		Iterator<Child> it = childList.iterator();
+		Child child;
+		
+		while (it.hasNext()) {
+			child = it.next();
+			
+			child.whoExitToChild(channel, nickName);
+		}
+		
+		return true;
+	}
+	
+	public boolean sendMsgToAllChild(String channel, String sequence, String nickName, String msg) {
+		Iterator<Child> it = childList.iterator();
+		Child child;
+		
+		while (it.hasNext()) {
+			child = it.next();
+			
+			child.sendMsgToChild(channel, sequence, nickName, msg);
+		}
+		
+		return true;
+	}
+	
+	
+	// ------------------------------------------------- R E C E I V E -------------------------------------------------
 	
 	@Override
 	public void run() {
@@ -66,19 +85,10 @@ public class ConnectChild implements Runnable {
 				try {
 					Socket fromChildSocket = forChildSocket.accept();
 					
-					if (childList.size() > MAX_CHILD) {
-						BufferedWriter toChildMsg = new BufferedWriter(new OutputStreamWriter(fromChildSocket.getOutputStream()));
-						toChildMsg.write("자리 없음");
-						toChildMsg.flush();
+					Child newChild = new Child(fromChildSocket);
+					childList.add(newChild);
 						
-						fromChildSocket.close();
-					}
-					else {
-						Child newChild = new Child(fromChildSocket);
-						childList.add(newChild);
-						
-						new Thread(newChild).start();
-					}
+					new Thread(newChild).start();
 				}
 				catch (IOException e) {
 					e.printStackTrace();
@@ -111,9 +121,44 @@ public class ConnectChild implements Runnable {
 		
 		// ------------------------------------------------- S E N D -------------------------------------------------
 		
-		public boolean sendMsgToChild(String channel, String seq, String nickName, String msg) {
+		public boolean whoJoinToChild(String channel, String nickName) {
 			try {
-				// toChildMsg.write(PacketDefinition.SEND_MSG + TOKEN + channel + TOKEN + seq + TOKEN + nickName + TOKEN + msg);
+				toChildMsg.write(HEAD_TYPE_JOIN + TOKEN_HEAD);
+				toChildMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+				toChildMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
+				toChildMsg.flush();
+			}
+			catch (Exception e) {
+				e.printStackTrace();
+				return false;
+			}
+			
+			return true;
+		}
+		
+		public boolean whoExitToChild(String channel, String nickName) {
+			try {
+				toChildMsg.write(HEAD_TYPE_EXIT + TOKEN_HEAD);
+				toChildMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+				toChildMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
+				toChildMsg.flush();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			}
+			
+			return true;
+		}
+		
+		public boolean sendMsgToChild(String channel, String sequence, String nickName, String msg) {
+			try {
+				toChildMsg.write(HEAD_TYPE_SEND + TOKEN_HEAD);
+				toChildMsg.write(HEAD_CAST + ":" + HEAD_CAST_BROAD + TOKEN_HEAD);
+				toChildMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+				toChildMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD);
+				toChildMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
+				toChildMsg.write(HEAD_MSG + ":" + msg + TOKEN_HEAD);
 				toChildMsg.flush();
 			}
 			catch (IOException e) {
@@ -134,21 +179,9 @@ public class ConnectChild implements Runnable {
 					String fromChildPacket;
 					try {
 						fromChildPacket = fromChildMsg.readLine();
+						
 						while (fromChildPacket != null) {
-							StringTokenizer fromChildToken = new StringTokenizer(fromChildPacket, TOKEN);
 							
-							ArrayList<String> parsePacket = new ArrayList<String>();
-							while (fromChildToken.hasMoreTokens()) {
-								parsePacket.add(fromChildToken.nextToken());
-							}
-							
-							String packetType = parsePacket.get(0);
-							if (packetType == PacketDefinition.REQ_SEQ_MSG) {
-																
-								// receiveSequenceNumber(channel, seq);
-							}
-							
-							fromChildPacket = fromChildMsg.readLine();
 						}
 					}
 					catch (IOException e) {
@@ -156,12 +189,6 @@ public class ConnectChild implements Runnable {
 					}
 				}
 			}
-		}
-		
-		public boolean receiveSeqenceNumber(String channel, String seq) {
-			// 작성해야 함
-			
-			return false;
 		}
 	}
 }

@@ -2,7 +2,7 @@ package util;
 
 public class PacketDefinition {
 	public final static String TOKEN_MEAN = ":";
-	public final static String TOKEN_HEAD = "|=|";
+	public final static String TOKEN_HEAD = "\n";
 	
 	// public final static String HEAD_TYPE = "type";
 	public final static String HEAD_TYPE_SEND = "send";
@@ -39,7 +39,15 @@ public class PacketDefinition {
 	 * 
 	 * HEAD_TYPE_JOIN + TOKEN_HEAD
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
-	 * + HEAD_NICK + ":" + "닉네임" + TOKEN_HEAD + "\n"
+	 * + HEAD_NICK + ":" + "닉네임" + TOKEN_HEAD
+	 */
+	
+	/*
+	 * 클라이언트가 채널에서 나갈려고 할 때
+	 * 
+	 * HEAD_TYPE_EXIT + TOKEN_HEAD
+	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
+	 * + HEAD_NICK + ":" + "닉네임" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -49,7 +57,7 @@ public class PacketDefinition {
 	 * (+ HEAD_CAST + ":" + HEAD_CAST_BROAD + TOKEN_HEAD)
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_NICK + ":" + "닉네임" + TOKEN_HEAD
-	 * + HEAD_MSG + ":" "메세지" + TOKEN_HEAD + "\n"
+	 * + HEAD_MSG + ":" + "메세지" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -59,7 +67,7 @@ public class PacketDefinition {
 	 * + HEAD_CAST + ":" + (HEAD_CAST_BROAD)/HEAD_CAST_UNI + TOKEN_HEAD
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_NICK + ":" + "닉네임" + TOKEN_HEAD
-	 * + HEAD_MSG + ":" "메세지" + TOKEN_HEAD + "\n"
+	 * + HEAD_MSG + ":" + "메세지" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -68,7 +76,7 @@ public class PacketDefinition {
 	 * HEAD_TYPE_SUC + TOKEN_HEAD
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD
-	 * + HEAD_IP + ":" + "자식IP" + TOKEN_HEAD + "\n"
+	 * + HEAD_IP + ":" + "자식IP" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -77,7 +85,7 @@ public class PacketDefinition {
 	 * HEAD_TYPE_FAIL + TOKEN_HEAD
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD
-	 * + HEAD_IP + ":" + "자식IP" + TOKEN_HEAD + "\n"
+	 * + HEAD_IP + ":" + "자식IP" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -86,7 +94,7 @@ public class PacketDefinition {
 	 * HEAD_TYPE_SUC + TOKEN_HEAD
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_FAMILY + ":" + HEAD_FAMILY_PARENT + TOKEN_HEAD
-	 * + HEAD_IP + ":" + "부모IP" + TOKEN_HEAD + "\n"
+	 * + HEAD_IP + ":" + "부모IP" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -95,7 +103,7 @@ public class PacketDefinition {
 	 * HEAD_TYPE_FAIL + TOKEN_HEAD
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_FAMILY + ":" + HEAD_FAMILY_PARENT + TOKEN_HEAD
-	 * + HEAD_IP + ":" + "부모IP" + TOKEN_HEAD + "\n"
+	 * + HEAD_IP + ":" + "부모IP" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -103,7 +111,7 @@ public class PacketDefinition {
 	 * 
 	 * HEAD_TYPE_REQUEST + TOKEN_HEAD
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
-	 * + HEAD_SEQ + ":" + "요구순서번호" + TOKEN_HEAD + "\n"
+	 * + HEAD_SEQ + ":" + "요구순서번호" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -121,7 +129,7 @@ public class PacketDefinition {
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_SEQ + ":" + "순서번호" + TOKEN_HEAD
 	 * + HEAD_NICK + ":" + "닉네임" + TOKEN_HEAD
-	 * + HEAD_MSG + ":" "메세지" + TOKEN_HEAD + "\n"
+	 * + HEAD_MSG + ":" + "메세지" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -132,7 +140,7 @@ public class PacketDefinition {
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_SEQ + ":" + "순서번호" + TOKEN_HEAD
 	 * + HEAD_NICK + ":" + "닉네임" + TOKEN_HEAD
-	 * + HEAD_MSG + ":" "메세지" + TOKEN_HEAD + "\n"
+	 * + HEAD_MSG + ":" + "메세지" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -141,7 +149,7 @@ public class PacketDefinition {
 	 * HEAD_TYPE_SET + TOKEN_HEAD
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_FAMILY + ":" + HEAD_FAMILY_PARENT + TOKEN_HEAD
-	 * + HEAD_IP + ":" + "부모IP" + TOKEN_HEAD + "\n"
+	 * + HEAD_IP + ":" + "부모IP" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -150,7 +158,7 @@ public class PacketDefinition {
 	 * HEAD_TYPE_SET + TOKEN_HEAD
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD
-	 * + HEAD_IP + ":" + "자식IP" + TOKEN_HEAD + "\n"
+	 * + HEAD_IP + ":" + "자식IP" + TOKEN_HEAD
 	 */
 	
 	
@@ -161,7 +169,15 @@ public class PacketDefinition {
 	 * 
 	 * HEAD_TYPE_JOIN + TOKEN_HEAD
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
-	 * + HEAD_NICK + ":" + "닉네임" + TOKEN_HEAD + "\n"
+	 * + HEAD_NICK + ":" + "닉네임" + TOKEN_HEAD
+	 */
+	
+	/*
+	 * 어떤 클라이언트가 채널에서 나갔을 때
+	 * 
+	 * HEAD_TYPE_EXIT + TOKEN_HEAD
+	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
+	 * + HEAD_NICK + ":" + "닉네임" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -172,7 +188,7 @@ public class PacketDefinition {
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_SEQ + ":" + "순서번호" + TOKEN_HEAD
 	 * + HEAD_NICK + ":" + "닉네임" + TOKEN_HEAD
-	 * + HEAD_MSG + ":" "메세지" + TOKEN_HEAD + "\n"
+	 * + HEAD_MSG + ":" + "메세지" + TOKEN_HEAD
 	 */
 	
 	
@@ -183,6 +199,6 @@ public class PacketDefinition {
 	 * 
 	 * HEAD_TYPE_REQUEST + TOKEN_HEAD
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
-	 * + HEAD_SEQ + ":" + "요구순서번호" + TOKEN_HEAD + "\n"
+	 * + HEAD_SEQ + ":" + "요구순서번호" + TOKEN_HEAD
 	 */
 }

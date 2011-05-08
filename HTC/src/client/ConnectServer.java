@@ -2,18 +2,14 @@ package client;
 
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import util.PacketDefinition;
+import static util.PacketDefinition.*;
 
 public class ConnectServer  implements Runnable {
-	private final static String TOKEN = PacketDefinition.TOKEN_HEAD;
-	
 	private String serverIP;
 	private int serverPort;
 	
@@ -50,14 +46,14 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean reqeustJoinChannel(String channel) {
+	public boolean joinChannel(String channel) {
 		try {
-			toServerMsg.write(PacketDefinition.HEAD_TYPE_JOIN + TOKEN
-					+ PacketDefinition.HEAD_CHANNEL + ":" + channel + TOKEN
-					+ PacketDefinition.HEAD_NICK + ":" + nickName + TOKEN);
+			toServerMsg.write(HEAD_TYPE_JOIN + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+			toServerMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
 			toServerMsg.flush();
 		}
-		catch (IOException e) {
+		catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -65,42 +61,11 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean sendMsgToServer(String channel, String msg) {
+	public boolean exitChannel(String channel) {
 		try {
-			toServerMsg.write(PacketDefinition.HEAD_TYPE_SEND + TOKEN
-					+ PacketDefinition.HEAD_CAST + ":" + PacketDefinition.HEAD_CAST_BROAD + TOKEN
-					+ PacketDefinition.HEAD_CHANNEL + ":" + channel + TOKEN
-					+ PacketDefinition.HEAD_NICK + ":" + nickName + TOKEN);
-			toServerMsg.flush();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-		return true;
-	}
-	
-	/*
-	public boolean requestOtherIP(String otherNick) {
-		try {
-			toServerMsg.write(PacketDefinition.GET_IP + TOKEN + otherNick);
-			toServerMsg.flush();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-		return true;
-	}
-	*/
-	
-	public boolean reportImExit(String channel) {
-		try {
-			toServerMsg.write(PacketDefinition.HEAD_TYPE_EXIT + TOKEN
-					+ PacketDefinition.HEAD_CHANNEL + ":" + channel + TOKEN
-					+ PacketDefinition.HEAD_NICK + ":" + nickName + TOKEN);
+			toServerMsg.write(HEAD_TYPE_EXIT + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+			toServerMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
 			toServerMsg.flush();
 			
 			if ("0".equals(channel)) {
@@ -116,14 +81,17 @@ public class ConnectServer  implements Runnable {
 		
 		return true;
 	}
-
-	/*
-	public boolean reportMyFarentDisconnect(String channel, String parentIP) {
+	
+	public boolean sendMsgToServer(String channel, String msg) {
 		try {
-			toServerMsg.write(PacketDefinition.DISCONNECT_PARENT + TOKEN + channel + TOKEN + parentIP);
+			toServerMsg.write(HEAD_TYPE_SEND + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CAST + ":" + HEAD_CAST_BROAD + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+			toServerMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
+			toServerMsg.write(HEAD_MSG + ":" + msg + TOKEN_HEAD);
 			toServerMsg.flush();
 		}
-		catch (IOException e) {
+		catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -131,19 +99,118 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean reportMyChildDisconnect(String channel, String childIP) {
+	public boolean sendScriptBroad(String channel, String script) {
 		try {
-			toServerMsg.write(PacketDefinition.DISCONNECT_CHILD + TOKEN + channel + TOKEN + childIP);
+			toServerMsg.write(HEAD_TYPE_SCRIPT + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CAST + ":" + HEAD_CAST_BROAD + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+			toServerMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
+			toServerMsg.write(HEAD_MSG + ":" + script + TOKEN_HEAD);
 			toServerMsg.flush();
 		}
-		catch (IOException e) {
+		catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
 		
 		return true;
 	}
-	*/
+	
+	public boolean sendScriptUni(String channel, String script) {
+		try {
+			toServerMsg.write(HEAD_TYPE_SCRIPT + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CAST + ":" + HEAD_CAST_UNI + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+			toServerMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
+			toServerMsg.write(HEAD_MSG + ":" + script + TOKEN_HEAD);
+			toServerMsg.flush();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean successOpenSocketForChild(String channel, String childIP) {
+		try {
+			toServerMsg.write(HEAD_TYPE_SUCCESS + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + childIP + TOKEN_HEAD);
+			toServerMsg.flush();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean failOpenSocketForChild(String channel, String childIP) {
+		try {
+			toServerMsg.write(HEAD_TYPE_FAIL + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + childIP + TOKEN_HEAD);
+			toServerMsg.flush();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean successConnectToParent(String channel, String parentIP) {
+		try {
+			toServerMsg.write(HEAD_TYPE_SUCCESS + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_PARENT + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + parentIP + TOKEN_HEAD);
+			toServerMsg.flush();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean failConnectToParent(String channel, String parentIP) {
+		try {
+			toServerMsg.write(HEAD_TYPE_FAIL + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_PARENT + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + parentIP + TOKEN_HEAD);
+			toServerMsg.flush();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public boolean requestMsgToServer(String channel, String sequence) {
+		try {
+			toServerMsg.write(HEAD_TYPE_REQUEST + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+			toServerMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD);
+			toServerMsg.flush();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
 	
 	// ------------------------------------------------- R E C E I V E -------------------------------------------------
 	
@@ -154,35 +221,9 @@ public class ConnectServer  implements Runnable {
 				String fromServerPacket;
 				try {
 					fromServerPacket = fromServerMsg.readLine();
+					
 					while (fromServerPacket != null) {
-						StringTokenizer fromServerToken = new StringTokenizer(fromServerPacket, TOKEN);
 						
-						ArrayList<String> parsePacket = new ArrayList<String>();
-						while (fromServerToken.hasMoreTokens()) {
-							parsePacket.add(fromServerToken.nextToken());
-						}
-						
-						String packetType = parsePacket.get(0);
-						if (packetType == PacketDefinition.HEAD_TYPE_SEND) {
-														
-							// receiveOtherClientIP(otherNick, otherIP);
-						}
-						else if (packetType == PacketDefinition.HEAD_TYPE_SET) {
-														
-							// receiveMyParentApply(channel, parentIP);
-							
-							// receiveMyChildApply(channel, oldChildIP, newChildIP);
-						}
-						else if (packetType == PacketDefinition.HEAD_TYPE_JOIN) {
-							
-							// receiveWhoJoin(channel, whoNick);
-						}
-						else if (packetType == PacketDefinition.HEAD_TYPE_EXIT) {
-							
-							// receiveWhoExit(channel, whoNick);
-						}
-						
-						fromServerPacket = fromServerMsg.readLine();
 					}
 				}
 				catch (IOException e) {
@@ -190,71 +231,5 @@ public class ConnectServer  implements Runnable {
 				}
 			}
 		}
-	}
-	
-	/*
-	public boolean receiveOtherClientIP(String otherNick, String otherIP) {
-		// 작성해야 함
-		
-		return false;
-	}
-	*/
-	
-	public boolean receiveMyParentApply(String channel, String parentIP) {
-		try {
-			boolean apply = false;
-			
-			// apply = 나의 부모를 바꾸고
-			
-			if (apply) {
-				// toServerMsg.write(PacketDefinition.ACK_APPLY_PARENT + TOKEN + channel + TOKEN + parentIP);
-			}
-			else {
-				// toServerMsg.write(PacketDefinition.NAK_APPLY_PARENT + TOKEN + channel + TOKEN + parentIP);
-			}
-			
-			toServerMsg.flush();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-		return true;
-	}
-	
-	public boolean receiveMyChildApply(String channel, String oldChildIP, String newChildIP) {
-		try {
-			boolean apply = false;
-			
-			// apply = 나의 자식을 더하고
-			
-			if (apply) {
-				// toServerMsg.write(PacketDefinition.ACK_APPLY_CHILD + TOKEN + channel + TOKEN + oldChildIP + TOKEN + newChildIP);
-			}
-			else {
-				// toServerMsg.write(PacketDefinition.NAK_APPLY_CHILD + TOKEN + channel + TOKEN + oldChildIP + TOKEN + newChildIP);
-			}
-			
-			toServerMsg.flush();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-			return false;
-		}
-		
-		return true;
-	}
-	
-	public boolean receiveWhoJoin(String channel, String whoNick) {
-		// 작성해야 함
-		
-		return false;
-	}
-	
-	public boolean receiveWhoExit(String channel, String whoNick) {
-		// 작성해야 함
-		
-		return false;
 	}
 }

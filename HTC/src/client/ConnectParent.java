@@ -7,13 +7,9 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.StringTokenizer;
-import util.PacketDefinition;
+import static util.PacketDefinition.*;
 
 public class ConnectParent implements Runnable {
-	private final static String TOKEN = PacketDefinition.TOKEN_HEAD;
-	
 	private String parentIP;
 	private int parentPort;
 	
@@ -47,9 +43,11 @@ public class ConnectParent implements Runnable {
 		return true;
 	}
 	
-	public boolean requestMsg(String channel, String seq, String nickName, String msg) {
+	public boolean requestMsgToParent(String channel, String sequence) {
 		try {
-			// toParentMsg.write(PacketDefinition.SEND_MSG + TOKEN + channel + TOKEN + seq + TOKEN + nickName + TOKEN + msg);
+			toParentMsg.write(HEAD_TYPE_REQUEST + TOKEN_HEAD);
+			toParentMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+			toParentMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD);
 			toParentMsg.flush();
 		}
 		catch (IOException e) {
@@ -70,21 +68,9 @@ public class ConnectParent implements Runnable {
 				String fromParentPacket;
 				try {
 					fromParentPacket = fromParentMsg.readLine();
+					
 					while (fromParentPacket != null) {
-						StringTokenizer fromServerToken = new StringTokenizer(fromParentPacket, TOKEN);
 						
-						ArrayList<String> parsePacket = new ArrayList<String>();
-						while (fromServerToken.hasMoreTokens()) {
-							parsePacket.add(fromServerToken.nextToken());
-						}
-						
-						String packetType = parsePacket.get(0);
-						if (packetType == PacketDefinition.HEAD_TYPE_SEND) {
-														
-							// receiveMsg(channel, seq, nickName, msg);
-						}
-						
-						fromParentPacket = fromParentMsg.readLine();
 					}
 				}
 				catch (IOException e) {
@@ -92,11 +78,5 @@ public class ConnectParent implements Runnable {
 				}
 			}
 		}
-	}
-	
-	public boolean receiveMsg(String channel, String seq, String nickName, String msg) {
-		// 작성해야 함
-		
-		return true;
 	}
 }
