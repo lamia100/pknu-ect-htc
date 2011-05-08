@@ -1,7 +1,10 @@
 package server;
+
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+
+import server.msg.Message;
 
 public class User implements Comparable<User>, Runnable {
 	// 서버 필요함
@@ -26,7 +29,7 @@ public class User implements Comparable<User>, Runnable {
 		/*
 		 * 닉네임 설정등 초기화
 		 */
-		
+
 	}
 	
 	@Override
@@ -55,12 +58,14 @@ public class User implements Comparable<User>, Runnable {
 		initialize();
 		// 정상 동작
 		String line = "";
-		Message message = new Message();
+		Message message =null;
 		try {
 			while ((line = in.readLine()) != null) {
-				if (message.parse(line)) {
+				if (message == null) {
+					message=Message.parsType(line);
+				} else if (message.parse(line)) {
 					// server 의 messageQ에 message를 add
-					message = new Message();
+					message = null;
 				}
 			}
 		} catch (IOException e) {

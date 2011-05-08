@@ -7,6 +7,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.TreeSet;
 
+import server.msg.Message;
+
 @SuppressWarnings("unused")
 public class Server implements Runnable {
 	public static final int port = 30000;

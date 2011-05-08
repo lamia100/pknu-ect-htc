@@ -6,6 +6,7 @@ public class PacketDefinition {
 	
 	// public final static String HEAD_TYPE = "type";
 	public final static String HEAD_TYPE_SEND = "send";
+	
 	public final static String HEAD_TYPE_REQUEST = "req";
 	public final static String HEAD_TYPE_SET = "set";
 	public final static String HEAD_TYPE_SUCCESS = "suc";

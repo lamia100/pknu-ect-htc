@@ -2,6 +2,8 @@ package server;
 
 import java.util.*;
 
+import server.msg.Message;
+
 public class Channel implements Comparable<Channel>, Runnable {
 	private ArrayList<User> users = null;
 	private Queue<Message> messageQ = null;
