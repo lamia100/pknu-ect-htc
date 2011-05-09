@@ -1,6 +1,8 @@
-package util.msg;
+package util.msg.sub;
 
-public class Success extends Message {
+import util.msg.Message;
+
+public class Set extends Message {
 
 	@Override
 	public boolean parse(String line) {

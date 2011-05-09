@@ -29,8 +29,10 @@ public class PacketDefinition {
 	public final static String HEAD_FAMILY_CHILD = "c";
 	
 	public final static String HEAD_IP = "ip";
-	
+
 	public final static String HEAD_MSG = "msg";
+	
+	public final static String HEAD_END = "";
 	
 	// ---------------------------------------------- Client -> Server ----------------------------------------------
 	

@@ -4,24 +4,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import util.msg.sub.Send;
+
 import static util.PacketDefinition.*;
 
 public abstract class Message {	
-	protected enum TYPE {
-		SEND, REQUEST, SET, SUCCESS, FAIL, JOIN, EXIT, SCRIPT,
-		CAST, CAST_BROAD, CAST_UNI,
-		CHANNEL,
-		SEQ,
-		NICK,
-		FAMILY, FAMILY_PARENT, FAMILY_CHILD,
-		IP, 
-		MSG
-	}
-	
+
 	ArrayList<String> message = new ArrayList<String>();
 	private int i_type;
 	private String s_type;
-	protected static final Map<String, TYPE> map = new HashMap<String, TYPE>();
+	private static final Map<String, TYPE> map = new HashMap<String, TYPE>();
 	
 	/**
 	 * 
@@ -48,8 +40,13 @@ public abstract class Message {
 		map.put(HEAD_MSG, TYPE.MSG);
 		map.put(HEAD_NICK, TYPE.NICK);
 		map.put(HEAD_SEQ, TYPE.SEQ);
+		map.put(HEAD_END,TYPE.END);
 	}
 	
+	public static Map<String,TYPE> getTypeTable()
+	{
+		return map;
+	}
 	public static Message parsType(String str) {
 		Message msg;
 		TYPE type = map.get(str);

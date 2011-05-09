@@ -1,6 +1,8 @@
-package util.msg;
+package util.msg.sub;
 
-public class Script extends Message {
+import util.msg.Message;
+
+public class Request extends Message {
 
 	@Override
 	public boolean parse(String line) {

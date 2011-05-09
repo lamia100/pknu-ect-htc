@@ -1,4 +1,6 @@
-package util.msg;
+package util.msg.sub;
+
+import util.msg.Message;
 
 public class Join extends Message {
 
