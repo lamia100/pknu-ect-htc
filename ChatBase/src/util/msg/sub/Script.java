@@ -24,24 +24,13 @@ public class Script extends Message {
 		StringTokenizer token = new StringTokenizer(line, ":");
 		String typeStr = token.nextToken();
 		TYPE type = getStringToType(typeStr);
-		String value=token.nextToken().trim();
+		String value = token.nextToken().trim();
+		
 		switch (type) {
 			case CAST:
-				/*이부분은 따로 만드는게 좋지 않을까. c나 p 이외에 다른 문자가 들어오면 cast 에 엉뚱한게 들어있음.
-				 * 
-				 * enum CAST{
-				 * 	BROAD,UNI; 
-				 * }
-				 * 
-				 * private TYPE cast = TYPE.CAST_BROAD;>> private CAST cast = CAST.BROAD;
-				 * 
-				 * 를 추천
-				 */
-				if("uni".equals(value))
-				{
+				if (TYPE.CAST_UNI.toString().equals(value)) {
 					cast=TYPE.CAST_UNI;
 				}
-				//cast = getStringToType(token.nextToken());
 				break;
 			case CHANNEL:
 				channel = value;

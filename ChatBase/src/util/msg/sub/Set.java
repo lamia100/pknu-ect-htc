@@ -11,14 +11,9 @@ import util.msg.TYPE;
  * 
  */
 public class Set extends Message {
-	
-	enum Family {
-		PARENT, CHILD;
-	}
-	
-	Family family = null;
-	String ip = "";
-	int sequence = 0;
+	private TYPE family = null;
+	private String ip = "";
+	private int sequence = 0;
 	
 	@Override
 	public boolean parse(String line) {
@@ -26,7 +21,19 @@ public class Set extends Message {
 		StringTokenizer token = new StringTokenizer(line, ":");
 		TYPE type = getStringToType(token.nextToken().trim());
 		String value = token.nextToken().trim();
+		
 		switch (type) {
+			case FAMILY:
+				if (TYPE.FAMILY_PARENT.toString().equals(value)) {
+					family = TYPE.FAMILY_PARENT;
+				}
+				else if (TYPE.FAMILY_CHILD.toString().equals(value)) {
+					family = TYPE.FAMILY_CHILD;
+				}
+				else {
+					isValid = false;
+				}
+				break;
 			case IP:
 				ip = value;
 				break;
@@ -35,5 +42,16 @@ public class Set extends Message {
 		}
 		return false;
 	}
-	
+
+	public TYPE getFamily() {
+		return family;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public int getSequence() {
+		return sequence;
+	}
 }

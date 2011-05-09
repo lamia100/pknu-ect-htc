@@ -11,11 +11,15 @@ import util.msg.TYPE;
  *
  */
 public class Send extends Message {
+	private TYPE cast = TYPE.CAST_BROAD;
+	private String channel = "";
+	private int seq = 0;
+	private String nick = "";
+	private String msg = "";
 	
-	int seq = 0;
-	String channel = "";
-	String nick = "";
-	String msg = "";
+	public TYPE getCast() {
+		return cast;
+	}
 	
 	public int getSeq() {
 		return seq;
@@ -45,7 +49,13 @@ public class Send extends Message {
 		String typeStr = token.nextToken().trim();
 		TYPE type = getStringToType(typeStr);
 		String value = token.nextToken().trim();
+		
 		switch (type) {
+			case CAST:
+				if (TYPE.CAST_UNI.toString().equals(value)) {
+					cast=TYPE.CAST_UNI;
+				}
+				break;
 			case SEQ:
 				try {
 					seq = Integer.parseInt(value);

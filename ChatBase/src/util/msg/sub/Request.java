@@ -22,13 +22,21 @@ public class Request extends Message {
 		StringTokenizer token = new StringTokenizer(line, ":");
 		String typeStr = token.nextToken();
 		TYPE type = getStringToType(typeStr);
+		String value = token.nextToken().trim();
 		
 		switch (type) {
 			case CHANNEL:
-				channel = token.nextToken();
+				channel = value;
 				break;
 			case SEQ:
-				seq = Integer.parseInt(token.nextToken().trim());
+				try {
+					seq = Integer.parseInt(value);
+				}
+				catch (NumberFormatException e) {
+					e.printStackTrace();
+					isValid = false;
+					return false;
+				}
 				break;
 			case END:
 				return true;

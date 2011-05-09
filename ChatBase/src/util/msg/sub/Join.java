@@ -22,13 +22,14 @@ public class Join extends Message {
 		StringTokenizer token = new StringTokenizer(line, ":");
 		String typeStr = token.nextToken();
 		TYPE type = getStringToType(typeStr);
+		String value = token.nextToken().trim();
 		
 		switch (type) {
 			case CHANNEL:
-				channel = token.nextToken();
+				channel = value;
 				break;
 			case NICK:
-				nick = token.nextToken();
+				nick = value;
 				break;
 			case END:
 				return true;
