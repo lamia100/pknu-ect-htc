@@ -9,7 +9,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 import util.msg.Message;
-import static util.PacketDefinition.*;
+import static util.Definition.*;
 
 public class ConnectServer  implements Runnable {
 	private ConnectManager connectManager;

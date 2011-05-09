@@ -12,7 +12,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import util.msg.Message;
-import static util.PacketDefinition.*;
+import static util.Definition.*;
 
 public class ConnectChild implements Runnable {
 	private ConnectManager connectManager;
@@ -60,6 +60,10 @@ public class ConnectChild implements Runnable {
 		return childIPList;
 	}
 	
+	public int getChildSize() {
+		return childList.size();
+	}
+	
 	// ------------------------------------------------- S E N D -------------------------------------------------
 	
 	public boolean whoJoinToAllChild(String channel, String nickName) {
@@ -88,7 +92,7 @@ public class ConnectChild implements Runnable {
 		return true;
 	}
 	
-	public boolean sendMsgToAllChild(String channel, String sequence, String nickName, String msg) {
+	public boolean sendMsgToAllChild(String channel, int sequence, String nickName, String msg) {
 		Iterator<Child> it = childList.values().iterator();
 		Child child;
 		
@@ -101,7 +105,7 @@ public class ConnectChild implements Runnable {
 		return true;
 	}
 	
-	public boolean sendMsgToSomeChild(String childIP, String channel, String sequence, String nickName, String msg) {
+	public boolean sendMsgToSomeChild(String childIP, String channel, int sequence, String nickName, String msg) {
 		return childList.get(childIP).sendMsgToChild(channel, sequence, nickName, msg);
 	}
 	
@@ -200,7 +204,7 @@ public class ConnectChild implements Runnable {
 			return true;
 		}
 		
-		public boolean sendMsgToChild(String channel, String sequence, String nickName, String msg) {
+		public boolean sendMsgToChild(String channel, int sequence, String nickName, String msg) {
 			try {
 				toChildMsg.write(HEAD_TYPE_SEND + TOKEN_HEAD);
 				toChildMsg.write(HEAD_CAST + ":" + HEAD_CAST_BROAD + TOKEN_HEAD);

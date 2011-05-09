@@ -9,7 +9,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 
 import util.msg.Message;
-import static util.PacketDefinition.*;
+import static util.Definition.*;
 
 public class ConnectParent implements Runnable {
 	private ConnectManager connectManager;
