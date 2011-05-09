@@ -12,13 +12,14 @@ public enum TYPE {
 	IP(HEAD_IP), 
 	MSG(HEAD_MSG),
 	END(HEAD_END);
-	String str="";
-	TYPE(String str)
-	{
-		this.str=str;
+	
+	String str = "";
+	
+	TYPE(String str) {
+		this.str = str;
 	}
-	public String toString()
-	{
+	
+	public String toString() {
 		return str;
 	}
 }

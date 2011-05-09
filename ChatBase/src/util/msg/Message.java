@@ -6,7 +6,7 @@ import java.util.Map;
 
 import util.msg.sub.*;
 
-import static util.PacketDefinition.*;
+import static util.msg.TYPE.*;
 
 public abstract class Message {
 	
@@ -17,36 +17,62 @@ public abstract class Message {
 	private static final Map<String, TYPE> map = new HashMap<String, TYPE>();
 	
 	public static void initialize() {
-		map.put(HEAD_TYPE_SEND, TYPE.SEND);
-		map.put(HEAD_TYPE_EXIT, TYPE.EXIT);
-		map.put(HEAD_TYPE_FAIL, TYPE.FAIL);
-		map.put(HEAD_TYPE_JOIN, TYPE.JOIN);
-		map.put(HEAD_TYPE_REQUEST, TYPE.REQUEST);
-		map.put(HEAD_TYPE_SCRIPT, TYPE.SCRIPT);
-		map.put(HEAD_TYPE_SET, TYPE.SET);
-		map.put(HEAD_TYPE_SUCCESS, TYPE.SUCCESS);
-		map.put(HEAD_CAST, TYPE.CAST);
-		map.put(HEAD_CAST_BROAD, TYPE.CAST_BROAD);
-		map.put(HEAD_CAST_UNI, TYPE.CAST_UNI);
-		map.put(HEAD_FAMILY, TYPE.FAMILY);
-		map.put(HEAD_FAMILY_CHILD, TYPE.FAMILY_CHILD);
-		map.put(HEAD_FAMILY_PARENT, TYPE.FAMILY_PARENT);
-		map.put(HEAD_IP, TYPE.IP);
-		map.put(HEAD_MSG, TYPE.MSG);
-		map.put(HEAD_NICK, TYPE.NICK);
-		map.put(HEAD_SEQ, TYPE.SEQ);
-		map.put(HEAD_END, TYPE.END);
+		map.put(SEND.toString(), SEND);
+		map.put(EXIT.toString(), EXIT);
+		map.put(FAIL.toString(), FAIL);
+		map.put(JOIN.toString(), JOIN);
+		map.put(REQUEST.toString(), REQUEST);
+		map.put(SCRIPT.toString(), SCRIPT);
+		map.put(SET.toString(), SET);
+		map.put(SUCCESS.toString(), SUCCESS);
+		map.put(CAST.toString(), CAST);
+		map.put(CAST_BROAD.toString(), CAST_BROAD);
+		map.put(CAST_UNI.toString(), CAST_UNI);
+		map.put(FAMILY.toString(), FAMILY);
+		map.put(FAMILY_CHILD.toString(), FAMILY_CHILD);
+		map.put(FAMILY_PARENT.toString(), FAMILY_PARENT);
+		map.put(IP.toString(), IP);
+		map.put(MSG.toString(), MSG);
+		map.put(NICK.toString(), NICK);
+		map.put(SEQ.toString(), SEQ);
+		map.put(END.toString(), END);
+
+		/*
+		map.put(HEAD_TYPE_SEND, SEND);
+		map.put(HEAD_TYPE_EXIT, EXIT);
+		map.put(HEAD_TYPE_FAIL, FAIL);
+		map.put(HEAD_TYPE_JOIN, JOIN);
+		map.put(HEAD_TYPE_REQUEST, REQUEST);
+		map.put(HEAD_TYPE_SCRIPT, SCRIPT);
+		map.put(HEAD_TYPE_SET, SET);
+		map.put(HEAD_TYPE_SUCCESS, SUCCESS);
+		map.put(HEAD_CAST, CAST);
+		map.put(HEAD_CAST_BROAD, CAST_BROAD);
+		map.put(HEAD_CAST_UNI, CAST_UNI);
+		map.put(HEAD_FAMILY, FAMILY);
+		map.put(HEAD_FAMILY_CHILD, FAMILY_CHILD);
+		map.put(HEAD_FAMILY_PARENT, FAMILY_PARENT);
+		map.put(HEAD_IP, IP);
+		map.put(HEAD_MSG, MSG);
+		map.put(HEAD_NICK, NICK);
+		map.put(HEAD_SEQ, SEQ);
+		map.put(HEAD_END, END);
+		*/
 	}
 	
-	protected static Map<String, TYPE> getTypeTable() {
-		if(map==null)
+	private static Map<String, TYPE> getTypeTable() {
+		if (map == null)
 			initialize();
 		return map;
 	}
 	
+	protected static TYPE getStringToType(String str) {
+		return getTypeTable().get(str);
+	}
+	
 	public static Message parsType(String str) {
 		Message msg;
-		TYPE type = map.get(str);
+		TYPE type = getTypeTable().get(str);
 		switch (type) {
 			case SEND:
 				msg = new Send();
@@ -55,13 +81,13 @@ public abstract class Message {
 				msg = new Join();
 				break;
 			case EXIT:
-				msg= new Exit();
+				msg = new Exit();
 				break;
 			case SET:
-				msg= new Set();
+				msg = new Set();
 				break;
 			case REQUEST:
-				msg=new Request();
+				msg = new Request();
 				break;
 			default:
 				msg = null;
@@ -76,9 +102,9 @@ public abstract class Message {
 	 * @return 메세지의 끝나면 true. 메세지가 안끝났으면 false
 	 */
 	public abstract boolean parse(String line);
-
+	
 	/**
-	 *  getType() 을 이용합시다.
+	 * getType() 을 이용합시다.
 	 */
 	@Deprecated
 	public int getIntType() {
@@ -88,9 +114,9 @@ public abstract class Message {
 	public TYPE getType() {
 		return type;
 	}
-
+	
 	/**
-	 *  getType().toString() 을 이용합시다.
+	 * getType().toString() 을 이용합시다.
 	 */
 	@Deprecated
 	public String getTypeByString() {

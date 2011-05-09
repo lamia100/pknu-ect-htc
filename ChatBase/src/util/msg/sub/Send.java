@@ -21,7 +21,7 @@ public class Send extends Message {
 		// TODO Auto-generated method stub
 		StringTokenizer token = new StringTokenizer(line, ":");
 		String typeStr = token.nextToken();
-		TYPE type = getTypeTable().get(typeStr);
+		TYPE type = getStringToType(typeStr);
 		switch (type) {
 			case SEQ:
 				seq = Integer.parseInt(token.nextToken().trim());
