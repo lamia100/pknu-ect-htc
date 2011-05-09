@@ -15,26 +15,18 @@ public class ConnectServer  implements Runnable {
 	private ConnectManager connectManager;
 	private String serverIP;
 	private int serverPort;
-	private String nickName;
 	
 	private Socket toServerSocket;
 	private BufferedReader fromServerMsg;
 	private BufferedWriter toServerMsg;
 	
-	public ConnectServer(ConnectManager connectManager, String serverIP, int serverPort, String nickName) {
+	public ConnectServer(ConnectManager connectManager, String serverIP, int serverPort) {
 		this.connectManager = connectManager;
 		this.serverIP = serverIP;
 		this.serverPort = serverPort;
-		this.nickName = nickName;
 	}
 	
-	public String getServerIP() {
-		return serverIP;
-	}
-	
-	// ------------------------------------------------- S E N D ------------------------------------------------- 
-	
-	public boolean loginToServer() {
+	public boolean loginServer() {
 		try {
 			toServerSocket = new Socket(serverIP, serverPort);
 			
@@ -53,7 +45,27 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean joinChannel(String channel) {
+	public boolean logoutServer() {
+		try {
+			fromServerMsg.close();
+			toServerMsg.close();
+			toServerSocket.close();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public String getServerIP() {
+		return serverIP;
+	}
+	
+	// ------------------------------------------------- S E N D ------------------------------------------------- 
+	
+	public boolean joinChannel(String channel, String nickName) {
 		try {
 			toServerMsg.write(HEAD_TYPE_JOIN + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
@@ -68,18 +80,12 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean exitChannel(String channel) {
+	public boolean exitChannel(String channel, String nickName) {
 		try {
 			toServerMsg.write(HEAD_TYPE_EXIT + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 			toServerMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
 			toServerMsg.flush();
-			
-			if ("0".equals(channel)) {
-				toServerMsg.close();
-				fromServerMsg.close();
-				toServerSocket.close();
-			}
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -89,7 +95,7 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean sendMsgToServer(String channel, String msg) {
+	public boolean sendMsgToServer(String channel, String nickName, String msg) {
 		try {
 			toServerMsg.write(HEAD_TYPE_SEND + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CAST + ":" + HEAD_CAST_BROAD + TOKEN_HEAD);
@@ -106,7 +112,7 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean sendScriptBroad(String channel, String script) {
+	public boolean sendScriptBroad(String channel, String nickName, String script) {
 		try {
 			toServerMsg.write(HEAD_TYPE_SCRIPT + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CAST + ":" + HEAD_CAST_BROAD + TOKEN_HEAD);
@@ -123,7 +129,7 @@ public class ConnectServer  implements Runnable {
 		return true;
 	}
 	
-	public boolean sendScriptUni(String channel, String script) {
+	public boolean sendScriptUni(String channel, String nickName, String script) {
 		try {
 			toServerMsg.write(HEAD_TYPE_SCRIPT + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CAST + ":" + HEAD_CAST_UNI + TOKEN_HEAD);
@@ -223,11 +229,10 @@ public class ConnectServer  implements Runnable {
 	
 	@Override
 	public void run() {
-		if (loginToServer()) {
+		if (loginServer()) {
 			while (toServerSocket.isConnected()) {
 				String line = null;
 				Message fromServerMessage = null;
-				Message.initialize();
 				
 				try {
 					while ((line = fromServerMsg.readLine()) != null) {

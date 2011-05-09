@@ -26,13 +26,7 @@ public class ConnectParent implements Runnable {
 		this.parentPort = parentPort;
 	}
 	
-	public String getParentIP() {
-		return parentIP;
-	}
-	
-	// ------------------------------------------------- S E N D -------------------------------------------------
-	
-	public boolean loginToParent() {
+	public boolean loginParent() {
 		try {
 			toParentSocket = new Socket(parentIP, parentPort);
 			
@@ -50,6 +44,26 @@ public class ConnectParent implements Runnable {
 		
 		return true;
 	}
+	
+	public boolean logoutParent() {
+		try {
+			fromParentMsg.close();
+			toParentMsg.close();
+			toParentSocket.close();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public String getParentIP() {
+		return parentIP;
+	}
+	
+	// ------------------------------------------------- S E N D -------------------------------------------------
 	
 	public boolean requestMsgToParent(String channel, String sequence) {
 		try {
@@ -71,11 +85,10 @@ public class ConnectParent implements Runnable {
 	
 	@Override
 	public void run() {
-		if (loginToParent()) {
+		if (loginParent()) {
 			while (toParentSocket.isConnected()) {
 				String line = null;
 				Message fromParentMessage = null;
-				Message.initialize();
 				
 				try {
 					while ((line = fromParentMsg.readLine()) != null) {

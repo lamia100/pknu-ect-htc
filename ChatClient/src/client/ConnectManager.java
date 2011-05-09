@@ -2,6 +2,7 @@ package client;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import util.msg.sub.*;
 
 public class ConnectManager implements Runnable {
 	private final static int MAX_CHILD = 2;
@@ -25,7 +26,9 @@ public class ConnectManager implements Runnable {
 			Packet packet = null;
 			
 			if ((packet = packetQueue.poll()) != null) {
-				performService(packet);
+				if (packet.getMessage().isValid()) {
+					performService(packet);
+				}
 			}
 		}
 	}
@@ -68,13 +71,13 @@ public class ConnectManager implements Runnable {
 		case FAIL:
 			break;
 		case JOIN:
-			// result = connectChild.whoJoinToAllChild(channel, nickName);
+			result = connectChild.whoJoinToAllChild(((Exit)packet.getMessage()).getChannel(), ((Exit)packet.getMessage()).getNick());
 			break;
 		case EXIT:
-			// result = connectChild.whoExitToAllChild(channel, nickName);
+			result = connectChild.whoExitToAllChild(((Exit)packet.getMessage()).getChannel(), ((Exit)packet.getMessage()).getNick());
 			break;
 		}
 		
-		return false;
+		return result;
 	}
 }

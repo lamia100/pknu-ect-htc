@@ -101,6 +101,10 @@ public class ConnectChild implements Runnable {
 		return true;
 	}
 	
+	public boolean sendMsgToSomeChild(String childIP, String channel, String sequence, String nickName, String msg) {
+		return childList.get(childIP).sendMsgToChild(channel, sequence, nickName, msg);
+	}
+	
 	
 	// ------------------------------------------------- R E C E I V E -------------------------------------------------
 	
@@ -223,7 +227,6 @@ public class ConnectChild implements Runnable {
 				while (fromChildSocket.isConnected()) {
 					String line = null;
 					Message fromChildMessage = null;
-					Message.initialize();
 					
 					try {
 						while ((line = fromChildMsg.readLine()) != null) {

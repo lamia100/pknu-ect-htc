@@ -2,7 +2,7 @@ package client;
 
 import util.msg.Message;
 
-public class Packet {
+public class Packet {	
 	private Message message;
 	private String fromIP;
 	
@@ -10,7 +10,7 @@ public class Packet {
 		this.message = message;
 		this.fromIP = fromIP;
 	}
-
+	
 	public Message getMessage() {
 		return message;
 	}
