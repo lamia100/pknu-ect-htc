@@ -3,7 +3,6 @@ package util.msg.sub;
 import util.msg.Message;
 import util.msg.TYPE;
 import java.util.StringTokenizer;
-import static util.PacketDefinition.*;
 
 /**
  * 
@@ -16,7 +15,6 @@ public class Exit extends Message {
 	
 	public Exit() {
 		this.type = TYPE.EXIT;
-		this.s_type = HEAD_TYPE_EXIT;
 	}
 	
 	@Override

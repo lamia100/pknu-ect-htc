@@ -3,7 +3,6 @@ package util.msg.sub;
 import util.msg.Message;
 import util.msg.TYPE;
 import java.util.StringTokenizer;
-import static util.PacketDefinition.*;
 
 /**
  * 
@@ -16,7 +15,6 @@ public class Request extends Message {
 	
 	public Request() {
 		this.type = TYPE.REQUEST;
-		this.s_type = HEAD_TYPE_REQUEST;
 	}
 	
 	@Override

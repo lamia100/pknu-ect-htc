@@ -17,10 +17,25 @@ public class Send extends Message {
 	String nick = "";
 	String msg = "";
 	
+	public int getSeq() {
+		return seq;
+	}
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public String getNick() {
+		return nick;
+	}
+
+	public String getMsg() {
+		return msg;
+	}
+
 	public Send() {
 		// TODO Auto-generated constructor stub
 		this.type = TYPE.SEND;
-		this.s_type = type.toString();
 	}
 	
 	@Override
@@ -36,6 +51,7 @@ public class Send extends Message {
 					seq = Integer.parseInt(value);
 				} catch (NumberFormatException e) {
 					e.printStackTrace();
+					isValid=false;
 					return false;
 				}
 				break;

@@ -3,7 +3,6 @@ package util.msg.sub;
 import util.msg.Message;
 import util.msg.TYPE;
 import java.util.StringTokenizer;
-import static util.PacketDefinition.*;
 
 /**
  * 
@@ -16,7 +15,6 @@ public class Join extends Message {
 	
 	public Join() {
 		this.type = TYPE.JOIN;
-		this.s_type = HEAD_TYPE_JOIN;
 	}
 	
 	@Override

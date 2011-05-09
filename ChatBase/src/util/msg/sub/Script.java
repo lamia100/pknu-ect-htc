@@ -3,7 +3,6 @@ package util.msg.sub;
 import util.msg.Message;
 import util.msg.TYPE;
 import java.util.StringTokenizer;
-import static util.PacketDefinition.*;
 
 /**
  * 
@@ -18,7 +17,6 @@ public class Script extends Message {
 	
 	public Script() {
 		this.type = TYPE.SCRIPT;
-		this.s_type = HEAD_TYPE_SCRIPT;
 	}
 	
 	@Override
@@ -26,7 +24,7 @@ public class Script extends Message {
 		StringTokenizer token = new StringTokenizer(line, ":");
 		String typeStr = token.nextToken();
 		TYPE type = getStringToType(typeStr);
-		
+		String value=token.nextToken().trim();
 		switch (type) {
 			case CAST:
 				/*이부분은 따로 만드는게 좋지 않을까. c나 p 이외에 다른 문자가 들어오면 cast 에 엉뚱한게 들어있음.
@@ -39,16 +37,20 @@ public class Script extends Message {
 				 * 
 				 * 를 추천
 				 */
-				
-				cast = getStringToType(token.nextToken());
+				if("uni".equals(value))
+				{
+					cast=TYPE.CAST_UNI;
+				}
+				//cast = getStringToType(token.nextToken());
+				break;
 			case CHANNEL:
-				channel = token.nextToken();
+				channel = value;
 				break;
 			case NICK:
-				nick = token.nextToken();
+				nick = value;
 				break;
 			case MSG:
-				msg = token.nextToken();
+				msg = value;
 				break;
 			case END:
 				return true;
