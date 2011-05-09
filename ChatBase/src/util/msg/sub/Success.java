@@ -1,7 +1,11 @@
 package util.msg.sub;
 
 import util.msg.Message;
-
+/**
+ * 
+ * @author malloc
+ *
+ */
 public class Success extends Message {
 
 	@Override

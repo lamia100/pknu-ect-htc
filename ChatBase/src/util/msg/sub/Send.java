@@ -5,6 +5,11 @@ import java.util.StringTokenizer;
 import util.msg.Message;
 import util.msg.TYPE;
 
+/**
+ * 
+ * @author malloc
+ *
+ */
 public class Send extends Message {
 	
 	int seq = 0;
@@ -27,7 +32,12 @@ public class Send extends Message {
 		String value = token.nextToken().trim();
 		switch (type) {
 			case SEQ:
-				seq = Integer.parseInt(value);
+				try {
+					seq = Integer.parseInt(value);
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+					return false;
+				}
 				break;
 			case CHANNEL:
 				channel = value;
@@ -36,7 +46,7 @@ public class Send extends Message {
 				nick = value;
 				break;
 			case MSG:
-				msg += value+'\n';
+				msg += value + '\n';
 				break;
 			case END:
 				return true;
