@@ -9,14 +9,17 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Iterator;
+import server.msg.Message;
 import static util.PacketDefinition.*;
 
 public class ConnectChild implements Runnable {
+	private ConnectManager connectManager;
 	private int myPort;
 	private ServerSocket forChildSocket;
 	private ArrayList<Child> childList;
 	
-	public ConnectChild(int myPort) {
+	public ConnectChild(ConnectManager connectManager, int myPort) {
+		this.connectManager = connectManager;
 		this.myPort = myPort;
 		
 		childList = new ArrayList<Child>();
@@ -176,12 +179,18 @@ public class ConnectChild implements Runnable {
 		public void run() {
 			if (readyFromChild()) {
 				while (fromChildSocket.isConnected()) {
-					String fromChildPacket;
+					String line = null;
+					Message fromChildMessage = null;
+					
 					try {
-						fromChildPacket = fromChildMsg.readLine();
-						
-						while (fromChildPacket != null) {
-							
+						while ((line = fromChildMsg.readLine()) != null) {
+							if (fromChildMessage == null) {
+								fromChildMessage = Message.parsType(line);
+							}
+							else if (fromChildMessage.parse(line)) {
+								connectManager.addPacket(new Packet(fromChildMessage, fromChildSocket.getInetAddress().getHostAddress()));
+								fromChildMessage = null;
+							}
 						}
 					}
 					catch (IOException e) {

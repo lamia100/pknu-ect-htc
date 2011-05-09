@@ -1,21 +1,22 @@
 package client;
 
+import server.msg.Message;
+
 public class Packet {
-	private String packet;
+	public final static int FROM_SERVER = 0;
+	public final static int FROM_PARENT = 1;
+	public final static int FROM_CHILD_0 = 2;
+	public final static int FROM_CHILD_1 = 3;
 	
-	public Packet(String packet) {
+	private Message packet;
+	private String fromIP;
+	
+	public Packet(Message packet, String fromIP) {
 		this.packet = packet;
+		this.fromIP = fromIP;
 	}
 	
-	public boolean parsePacket() {
-		// 작성해야 함
+	public boolean performService() {
 		
-		return false;
-	}
-	
-	public String[] service() {
-		// 작성해야 함
-		
-		return new String[1];
 	}
 }

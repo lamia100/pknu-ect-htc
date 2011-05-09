@@ -7,9 +7,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import server.msg.Message;
 import static util.PacketDefinition.*;
 
 public class ConnectParent implements Runnable {
+	private ConnectManager connectManager;
 	private String parentIP;
 	private int parentPort;
 	
@@ -17,7 +19,8 @@ public class ConnectParent implements Runnable {
 	private BufferedReader fromParentMsg;
 	private BufferedWriter toParentMsg;
 	
-	public ConnectParent(String parentIP, int parentPort) {
+	public ConnectParent(ConnectManager connectManager, String parentIP, int parentPort) {
+		this.connectManager = connectManager;
 		this.parentIP = parentIP;
 		this.parentPort = parentPort;
 	}
@@ -65,12 +68,18 @@ public class ConnectParent implements Runnable {
 	public void run() {
 		if (loginToParent()) {
 			while (toParentSocket.isConnected()) {
-				String fromParentPacket;
+				String line = null;
+				Message fromParentMessage = null;
+				
 				try {
-					fromParentPacket = fromParentMsg.readLine();
-					
-					while (fromParentPacket != null) {
-						
+					while ((line = fromParentMsg.readLine()) != null) {
+						if (fromParentMessage == null) {
+							fromParentMessage = Message.parsType(line);
+						}
+						else if (fromParentMessage.parse(line)) {
+							connectManager.addPacket(new Packet(fromParentMessage, toParentSocket.getInetAddress().getHostAddress()));
+							fromParentMessage = null;
+						}
 					}
 				}
 				catch (IOException e) {

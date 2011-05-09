@@ -7,19 +7,21 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import server.msg.Message;
 import static util.PacketDefinition.*;
 
 public class ConnectServer  implements Runnable {
+	private ConnectManager connectManager;
 	private String serverIP;
 	private int serverPort;
+	private String nickName;
 	
 	private Socket toServerSocket;
 	private BufferedReader fromServerMsg;
 	private BufferedWriter toServerMsg;
 	
-	private String nickName;
-	
-	public ConnectServer(String serverIP, int serverPort, String nickName) {
+	public ConnectServer(ConnectManager connectManager, String serverIP, int serverPort, String nickName) {
+		this.connectManager = connectManager;
 		this.serverIP = serverIP;
 		this.serverPort = serverPort;
 		this.nickName = nickName;
@@ -218,12 +220,18 @@ public class ConnectServer  implements Runnable {
 	public void run() {
 		if (loginToServer()) {
 			while (toServerSocket.isConnected()) {
-				String fromServerPacket;
+				String line = null;
+				Message fromServerMessage = null;
+				
 				try {
-					fromServerPacket = fromServerMsg.readLine();
-					
-					while (fromServerPacket != null) {
-						
+					while ((line = fromServerMsg.readLine()) != null) {
+						if (fromServerMessage == null) {
+							fromServerMessage = Message.parsType(line);
+						}
+						else if (fromServerMessage.parse(line)) {
+							connectManager.addPacket(new Packet(fromServerMessage, toServerSocket.getInetAddress().getHostAddress()));
+							fromServerMessage = null;
+						}
 					}
 				}
 				catch (IOException e) {
