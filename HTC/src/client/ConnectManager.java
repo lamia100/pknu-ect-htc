@@ -10,7 +10,7 @@ public class ConnectManager implements Runnable {
 	public ConnectManager() {
 		totalQueue = new LinkedList<Packet>();
 	}
-
+	
 	public boolean addPacket(Packet addPacket) {
 		return totalQueue.offer(addPacket);
 	}
@@ -21,7 +21,7 @@ public class ConnectManager implements Runnable {
 			Packet process = null;
 			
 			if ((process = totalQueue.poll()) != null) {
-				
+				process.performService();
 			}
 		}
 	}

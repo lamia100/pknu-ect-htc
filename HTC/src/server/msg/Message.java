@@ -6,17 +6,21 @@ import java.util.Map;
 
 import static util.PacketDefinition.*;
 
-public abstract class Message {
-	public final static String HEAD_TYPE_SEND = "send";
-	
+public abstract class Message {	
 	protected enum TYPE {
 		SEND, REQUEST, SET, SUCCESS, FAIL, JOIN, EXIT, SCRIPT,
-		CAST, CAST_BROAD,	CAST_UNI, CHANNEL, SEQ, NICK, FAMILY, FAMILY_PARENT, FAMILY_CHILD, IP, MSG
-		
+		CAST, CAST_BROAD, CAST_UNI,
+		CHANNEL,
+		SEQ,
+		NICK,
+		FAMILY, FAMILY_PARENT, FAMILY_CHILD,
+		IP, 
+		MSG
 	}
 	
 	ArrayList<String> message = new ArrayList<String>();
-	private int type;
+	private int i_type;
+	private String s_type;
 	protected static final Map<String, TYPE> map = new HashMap<String, TYPE>();
 	
 	/**
@@ -52,6 +56,7 @@ public abstract class Message {
 		switch (type) {
 			case SEND:
 				msg = new Send();
+				msg.s_type = HEAD_TYPE_SEND;
 				break;
 			default:
 				msg = null;
@@ -62,7 +67,11 @@ public abstract class Message {
 	public abstract boolean parse(String line);
 	
 	public int getType() {
-		return type;
+		return i_type;
+	}
+	
+	public String getTypeByString() {
+		return s_type;
 	}
 	
 	public ArrayList<String> getMessages() {

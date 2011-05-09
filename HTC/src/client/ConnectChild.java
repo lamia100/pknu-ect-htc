@@ -7,8 +7,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
+
 import server.msg.Message;
 import static util.PacketDefinition.*;
 
@@ -16,13 +18,13 @@ public class ConnectChild implements Runnable {
 	private ConnectManager connectManager;
 	private int myPort;
 	private ServerSocket forChildSocket;
-	private ArrayList<Child> childList;
+	private Map<String, Child>  childList;
 	
 	public ConnectChild(ConnectManager connectManager, int myPort) {
 		this.connectManager = connectManager;
 		this.myPort = myPort;
 		
-		childList = new ArrayList<Child>();
+		childList = new HashMap<String, ConnectChild.Child>();
 	}
 	
 	public boolean readyForChild() {
@@ -37,10 +39,17 @@ public class ConnectChild implements Runnable {
 		return true;
 	}
 
+	public boolean closeSomeChild(String childIP) {
+		boolean result = childList.get(childIP).closeToChild();
+		childList.remove(childIP);
+		
+		return result;
+	}
+	
 	// ------------------------------------------------- S E N D -------------------------------------------------
 	
 	public boolean whoJoinToAllChild(String channel, String nickName) {
-		Iterator<Child> it = childList.iterator();
+		Iterator<Child> it = childList.values().iterator();
 		Child child;
 		
 		while (it.hasNext()) {
@@ -53,7 +62,7 @@ public class ConnectChild implements Runnable {
 	}
 	
 	public boolean whoExitToAllChild(String channel, String nickName) {
-		Iterator<Child> it = childList.iterator();
+		Iterator<Child> it = childList.values().iterator();
 		Child child;
 		
 		while (it.hasNext()) {
@@ -66,7 +75,7 @@ public class ConnectChild implements Runnable {
 	}
 	
 	public boolean sendMsgToAllChild(String channel, String sequence, String nickName, String msg) {
-		Iterator<Child> it = childList.iterator();
+		Iterator<Child> it = childList.values().iterator();
 		Child child;
 		
 		while (it.hasNext()) {
@@ -89,7 +98,7 @@ public class ConnectChild implements Runnable {
 					Socket fromChildSocket = forChildSocket.accept();
 					
 					Child newChild = new Child(fromChildSocket);
-					childList.add(newChild);
+					childList.put(fromChildSocket.getInetAddress().getHostAddress(), newChild);
 						
 					new Thread(newChild).start();
 				}
@@ -120,6 +129,21 @@ public class ConnectChild implements Runnable {
 			}
 			
 			return true;
+		}
+		
+		public boolean closeToChild() {
+			try {
+				fromChildMsg.close();
+				toChildMsg.close();
+				fromChildSocket.close();
+				
+				return true;
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			return false;
 		}
 		
 		// ------------------------------------------------- S E N D -------------------------------------------------
