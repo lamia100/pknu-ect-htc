@@ -11,6 +11,7 @@ import util.msg.TYPE;
  * 
  */
 public class Set extends Message {
+	private String channel = "";
 	private TYPE family = null;
 	private String ip = "";
 	private int sequence = 0;
@@ -23,6 +24,9 @@ public class Set extends Message {
 		String value = token.nextToken().trim();
 		
 		switch (type) {
+			case CHANNEL:
+				channel = value;
+				break;
 			case FAMILY:
 				if (TYPE.FAMILY_PARENT.toString().equals(value)) {
 					family = TYPE.FAMILY_PARENT;
@@ -41,6 +45,10 @@ public class Set extends Message {
 				break;
 		}
 		return false;
+	}
+
+	public String getChannel() {
+		return channel;
 	}
 
 	public TYPE getFamily() {

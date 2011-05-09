@@ -1,5 +1,5 @@
 package util.msg;
-import static util.PacketDefinition.*;
+import static util.Definition.*;
 
 
 public enum TYPE {

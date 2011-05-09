@@ -1,6 +1,8 @@
 package util;
 
-public class PacketDefinition {
+public class Definition {
+	public final static int DEFAULT_PORT = 41342;
+	
 	public final static String TOKEN_MEAN = ":";
 	public final static String TOKEN_HEAD = "\n";
 	
