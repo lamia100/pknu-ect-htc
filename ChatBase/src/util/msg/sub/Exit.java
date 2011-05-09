@@ -2,17 +2,50 @@ package util.msg.sub;
 
 import util.msg.Message;
 import util.msg.TYPE;
-public class Exit extends Message {
+import java.util.StringTokenizer;
+import static util.PacketDefinition.*;
 
+/**
+ * 
+ * @author ¼­º¸·æ
+ *
+ */
+public class Exit extends Message {
+	private String channel = "";
+	private String nick = "";
+	
 	public Exit() {
-		// TODO Auto-generated constructor stub
-		this.type=TYPE.EXIT;
-		this.s_type=type.toString();
-	}
-	@Override
-	public boolean parse(String line) {
-		// TODO Auto-generated method stub
-		return false;
+		this.type = TYPE.EXIT;
+		this.s_type = HEAD_TYPE_EXIT;
 	}
 	
+	@Override
+	public boolean parse(String line) {
+		StringTokenizer token = new StringTokenizer(line, ":");
+		String typeStr = token.nextToken();
+		TYPE type = getStringToType(typeStr);
+		
+		switch (type) {
+			case CHANNEL:
+				channel = token.nextToken();
+				break;
+			case NICK:
+				nick = token.nextToken();
+				break;
+			case END:
+				return true;
+			default:
+				break;
+		}
+		
+		return false;
+	}
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public String getNick() {
+		return nick;
+	}
 }

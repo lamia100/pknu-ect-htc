@@ -1,13 +1,51 @@
 package util.msg.sub;
 
 import util.msg.Message;
+import util.msg.TYPE;
+import java.util.StringTokenizer;
+import static util.PacketDefinition.*;
 
+/**
+ * 
+ * @author ¼­º¸·æ
+ *
+ */
 public class Request extends Message {
-
-	@Override
-	public boolean parse(String line) {
-		// TODO Auto-generated method stub
-		return false;
+	private String channel = "";
+	private int seq = 0;
+	
+	public Request() {
+		this.type = TYPE.REQUEST;
+		this.s_type = HEAD_TYPE_REQUEST;
 	}
 	
+	@Override
+	public boolean parse(String line) {
+		StringTokenizer token = new StringTokenizer(line, ":");
+		String typeStr = token.nextToken();
+		TYPE type = getStringToType(typeStr);
+		
+		switch (type) {
+			case CHANNEL:
+				channel = token.nextToken();
+				break;
+			case SEQ:
+				seq = Integer.parseInt(token.nextToken().trim());
+				break;
+			case END:
+				return true;
+			default:
+				break;
+		}
+		
+		return false;
+	}
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public int getSeq() {
+		return seq;
+	}
 }
