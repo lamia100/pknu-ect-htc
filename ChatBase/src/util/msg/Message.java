@@ -4,23 +4,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import util.msg.sub.Send;
+import util.msg.sub.*;
 
 import static util.PacketDefinition.*;
 
-public abstract class Message {	
-
+public abstract class Message {
+	
 	ArrayList<String> message = new ArrayList<String>();
 	private int i_type;
-	private String s_type;
+	protected String s_type;
+	protected TYPE type;
 	private static final Map<String, TYPE> map = new HashMap<String, TYPE>();
 	
-	/**
-	 * 
-	 * @param line
-	 *            파싱할 String
-	 * @return 메세지의 끝나면 true. 메세지가 안끝났으면 false
-	 */
 	public static void initialize() {
 		map.put(HEAD_TYPE_SEND, TYPE.SEND);
 		map.put(HEAD_TYPE_EXIT, TYPE.EXIT);
@@ -40,20 +35,33 @@ public abstract class Message {
 		map.put(HEAD_MSG, TYPE.MSG);
 		map.put(HEAD_NICK, TYPE.NICK);
 		map.put(HEAD_SEQ, TYPE.SEQ);
-		map.put(HEAD_END,TYPE.END);
+		map.put(HEAD_END, TYPE.END);
 	}
 	
-	public static Map<String,TYPE> getTypeTable()
-	{
+	protected static Map<String, TYPE> getTypeTable() {
+		if(map==null)
+			initialize();
 		return map;
 	}
+	
 	public static Message parsType(String str) {
 		Message msg;
 		TYPE type = map.get(str);
 		switch (type) {
 			case SEND:
 				msg = new Send();
-				msg.s_type = HEAD_TYPE_SEND;
+				break;
+			case JOIN:
+				msg = new Join();
+				break;
+			case EXIT:
+				msg= new Exit();
+				break;
+			case SET:
+				msg= new Set();
+				break;
+			case REQUEST:
+				msg=new Request();
 				break;
 			default:
 				msg = null;
@@ -61,12 +69,30 @@ public abstract class Message {
 		return msg;
 	}
 	
+	/**
+	 * 
+	 * @param line
+	 *            파싱할 String
+	 * @return 메세지의 끝나면 true. 메세지가 안끝났으면 false
+	 */
 	public abstract boolean parse(String line);
-	
-	public int getType() {
+
+	/**
+	 *  getType() 을 이용합시다.
+	 */
+	@Deprecated
+	public int getIntType() {
 		return i_type;
 	}
 	
+	public TYPE getType() {
+		return type;
+	}
+
+	/**
+	 *  getType().toString() 을 이용합시다.
+	 */
+	@Deprecated
 	public String getTypeByString() {
 		return s_type;
 	}
