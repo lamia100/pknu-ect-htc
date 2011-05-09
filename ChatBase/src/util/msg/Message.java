@@ -23,8 +23,7 @@ public abstract class Message {
 	public abstract boolean parse(String line);
 
 	public static void initialize() {
-		TYPE[] arr=TYPE.values();
-		for(TYPE type : arr){
+		for(TYPE type : TYPE.values()){
 			map.put(type.toString(), type);
 			//System.out.println(type);
 		}

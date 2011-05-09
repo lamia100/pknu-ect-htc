@@ -1,7 +1,6 @@
 package util.msg;
 import static util.PacketDefinition.*;
 
-import java.util.Comparator;
 
 public enum TYPE {
 	SEND(HEAD_TYPE_SEND), REQUEST(HEAD_TYPE_REQUEST), SET(HEAD_TYPE_SET), SUCCESS(HEAD_TYPE_SUCCESS),
@@ -21,6 +20,7 @@ public enum TYPE {
 		this.str = str;
 	}
 	
+	/*
 	Comparator<TYPE> cmp=new Comparator<TYPE>() {
 		
 		@Override
@@ -29,6 +29,7 @@ public enum TYPE {
 			return o1.str.compareToIgnoreCase(o2.str);
 		}
 	};
+	*/
 	public String toString() {
 		return str;
 	}
