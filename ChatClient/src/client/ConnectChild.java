@@ -18,7 +18,7 @@ public class ConnectChild implements Runnable {
 	private ConnectManager connectManager;
 	private int myPort;
 	private ServerSocket forChildSocket;
-	private Map<String, Child>  childList;
+	private Map<String, Child> childList;
 	
 	public ConnectChild(ConnectManager connectManager, int myPort) {
 		this.connectManager = connectManager;
@@ -44,6 +44,20 @@ public class ConnectChild implements Runnable {
 		childList.remove(childIP);
 		
 		return result;
+	}
+	
+	public String[] getChildIPList() {
+		String childIPList[] = new String[childList.size()];
+		
+		Iterator<Child> it = childList.values().iterator();
+		int i = 0;
+		
+		while (it.hasNext()) {
+			childIPList[i] = it.next().getChildIP();
+			i++;
+		}
+		
+		return childIPList;
 	}
 	
 	// ------------------------------------------------- S E N D -------------------------------------------------
@@ -146,6 +160,10 @@ public class ConnectChild implements Runnable {
 			return false;
 		}
 		
+		public String getChildIP() {
+			return fromChildSocket.getInetAddress().getHostAddress();
+		}
+		
 		// ------------------------------------------------- S E N D -------------------------------------------------
 		
 		public boolean whoJoinToChild(String channel, String nickName) {
@@ -205,6 +223,7 @@ public class ConnectChild implements Runnable {
 				while (fromChildSocket.isConnected()) {
 					String line = null;
 					Message fromChildMessage = null;
+					Message.initialize();
 					
 					try {
 						while ((line = fromChildMsg.readLine()) != null) {

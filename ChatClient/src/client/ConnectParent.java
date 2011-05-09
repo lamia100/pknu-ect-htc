@@ -26,6 +26,10 @@ public class ConnectParent implements Runnable {
 		this.parentPort = parentPort;
 	}
 	
+	public String getParentIP() {
+		return parentIP;
+	}
+	
 	// ------------------------------------------------- S E N D -------------------------------------------------
 	
 	public boolean loginToParent() {
@@ -71,6 +75,7 @@ public class ConnectParent implements Runnable {
 			while (toParentSocket.isConnected()) {
 				String line = null;
 				Message fromParentMessage = null;
+				Message.initialize();
 				
 				try {
 					while ((line = fromParentMsg.readLine()) != null) {

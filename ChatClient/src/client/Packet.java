@@ -2,16 +2,20 @@ package client;
 
 import util.msg.Message;
 
-public class Packet {	
-	private Message packet;
+public class Packet {
+	private Message message;
 	private String fromIP;
 	
-	public Packet(Message packet, String fromIP) {
-		this.packet = packet;
+	public Packet(Message message, String fromIP) {
+		this.message = message;
 		this.fromIP = fromIP;
 	}
-	
-	public boolean performService() {		
-		return false;
+
+	public Message getMessage() {
+		return message;
+	}
+
+	public String getFromIP() {
+		return fromIP;
 	}
 }

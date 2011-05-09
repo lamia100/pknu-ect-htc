@@ -28,6 +28,10 @@ public class ConnectServer  implements Runnable {
 		this.nickName = nickName;
 	}
 	
+	public String getServerIP() {
+		return serverIP;
+	}
+	
 	// ------------------------------------------------- S E N D ------------------------------------------------- 
 	
 	public boolean loginToServer() {
@@ -223,6 +227,7 @@ public class ConnectServer  implements Runnable {
 			while (toServerSocket.isConnected()) {
 				String line = null;
 				Message fromServerMessage = null;
+				Message.initialize();
 				
 				try {
 					while ((line = fromServerMsg.readLine()) != null) {
