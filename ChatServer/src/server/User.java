@@ -8,6 +8,8 @@ import util.msg.Message;
 
 public class User implements Comparable<User>, Runnable {
 	// 서버 필요함
+	private static MessageProcessor messageProcessor=null;
+	
 	@SuppressWarnings("unused")
 	private Socket socket = null;
 	private String name = null;
@@ -24,12 +26,18 @@ public class User implements Comparable<User>, Runnable {
 			e.printStackTrace();
 		}
 	}
+	/**
+	 * Server 클레스에서만 호출 할것.
+	 */
+	static void setMessageProcessor(MessageProcessor messageProcessor)
+	{
+		User.messageProcessor=messageProcessor;
+	}
 	
 	public void initialize() {
 		/*
 		 * 닉네임 설정등 초기화
 		 */
-
 	}
 	
 	@Override
@@ -65,6 +73,7 @@ public class User implements Comparable<User>, Runnable {
 					message=Message.parsType(line);
 				} else if (message.parse(line)) {
 					// server 의 messageQ에 message를 add
+					messageProcessor.enqueue(message);
 					message = null;
 				}
 			}
