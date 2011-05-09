@@ -20,7 +20,8 @@ public abstract class Message {
 	 */
 	public abstract boolean parse(String line);
 
-	public static void initialize() {
+	
+	private static void initialize() {
 		for(TYPE type : TYPE.values()){
 			map.put(type.toString(), type);
 		}
@@ -59,18 +60,21 @@ public abstract class Message {
 	public ArrayList<String> getMessages() {
 		return message;
 	}
-
+	
 	protected static TYPE getStringToType(String str) {
 		return getTypeTable().get(str);
 	}
-
+	/**
+	 * 바로 map 를 사용하지 말것. 초기화 문제.
+	 * @return {@code Message.map
+	 */
 	private static Map<String, TYPE> getTypeTable() {
-		if (map == null)
+		if (map.isEmpty())
 			initialize();
 		return map;
 	}
 	public static void main(String[] args) {
-		initialize();
+		System.out.println(Message.getStringToType("p").name());
 	}
 	public boolean isValid()
 	{
