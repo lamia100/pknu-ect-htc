@@ -8,11 +8,14 @@ import java.util.Queue;
 import java.util.TreeSet;
 
 import util.msg.Message;
-
+/**
+ * 
+ * @author "±Ëº∫«ˆ"
+ *
+ */
 @SuppressWarnings("unused")
 public class Server implements Runnable {
 	public static final int port = 30000;
-	private TreeSet<User> users;
 	private ServerSocket sSocket;
 	private static Server server = null;
 	private MessageProcessor messageProcessor=null;
@@ -24,7 +27,6 @@ public class Server implements Runnable {
 	private void initialize() throws IOException
 	{
 		sSocket = new ServerSocket(port);
-		users = new TreeSet<User>();
 		messageProcessor=new MessageProcessor();
 		User.setMessageProcessor(messageProcessor);
 	}
@@ -42,7 +44,8 @@ public class Server implements Runnable {
 			while (true) {
 				Socket socket = sSocket.accept();
 				System.out.println("¿‘¿Â : " + socket);
-				new Thread(new User(socket)).start();
+				User user=new User(socket);
+				new Thread(user).start();
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
