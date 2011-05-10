@@ -14,7 +14,6 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 
 import client.Manager;
-import java.awt.GridLayout;
 
 public class GUI extends JFrame {
 
@@ -184,7 +183,7 @@ public class GUI extends JFrame {
 					
 					//connectManager = new Manager();
 					
-					boolean result = connectManager.connectServer(tf_serverIP.getText(), Integer.parseInt(tf_serverPort.getText()));
+					boolean result = connectManager.connectServer(tf_serverIP.getText(), Integer.parseInt(tf_serverPort.getText()), tf_nickName.getText());
 					
 					if (result) {
 						setInfo("서버 연결 성공");
@@ -274,7 +273,7 @@ public class GUI extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					System.out.println("Logout actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					
-					connectManager.disconnectServer();
+					connectManager.disconnectServer(tf_nickName.getText());
 					
 					setInfo("서버 연결 해제");
 				}

@@ -7,7 +7,6 @@ import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-
 import util.msg.Message;
 import static util.Definition.*;
 
@@ -207,7 +206,7 @@ public class Server  implements Runnable {
 		return true;
 	}
 	
-	public boolean requestMsgToServer(String channel, String sequence) {
+	public boolean requestMsgToServer(String channel, int sequence) {
 		try {
 			toServerMsg.write(HEAD_TYPE_REQUEST + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);

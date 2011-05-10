@@ -10,7 +10,6 @@ import java.net.Socket;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import util.msg.Message;
 import static util.Definition.*;
 
@@ -44,6 +43,13 @@ public class Childs implements Runnable {
 				
 		while (it.hasNext()) {
 			it.next().closeToChild();
+		}
+		
+		try {
+			forChildSocket.close();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

@@ -12,8 +12,8 @@ public class Manager implements Runnable {
 	private final static int MAX_CHILD = 2;
 	
 	private Queue<Packet> packetQueue;
-	private ArrayList<Send> msgQueue;
-	private int msgQueueOffset;
+	private ArrayList<Send> msgList;
+	private int msgOffset;
 	
 	private Server connectServer;
 	private Parent connectParent;
@@ -24,8 +24,8 @@ public class Manager implements Runnable {
 	
 	public Manager(GUI gui) {
 		packetQueue = new LinkedList<Packet>();
-		msgQueue = new ArrayList<Send>();
-		msgQueueOffset = 0;
+		msgList = new ArrayList<Send>();
+		msgOffset = 0;
 		
 		this.gui = gui;
 		isFirstConnect = true;
@@ -36,36 +36,43 @@ public class Manager implements Runnable {
 	}
 	
 	private int getLastSequence() {
-		return msgQueueOffset + msgQueue.size() - 1;
+		return msgOffset + msgList.size() - 1;
 	}
 	
-	private Object[] getMsg(int sequence) {
-		Send msg = msgQueue.get(sequence - msgQueueOffset - 1);
-		
-		Object result[] = new Object[4];
-		result[0] = msg.getChannel();
-		result[1] = msg.getSeq();
-		result[2] = msg.getNick();
-		result[3] = msg.getMsg();
-		
-		return result;
+	private Send getMsg(int sequence) {
+		return msgList.get(sequence - msgOffset - 1);
+	}
+	
+	public void debug(String msg) {
+		System.out.println(msg);
 	}
 	
 	// ------------------------------------------------- GUI input -------------------------------------------------
 	
-	public boolean connectServer(String serverIP, int serverPort) {
+	public boolean connectServer(String serverIP, int serverPort, String nickName) {
 		connectServer = new Server(this, serverIP, serverPort);
-		return connectServer.loginServer();
+		boolean result = connectServer.loginServer();
+		
+		if (result) {
+			result = connectServer.joinChannel(ALL, nickName);
+			
+			if (result) {
+				connectChilds = new Childs(this, DEFAULT_PORT);
+				new Thread(connectChilds).start();
+			}
+		}
+		
+		return result;
 	}
 	
-	public void disconnectServer() {
+	public void disconnectServer(String nickName) {
+		connectServer.exitChannel(ALL, nickName);
 		connectParent.logoutParent();
 		connectChilds.closeAllChild();
 		connectServer.logoutServer();
 	}
 	
 	public boolean joinChannel(String channel, String nickName) {
-		connectServer.joinChannel(ALL, nickName);
 		return connectServer.joinChannel(channel, nickName);
 	}
 	
@@ -84,7 +91,7 @@ public class Manager implements Runnable {
 		switch (msg.getType()) {
 		case SEND:
 			Send send = (Send)msg;
-			msgQueue.add(send);
+			msgList.add(send);
 			gui.setMsg(send.getNick() + " : " + send.getMsg());
 		case JOIN:
 			Join join = (Join)msg;
@@ -94,7 +101,6 @@ public class Manager implements Runnable {
 			gui.setInfo(exit.getChannel() + " 채널에서 " + exit.getNick() + "이(가) 나가셨습니다.");
 		}
 	}
-	
 	
 	// ------------------------------------------------- P E R F O R M -------------------------------------------------
 	
@@ -121,7 +127,7 @@ public class Manager implements Runnable {
 			switch (send.getCast()) {
 			case CAST_BROAD:
 				if (isFirstConnect) {
-					msgQueueOffset = send.getSeq();
+					msgOffset = send.getSeq();
 					isFirstConnect = false;
 					
 					display(send);
@@ -151,13 +157,16 @@ public class Manager implements Runnable {
 			Request request = (Request)packet.getMessage();
 			
 			int startSequence = request.getSeq();
-			
-			// 내가 없을 때 서버에 요청해야 함
-			
 			boolean sendResult = true;
-			while (startSequence <= getLastSequence() && sendResult) {
-				Object msg[] = getMsg(startSequence++);
-				sendResult = connectChilds.sendMsgToSomeChild(packet.getFromIP(), (String)msg[0], (Integer)msg[1], (String)msg[2], (String)msg[3]);
+			
+			if (startSequence > getLastSequence()) {
+				sendResult = connectServer.requestMsgToServer(request.getChannel(), startSequence);
+			}
+			else {
+				while (startSequence <= getLastSequence() && sendResult) {
+					Send msg = getMsg(startSequence++);
+					sendResult = connectChilds.sendMsgToSomeChild(packet.getFromIP(), msg.getChannel(), msg.getSeq(), msg.getNick(), msg.getMsg());
+				}
 			}
 			
 			result = sendResult;
@@ -182,6 +191,9 @@ public class Manager implements Runnable {
 			case FAMILY_CHILD:
 				if (connectChilds.getChildSize() < MAX_CHILD) {
 					result = connectServer.successOpenSocketForChild(set.getChannel(), set.getIp());
+					
+					Send msg = msgList.get(msgList.size() - 1);
+					connectChilds.sendMsgToSomeChild(set.getIp(), msg.getChannel(), msg.getSeq(), msg.getNick(), msg.getMsg());
 				}
 				else {
 					result = connectServer.failOpenSocketForChild(set.getChannel(), set.getIp());

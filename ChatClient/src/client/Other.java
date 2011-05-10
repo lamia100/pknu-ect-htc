@@ -1,5 +1,6 @@
 package client;
 
+@SuppressWarnings("unused")
 public class Other {
 	private String otherClientIP;
 	private int otherClientPort;
