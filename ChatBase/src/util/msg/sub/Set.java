@@ -41,6 +41,15 @@ public class Set extends Message {
 			case IP:
 				ip = value;
 				break;
+			case SEQ:
+				try {
+					sequence = Integer.parseInt(value);
+				} catch (NumberFormatException e) {
+					e.printStackTrace();
+					isValid=false;
+					return false;
+				}
+				break;
 			default:
 				break;
 		}

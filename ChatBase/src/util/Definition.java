@@ -90,6 +90,7 @@ public class Definition {
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD
 	 * + HEAD_IP + ":" + "자식IP" + TOKEN_HEAD + TOKEN_HEAD
+	 * + HEAD_SEQ + ":" + "순서번호" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -99,6 +100,7 @@ public class Definition {
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD
 	 * + HEAD_IP + ":" + "자식IP" + TOKEN_HEAD + TOKEN_HEAD
+	 * + HEAD_SEQ + ":" + "순서번호" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -108,6 +110,7 @@ public class Definition {
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_FAMILY + ":" + HEAD_FAMILY_PARENT + TOKEN_HEAD
 	 * + HEAD_IP + ":" + "부모IP" + TOKEN_HEAD + TOKEN_HEAD
+	 * + HEAD_SEQ + ":" + "순서번호" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -117,6 +120,7 @@ public class Definition {
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_FAMILY + ":" + HEAD_FAMILY_PARENT + TOKEN_HEAD
 	 * + HEAD_IP + ":" + "부모IP" + TOKEN_HEAD + TOKEN_HEAD
+	 * + HEAD_SEQ + ":" + "순서번호" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -163,6 +167,7 @@ public class Definition {
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_FAMILY + ":" + HEAD_FAMILY_PARENT + TOKEN_HEAD
 	 * + HEAD_IP + ":" + "부모IP" + TOKEN_HEAD + TOKEN_HEAD
+	 * + HEAD_SEQ + ":" + "순서번호" + TOKEN_HEAD
 	 */
 	
 	/*
@@ -172,6 +177,7 @@ public class Definition {
 	 * + HEAD_CHANNEL + ":" + "채널번호" + TOKEN_HEAD
 	 * + HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD
 	 * + HEAD_IP + ":" + "자식IP" + TOKEN_HEAD + TOKEN_HEAD
+	 * + HEAD_SEQ + ":" + "순서번호" + TOKEN_HEAD
 	 */
 	
 	
