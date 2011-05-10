@@ -45,7 +45,7 @@ public class Parent implements Runnable {
 		return true;
 	}
 	
-	public boolean logoutParent() {
+	public void logoutParent() {
 		try {
 			fromParentMsg.close();
 			toParentMsg.close();
@@ -53,10 +53,7 @@ public class Parent implements Runnable {
 		}
 		catch (IOException e) {
 			e.printStackTrace();
-			return false;
 		}
-		
-		return true;
 	}
 	
 	public String getParentIP() {

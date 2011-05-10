@@ -39,11 +39,17 @@ public class Childs implements Runnable {
 		return true;
 	}
 
-	public boolean closeSomeChild(String childIP) {
-		boolean result = childList.get(childIP).closeToChild();
+	public void closeAllChild() {
+		Iterator<Child> it = childList.values().iterator();
+				
+		while (it.hasNext()) {
+			it.next().closeToChild();
+		}
+	}
+	
+	public void closeSomeChild(String childIP) {
+		childList.get(childIP).closeToChild();
 		childList.remove(childIP);
-		
-		return result;
 	}
 	
 	public String[] getChildIPList() {
@@ -153,19 +159,15 @@ public class Childs implements Runnable {
 			return true;
 		}
 		
-		public boolean closeToChild() {
+		public void closeToChild() {
 			try {
 				fromChildMsg.close();
 				toChildMsg.close();
 				fromChildSocket.close();
-				
-				return true;
 			}
 			catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			return false;
 		}
 		
 		public String getChildIP() {

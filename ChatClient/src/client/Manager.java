@@ -1,49 +1,100 @@
 package client;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-
+import test.GUI;
 import util.msg.Message;
 import util.msg.sub.*;
 import static util.Definition.*;
 
 public class Manager implements Runnable {
 	private final static int MAX_CHILD = 2;
+	
 	private Queue<Packet> packetQueue;
-
+	private ArrayList<Send> msgQueue;
+	private int msgQueueOffset;
+	
 	private Server connectServer;
 	private Parent connectParent;
 	private Childs connectChilds;
 	
-	public Manager() {
+	private GUI gui;
+	private boolean isFirstConnect;
+	
+	public Manager(GUI gui) {
 		packetQueue = new LinkedList<Packet>();
+		msgQueue = new ArrayList<Send>();
+		msgQueueOffset = 0;
+		
+		this.gui = gui;
+		isFirstConnect = true;
 	}
 	
 	public boolean addPacket(Packet addPacket) {
 		return packetQueue.offer(addPacket);
 	}
 	
-	/**
-	 * GUI에서 서버 접속 버튼을 눌렀을 때
-	 * @param serverIP
-	 * @param serverPort
-	 * @return
-	 */
+	private int getLastSequence() {
+		return msgQueueOffset + msgQueue.size() - 1;
+	}
+	
+	private Object[] getMsg(int sequence) {
+		Send msg = msgQueue.get(sequence - msgQueueOffset - 1);
+		
+		Object result[] = new Object[4];
+		result[0] = msg.getChannel();
+		result[1] = msg.getSeq();
+		result[2] = msg.getNick();
+		result[3] = msg.getMsg();
+		
+		return result;
+	}
+	
+	// ------------------------------------------------- GUI input -------------------------------------------------
+	
 	public boolean connectServer(String serverIP, int serverPort) {
 		connectServer = new Server(this, serverIP, serverPort);
 		return connectServer.loginServer();
 	}
 	
-	/**
-	 * GUI에서 Send 버튼을 눌렀을 때
-	 * @param channel
-	 * @param nickName
-	 * @param msg
-	 * @return
-	 */
+	public void disconnectServer() {
+		connectParent.logoutParent();
+		connectChilds.closeAllChild();
+		connectServer.logoutServer();
+	}
+	
+	public boolean joinChannel(String channel, String nickName) {
+		connectServer.joinChannel(ALL, nickName);
+		return connectServer.joinChannel(channel, nickName);
+	}
+	
+	public boolean exitChannel(String channel, String nickName) {
+		return connectServer.exitChannel(channel, nickName);
+	}
+	
 	public boolean sendMsg(String channel, String nickName, String msg) {
 		return connectServer.sendMsgToServer(channel, nickName, msg);
 	}
+	
+	
+	// ------------------------------------------------- GUI output -------------------------------------------------
+	
+	private void display(Message msg) {
+		switch (msg.getType()) {
+		case SEND:
+			Send send = (Send)msg;
+			msgQueue.add(send);
+			gui.setMsg(send.getNick() + " : " + send.getMsg());
+		case JOIN:
+			Join join = (Join)msg;
+			gui.setInfo(join.getChannel() + " 채널에 " + join.getNick() + "이(가) 접속하였습니다.");
+		case EXIT:
+			Exit exit = (Exit)msg;
+			gui.setInfo(exit.getChannel() + " 채널에서 " + exit.getNick() + "이(가) 나가셨습니다.");
+		}
+	}
+	
 	
 	// ------------------------------------------------- P E R F O R M -------------------------------------------------
 	
@@ -69,12 +120,21 @@ public class Manager implements Runnable {
 			
 			switch (send.getCast()) {
 			case CAST_BROAD:
-				if (send.getSeq() == getLastSequence() - 1) {
+				if (isFirstConnect) {
+					msgQueueOffset = send.getSeq();
+					isFirstConnect = false;
+					
 					display(send);
 					result = connectChilds.sendMsgToAllChild(send.getChannel(), send.getSeq(), send.getNick(), send.getMsg());
 				}
 				else {
-					result = connectParent.requestMsgToParent(send.getChannel(), Integer.toString(getLastSequence() + 1));
+					if (send.getSeq() == getLastSequence() - 1) {
+						display(send);
+						result = connectChilds.sendMsgToAllChild(send.getChannel(), send.getSeq(), send.getNick(), send.getMsg());
+					}
+					else {
+						result = connectParent.requestMsgToParent(send.getChannel(), Integer.toString(getLastSequence() + 1));
+					}
 				}
 				
 				break;
@@ -88,11 +148,11 @@ public class Manager implements Runnable {
 			
 			break;
 		case REQUEST:
-			// 내가 없을 때 서버에 요청해야 함
-			
 			Request request = (Request)packet.getMessage();
 			
 			int startSequence = request.getSeq();
+			
+			// 내가 없을 때 서버에 요청해야 함
 			
 			boolean sendResult = true;
 			while (startSequence <= getLastSequence() && sendResult) {
@@ -147,20 +207,5 @@ public class Manager implements Runnable {
 		}
 		
 		return result;
-	}
-	
-	
-	// GUI 커넥팅
-	
-	private void display(Message msg) {
-				
-	}
-
-	private int getLastSequence() {
-		return 0;
-	}
-	
-	private Object[] getMsg(int sequence) {
-		return null;
 	}
 }

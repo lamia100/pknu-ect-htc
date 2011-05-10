@@ -14,6 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 
 import client.Manager;
+import java.awt.GridLayout;
 
 public class GUI extends JFrame {
 
@@ -290,9 +291,9 @@ public class GUI extends JFrame {
 	private JPanel getP_chat() {
 		if (p_chat == null) {
 			p_chat = new JPanel();
-			p_chat.setLayout(new BoxLayout(getP_chat(), BoxLayout.X_AXIS));
-			p_chat.add(getSp_msg(), null);
-			p_chat.add(getSp_info(), null);
+			p_chat.setLayout(new BorderLayout());
+			p_chat.add(getSp_msg(), BorderLayout.CENTER);
+			p_chat.add(getSp_info(), BorderLayout.NORTH);
 		}
 		return p_chat;
 	}
@@ -387,6 +388,7 @@ public class GUI extends JFrame {
 	private JScrollPane getSp_info() {
 		if (sp_info == null) {
 			sp_info = new JScrollPane();
+			sp_info.setBorder(null);
 			sp_info.setViewportView(getTa_info());
 		}
 		return sp_info;
@@ -408,6 +410,8 @@ public class GUI extends JFrame {
 	private JTextArea getTa_info() {
 		if (ta_info == null) {
 			ta_info = new JTextArea();
+			ta_info.setColumns(0);
+			ta_info.setRows(5);
 		}
 		return ta_info;
 	}
