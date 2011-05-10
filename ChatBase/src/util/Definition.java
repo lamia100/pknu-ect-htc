@@ -39,6 +39,14 @@ public class Definition {
 	// ---------------------------------------------- Client -> Server ----------------------------------------------
 	
 	/*
+	 * 클라이언트가 서버에 최초로 접속했을 때
+	 * 
+	 * HEAD_TYPE_JOIN + TOKEN_HEAD
+	 * + HEAD_CHANNEL + ":" + "*" + TOKEN_HEAD
+	 * + HEAD_NICK + ":" + "닉네임" + TOKEN_HEAD + TOKEN_HEAD
+	 */
+	
+	/*
 	 * 클라이언트가 채널에 접속할려고 할 때
 	 * 
 	 * HEAD_TYPE_JOIN + TOKEN_HEAD
