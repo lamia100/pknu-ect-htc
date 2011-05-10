@@ -36,6 +36,7 @@ public class Definition {
 	
 	public final static String HEAD_END = "";
 	
+	public final static String ALL="*";
 	// ---------------------------------------------- Client -> Server ----------------------------------------------
 	
 	/*
