@@ -43,7 +43,7 @@ public class Definition {
 	 * 클라이언트가 서버에 최초로 접속했을 때
 	 * 
 	 * HEAD_TYPE_JOIN + TOKEN_HEAD
-	 * + HEAD_CHANNEL + ":" + "*" + TOKEN_HEAD
+	 * + HEAD_CHANNEL + ":" + ALL + TOKEN_HEAD
 	 * + HEAD_NICK + ":" + "닉네임" + TOKEN_HEAD + TOKEN_HEAD
 	 */
 	
