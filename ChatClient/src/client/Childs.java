@@ -14,17 +14,17 @@ import java.util.Map;
 import util.msg.Message;
 import static util.Definition.*;
 
-public class ConnectChild implements Runnable {
-	private ConnectManager connectManager;
+public class Childs implements Runnable {
+	private Manager connectManager;
 	private int myPort;
 	private ServerSocket forChildSocket;
 	private Map<String, Child> childList;
 	
-	public ConnectChild(ConnectManager connectManager, int myPort) {
+	public Childs(Manager connectManager, int myPort) {
 		this.connectManager = connectManager;
 		this.myPort = myPort;
 		
-		childList = new HashMap<String, ConnectChild.Child>();
+		childList = new HashMap<String, Childs.Child>();
 	}
 	
 	public boolean readyForChild() {

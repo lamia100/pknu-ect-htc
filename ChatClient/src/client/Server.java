@@ -11,8 +11,8 @@ import java.io.OutputStreamWriter;
 import util.msg.Message;
 import static util.Definition.*;
 
-public class ConnectServer  implements Runnable {
-	private ConnectManager connectManager;
+public class Server  implements Runnable {
+	private Manager connectManager;
 	private String serverIP;
 	private int serverPort;
 	
@@ -20,7 +20,7 @@ public class ConnectServer  implements Runnable {
 	private BufferedReader fromServerMsg;
 	private BufferedWriter toServerMsg;
 	
-	public ConnectServer(ConnectManager connectManager, String serverIP, int serverPort) {
+	public Server(Manager connectManager, String serverIP, int serverPort) {
 		this.connectManager = connectManager;
 		this.serverIP = serverIP;
 		this.serverPort = serverPort;

@@ -7,15 +7,15 @@ import util.msg.Message;
 import util.msg.sub.*;
 import static util.Definition.*;
 
-public class ConnectManager implements Runnable {
+public class Manager implements Runnable {
 	private final static int MAX_CHILD = 2;
 	private Queue<Packet> packetQueue;
 
-	private ConnectServer connectServer;
-	private ConnectParent connectParent;
-	private ConnectChild connectChild;
+	private Server connectServer;
+	private Parent connectParent;
+	private Childs connectChilds;
 	
-	public ConnectManager() {
+	public Manager() {
 		packetQueue = new LinkedList<Packet>();
 	}
 	
@@ -23,13 +23,26 @@ public class ConnectManager implements Runnable {
 		return packetQueue.offer(addPacket);
 	}
 	
+	/**
+	 * GUI에서 서버 접속 버튼을 눌렀을 때
+	 * @param serverIP
+	 * @param serverPort
+	 * @return
+	 */
 	public boolean connectServer(String serverIP, int serverPort) {
-		connectServer = new ConnectServer(this, serverIP, serverPort);
+		connectServer = new Server(this, serverIP, serverPort);
 		return connectServer.loginServer();
 	}
 	
-	public boolean sendMsg() {
-		return false;
+	/**
+	 * GUI에서 Send 버튼을 눌렀을 때
+	 * @param channel
+	 * @param nickName
+	 * @param msg
+	 * @return
+	 */
+	public boolean sendMsg(String channel, String nickName, String msg) {
+		return connectServer.sendMsgToServer(channel, nickName, msg);
 	}
 	
 	// ------------------------------------------------- P E R F O R M -------------------------------------------------
@@ -58,7 +71,7 @@ public class ConnectManager implements Runnable {
 			case CAST_BROAD:
 				if (send.getSeq() == getLastSequence() - 1) {
 					display(send);
-					result = connectChild.sendMsgToAllChild(send.getChannel(), send.getSeq(), send.getNick(), send.getMsg());
+					result = connectChilds.sendMsgToAllChild(send.getChannel(), send.getSeq(), send.getNick(), send.getMsg());
 				}
 				else {
 					result = connectParent.requestMsgToParent(send.getChannel(), Integer.toString(getLastSequence() + 1));
@@ -75,6 +88,8 @@ public class ConnectManager implements Runnable {
 			
 			break;
 		case REQUEST:
+			// 내가 없을 때 서버에 요청해야 함
+			
 			Request request = (Request)packet.getMessage();
 			
 			int startSequence = request.getSeq();
@@ -82,7 +97,7 @@ public class ConnectManager implements Runnable {
 			boolean sendResult = true;
 			while (startSequence <= getLastSequence() && sendResult) {
 				Object msg[] = getMsg(startSequence++);
-				sendResult = connectChild.sendMsgToSomeChild(packet.getFromIP(), (String)msg[0], (Integer)msg[1], (String)msg[2], (String)msg[3]);
+				sendResult = connectChilds.sendMsgToSomeChild(packet.getFromIP(), (String)msg[0], (Integer)msg[1], (String)msg[2], (String)msg[3]);
 			}
 			
 			result = sendResult;
@@ -93,7 +108,7 @@ public class ConnectManager implements Runnable {
 			
 			switch (set.getFamily()) {
 			case FAMILY_PARENT:
-				ConnectParent newParent = new ConnectParent(this, set.getIp(), DEFAULT_PORT);
+				Parent newParent = new Parent(this, set.getIp(), DEFAULT_PORT);
 				
 				if (newParent.loginParent()) {
 					connectParent = newParent;
@@ -105,7 +120,7 @@ public class ConnectManager implements Runnable {
 				
 				break;
 			case FAMILY_CHILD:
-				if (connectChild.getChildSize() < MAX_CHILD) {
+				if (connectChilds.getChildSize() < MAX_CHILD) {
 					result = connectServer.successOpenSocketForChild(set.getChannel(), set.getIp());
 				}
 				else {
@@ -121,13 +136,13 @@ public class ConnectManager implements Runnable {
 			Join join = (Join)packet.getMessage();
 			
 			display(join);
-			result = connectChild.whoJoinToAllChild(join.getChannel(), join.getNick());
+			result = connectChilds.whoJoinToAllChild(join.getChannel(), join.getNick());
 			break;
 		case EXIT:
 			Exit exit = (Exit)packet.getMessage(); 
 			
 			display(exit);
-			result = connectChild.whoExitToAllChild(exit.getChannel(), exit.getNick());
+			result = connectChilds.whoExitToAllChild(exit.getChannel(), exit.getNick());
 			break;
 		}
 		

@@ -11,8 +11,8 @@ import java.net.UnknownHostException;
 import util.msg.Message;
 import static util.Definition.*;
 
-public class ConnectParent implements Runnable {
-	private ConnectManager connectManager;
+public class Parent implements Runnable {
+	private Manager connectManager;
 	private String parentIP;
 	private int parentPort;
 	
@@ -20,7 +20,7 @@ public class ConnectParent implements Runnable {
 	private BufferedReader fromParentMsg;
 	private BufferedWriter toParentMsg;
 	
-	public ConnectParent(ConnectManager connectManager, String parentIP, int parentPort) {
+	public Parent(Manager connectManager, String parentIP, int parentPort) {
 		this.connectManager = connectManager;
 		this.parentIP = parentIP;
 		this.parentPort = parentPort;
