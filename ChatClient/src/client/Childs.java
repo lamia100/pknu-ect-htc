@@ -1,12 +1,12 @@
 package client;
 
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -38,7 +38,7 @@ public class Childs implements Runnable {
 		return true;
 	}
 
-	public void closeAllChild() {
+	public boolean closeAllChild() {
 		Iterator<Child> it = childList.values().iterator();
 				
 		while (it.hasNext()) {
@@ -50,12 +50,17 @@ public class Childs implements Runnable {
 		}
 		catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
+		
+		return true;
 	}
 	
-	public void closeSomeChild(String childIP) {
-		childList.get(childIP).closeToChild();
+	public boolean closeSomeChild(String childIP) {
+		boolean result = childList.get(childIP).closeToChild();
 		childList.remove(childIP);
+		
+		return result;
 	}
 	
 	public String[] getChildIPList() {
@@ -165,7 +170,7 @@ public class Childs implements Runnable {
 			return true;
 		}
 		
-		public void closeToChild() {
+		public boolean closeToChild() {
 			try {
 				fromChildMsg.close();
 				toChildMsg.close();
@@ -173,7 +178,10 @@ public class Childs implements Runnable {
 			}
 			catch (IOException e) {
 				e.printStackTrace();
+				return false;
 			}
+			
+			return true;
 		}
 		
 		public String getChildIP() {

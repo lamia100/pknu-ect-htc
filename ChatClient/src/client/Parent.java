@@ -1,12 +1,12 @@
 package client;
 
+import java.net.Socket;
+import java.net.UnknownHostException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.net.Socket;
-import java.net.UnknownHostException;
 import util.msg.Message;
 import static util.Definition.*;
 
@@ -44,7 +44,7 @@ public class Parent implements Runnable {
 		return true;
 	}
 	
-	public void logoutParent() {
+	public boolean logoutParent() {
 		try {
 			fromParentMsg.close();
 			toParentMsg.close();
@@ -52,7 +52,10 @@ public class Parent implements Runnable {
 		}
 		catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
+		
+		return true;
 	}
 	
 	public String getParentIP() {

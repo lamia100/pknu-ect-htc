@@ -186,10 +186,10 @@ public class GUI extends JFrame {
 					boolean result = connectManager.connectServer(tf_serverIP.getText(), Integer.parseInt(tf_serverPort.getText()), tf_nickName.getText());
 					
 					if (result) {
-						setInfo("서버 연결 성공");
+						dspInfo("서버 연결 성공");
 					}
 					else {
-						setInfo("서버 연결 실패");
+						dspInfo("서버 연결 실패");
 					}
 				}
 			});
@@ -227,10 +227,10 @@ public class GUI extends JFrame {
 					boolean result = connectManager.joinChannel(tf_channel.getText(), tf_nickName.getText());
 					
 					if (result) {
-						setInfo("채널 접속 성공");
+						dspInfo("채널 접속 성공");
 					}
 					else {
-						setInfo("채널 접속 실패");
+						dspInfo("채널 접속 실패");
 					}
 				}
 			});
@@ -253,7 +253,7 @@ public class GUI extends JFrame {
 					
 					connectManager.exitChannel(tf_channel.getText(), tf_nickName.getText());
 					
-					setInfo("채널에서 나감");
+					dspInfo("채널에서 나감");
 				}
 			});
 		}
@@ -275,7 +275,7 @@ public class GUI extends JFrame {
 					
 					connectManager.disconnectServer(tf_nickName.getText());
 					
-					setInfo("서버 연결 해제");
+					dspInfo("서버 연결 해제");
 				}
 			});
 		}
@@ -393,11 +393,11 @@ public class GUI extends JFrame {
 		return sp_info;
 	}
 
-	public void setMsg(String msg) {
+	public void dspMsg(String msg) {
 		ta_msg.append(msg);
 	}
 	
-	public void setInfo(String info) {
+	public void dspInfo(String info) {
 		ta_info.append(info);
 	}
 	

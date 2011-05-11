@@ -3,10 +3,10 @@ package client;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
-import test.GUI;
 import util.msg.Message;
 import util.msg.sub.*;
 import static util.Definition.*;
+import test.GUI;
 
 public class Manager implements Runnable {
 	private final static int MAX_CHILD = 2;
@@ -54,34 +54,77 @@ public class Manager implements Runnable {
 		boolean result = connectServer.loginServer();
 		
 		if (result) {
+			gui.dspInfo("서버와 연결 설정(3way Handshake)에 성공하였습니다.");
+			
 			result = connectServer.joinChannel(ALL, nickName);
 			
 			if (result) {
+				gui.dspInfo("서버와 연결(ALL)에 성공하였습니다.");
+				
 				connectChilds = new Childs(this, DEFAULT_PORT);
 				new Thread(connectChilds).start();
+				
+				gui.dspInfo("자식을 받을 준비가 되었습니다.");
 			}
+			else {
+				gui.dspInfo("서버와 연결(ALL)에 실패하였습니다. 다른 닉네임을 사용하세요.");
+			}
+		}
+		else {
+			gui.dspInfo("서버와 연결 설정(3way Handshake)에 실패하였습니다.");
 		}
 		
 		return result;
 	}
 	
-	public void disconnectServer(String nickName) {
-		connectServer.exitChannel(ALL, nickName);
+	public boolean disconnectServer(String nickName) {
+		connectServer.exitChannel(ALL, nickName);		
 		connectParent.logoutParent();
 		connectChilds.closeAllChild();
 		connectServer.logoutServer();
+		
+		gui.dspInfo("모든 연결을 끊었습니다.");
+		
+		return true;
 	}
 	
 	public boolean joinChannel(String channel, String nickName) {
-		return connectServer.joinChannel(channel, nickName);
+		boolean result = connectServer.joinChannel(channel, nickName);
+		
+		if (result) {
+			gui.dspInfo("서버에 채널 입장 메세지를 보냈습니다.");
+		}
+		else {
+			gui.dspInfo("서버에 채널 입장 메세지를 보내지 못했습니다. 이전에 서버와 연결이 끊겼습니다.");
+		}
+		
+		return result;
 	}
 	
 	public boolean exitChannel(String channel, String nickName) {
-		return connectServer.exitChannel(channel, nickName);
+		boolean result = connectServer.exitChannel(channel, nickName);
+		
+		if (result) {
+			gui.dspInfo("서버에 채널 퇴장 메세지를 보냈습니다.");
+		}
+		else {
+			gui.dspInfo("서버에 채널 퇴장 메세지를 보내지 못했습니다. 이전에 서버와 연결이 끊겼습니다.");
+		}
+		
+		return result;
 	}
 	
 	public boolean sendMsg(String channel, String nickName, String msg) {
-		return connectServer.sendMsgToServer(channel, nickName, msg);
+		boolean result = connectServer.sendMsgToServer(channel, nickName, msg);
+		
+		if (result) {
+			gui.dspInfo("서버에 메세지를 보냈습니다.");
+		}
+		else {
+			gui.dspInfo("서버에 메세지를 보내지 못했습니다. 이전에 서버와 연결이 끊겼습니다.");
+		}
+		
+		return result;
 	}
 	
 	
@@ -92,13 +135,13 @@ public class Manager implements Runnable {
 		case SEND:
 			Send send = (Send)msg;
 			msgList.add(send);
-			gui.setMsg(send.getNick() + " : " + send.getMsg());
+			gui.dspMsg(send.getNick() + " : " + send.getMsg());
 		case JOIN:
 			Join join = (Join)msg;
-			gui.setInfo(join.getChannel() + " 채널에 " + join.getNick() + "이(가) 접속하였습니다.");
+			gui.dspInfo(join.getChannel() + " 채널에 " + join.getNick() + "이(가) 접속하였습니다.");
 		case EXIT:
 			Exit exit = (Exit)msg;
-			gui.setInfo(exit.getChannel() + " 채널에서 " + exit.getNick() + "이(가) 나가셨습니다.");
+			gui.dspInfo(exit.getChannel() + " 채널에서 " + exit.getNick() + "이(가) 나가셨습니다.");
 		}
 	}
 	

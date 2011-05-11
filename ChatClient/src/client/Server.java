@@ -44,7 +44,7 @@ public class Server  implements Runnable {
 		return true;
 	}
 	
-	public void logoutServer() {
+	public boolean logoutServer() {
 		try {
 			fromServerMsg.close();
 			toServerMsg.close();
@@ -52,7 +52,10 @@ public class Server  implements Runnable {
 		}
 		catch (IOException e) {
 			e.printStackTrace();
+			return false;
 		}
+		
+		return true;
 	}
 	
 	public String getServerIP() {
