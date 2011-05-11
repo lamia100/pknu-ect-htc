@@ -9,9 +9,13 @@ import util.msg.sub.*;
 public abstract class Message {
 	
 	ArrayList<String> message = new ArrayList<String>();
-	protected TYPE type;
+	private final TYPE type;
 	private static final Map<String, TYPE> map = new HashMap<String, TYPE>();
 	protected boolean isValid=true;
+	public Message(TYPE type) {
+		// TODO Auto-generated constructor stub
+		this.type=type;
+	}
 	/**
 	 * 
 	 * @param line

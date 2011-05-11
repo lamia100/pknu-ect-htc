@@ -14,7 +14,7 @@ public class Request extends Message {
 	private int seq = 0;
 	
 	public Request() {
-		this.type = TYPE.REQUEST;
+		super(TYPE.REQUEST);
 	}
 	
 	@Override

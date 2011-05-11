@@ -14,7 +14,7 @@ public class Exit extends Message {
 	private String nick = "";
 	
 	public Exit() {
-		this.type = TYPE.EXIT;
+		super(TYPE.EXIT);
 	}
 	
 	@Override
@@ -39,7 +39,15 @@ public class Exit extends Message {
 		
 		return false;
 	}
-
+	
+	public Exit getClone(String channel)
+	{
+		Exit exit=new Exit();
+		exit.channel=channel;
+		exit.nick=nick;
+		return exit;
+	}
+	
 	public String getChannel() {
 		return channel;
 	}

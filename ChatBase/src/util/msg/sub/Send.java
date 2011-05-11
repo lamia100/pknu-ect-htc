@@ -8,7 +8,7 @@ import util.msg.TYPE;
 /**
  * 
  * @author malloc
- *
+ * 
  */
 public class Send extends Message {
 	private TYPE cast = TYPE.CAST_BROAD;
@@ -17,6 +17,11 @@ public class Send extends Message {
 	private String nick = "";
 	private String msg = "";
 	
+	public Send() {
+		// TODO Auto-generated constructor stub
+		super(TYPE.SEND);
+	}
+	
 	public TYPE getCast() {
 		return cast;
 	}
@@ -24,22 +29,17 @@ public class Send extends Message {
 	public int getSeq() {
 		return seq;
 	}
-
+	
 	public String getChannel() {
 		return channel;
 	}
-
+	
 	public String getNick() {
 		return nick;
 	}
-
+	
 	public String getMsg() {
 		return msg;
-	}
-
-	public Send() {
-		// TODO Auto-generated constructor stub
-		this.type = TYPE.SEND;
 	}
 	
 	@Override
@@ -53,7 +53,7 @@ public class Send extends Message {
 		switch (type) {
 			case CAST:
 				if (TYPE.CAST_UNI.toString().equals(value)) {
-					cast=TYPE.CAST_UNI;
+					cast = TYPE.CAST_UNI;
 				}
 				break;
 			case SEQ:
@@ -61,7 +61,7 @@ public class Send extends Message {
 					seq = Integer.parseInt(value);
 				} catch (NumberFormatException e) {
 					e.printStackTrace();
-					isValid=false;
+					isValid = false;
 					return false;
 				}
 				break;
@@ -81,5 +81,21 @@ public class Send extends Message {
 			
 		}
 		return false;
+	}
+	
+	/**
+	 * 사용자로부터 받은 메세지에 시퀀스를 붙이는 작업.
+	 * @param sequence
+	 * @return
+	 */
+	public Send getClone(int sequence)
+	{
+		Send send=new Send();
+		send.cast=cast;
+		send.seq=sequence;
+		send.nick=nick;
+		send.msg=msg;
+		
+		return send;
 	}
 }

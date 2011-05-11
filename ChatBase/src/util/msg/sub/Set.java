@@ -16,6 +16,11 @@ public class Set extends Message {
 	private String ip = "";
 	private int sequence = 0;
 	
+	public Set() {
+		// TODO Auto-generated constructor stub
+		super(TYPE.SET);
+	}
+	
 	@Override
 	public boolean parse(String line) {
 		// TODO Auto-generated method stub
@@ -30,11 +35,9 @@ public class Set extends Message {
 			case FAMILY:
 				if (TYPE.FAMILY_PARENT.toString().equals(value)) {
 					family = TYPE.FAMILY_PARENT;
-				}
-				else if (TYPE.FAMILY_CHILD.toString().equals(value)) {
+				} else if (TYPE.FAMILY_CHILD.toString().equals(value)) {
 					family = TYPE.FAMILY_CHILD;
-				}
-				else {
+				} else {
 					isValid = false;
 				}
 				break;
@@ -55,19 +58,19 @@ public class Set extends Message {
 		}
 		return false;
 	}
-
+	
 	public String getChannel() {
 		return channel;
 	}
-
+	
 	public TYPE getFamily() {
 		return family;
 	}
-
+	
 	public String getIp() {
 		return ip;
 	}
-
+	
 	public int getSequence() {
 		return sequence;
 	}

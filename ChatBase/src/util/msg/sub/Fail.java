@@ -10,6 +10,11 @@ public class Fail extends Message {
 	private String ip = "";
 	private int sequence = 0;
 	
+	public Fail() {
+		// TODO Auto-generated constructor stub
+		super(TYPE.FAIL);
+	}
+	
 	@Override
 	public boolean parse(String line) {
 		// TODO Auto-generated method stub

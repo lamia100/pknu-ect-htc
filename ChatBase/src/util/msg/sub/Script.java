@@ -16,7 +16,7 @@ public class Script extends Message {
 	private String msg = "";
 	
 	public Script() {
-		this.type = TYPE.SCRIPT;
+		super(TYPE.SCRIPT);
 	}
 	
 	@Override

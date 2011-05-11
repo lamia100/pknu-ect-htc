@@ -14,7 +14,7 @@ public class Join extends Message {
 	private String nick = "";
 	
 	public Join() {
-		this.type = TYPE.JOIN;
+		super(TYPE.JOIN);
 	}
 	
 	@Override

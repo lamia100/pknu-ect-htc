@@ -14,6 +14,11 @@ public class Success extends Message {
 	private String ip = "";
 	private int sequence = 0;
 	
+	public Success() {
+		// TODO Auto-generated constructor stub
+		super(TYPE.SUCCESS);
+	}
+	
 	@Override
 	public boolean parse(String line) {
 		// TODO Auto-generated method stub
