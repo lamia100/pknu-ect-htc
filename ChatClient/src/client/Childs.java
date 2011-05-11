@@ -29,6 +29,8 @@ public class Childs implements Runnable {
 	public boolean readyForChild() {
 		try {
 			forChildSocket = new ServerSocket(myPort);
+			
+			new Thread(this).run();
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -131,19 +133,17 @@ public class Childs implements Runnable {
 	
 	@Override
 	public void run() {
-		if(readyForChild()) {
-			while (forChildSocket.isBound()) {
-				try {
-					Socket fromChildSocket = forChildSocket.accept();
+		while (forChildSocket.isBound()) {
+			try {
+				Socket fromChildSocket = forChildSocket.accept();
 					
-					Child newChild = new Child(fromChildSocket);
+				Child newChild = new Child(fromChildSocket);
+				if (newChild.readyFromChild()) {
 					childList.put(fromChildSocket.getInetAddress().getHostAddress(), newChild);
-						
-					new Thread(newChild).start();
 				}
-				catch (IOException e) {
-					e.printStackTrace();
-				}
+			}
+			catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -161,6 +161,8 @@ public class Childs implements Runnable {
 			try {
 				fromChildMsg = new BufferedReader(new InputStreamReader(fromChildSocket.getInputStream()));
 				toChildMsg = new BufferedWriter(new OutputStreamWriter(fromChildSocket.getOutputStream()));
+				
+				new Thread(this).start();
 			}
 			catch (IOException e) {
 				e.printStackTrace();
@@ -243,25 +245,23 @@ public class Childs implements Runnable {
 		
 		@Override
 		public void run() {
-			if (readyFromChild()) {
-				while (fromChildSocket.isConnected()) {
-					String line = null;
-					Message fromChildMessage = null;
+			while (fromChildSocket.isConnected()) {
+				String line = null;
+				Message fromChildMessage = null;
 					
-					try {
-						while ((line = fromChildMsg.readLine()) != null) {
-							if (fromChildMessage == null) {
-								fromChildMessage = Message.parsType(line);
-							}
-							else if (fromChildMessage.parse(line)) {
-								connectManager.addPacket(new Packet(fromChildMessage, fromChildSocket.getInetAddress().getHostAddress()));
-								fromChildMessage = null;
-							}
+				try {
+					while ((line = fromChildMsg.readLine()) != null) {
+						if (fromChildMessage == null) {
+							fromChildMessage = Message.parsType(line);
+						}
+						else if (fromChildMessage.parse(line)) {
+							connectManager.addPacket(new Packet(fromChildMessage, fromChildSocket.getInetAddress().getHostAddress()));
+							fromChildMessage = null;
 						}
 					}
-					catch (IOException e) {
-						e.printStackTrace();
-					}
+				}
+				catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}

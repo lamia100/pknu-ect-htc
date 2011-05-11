@@ -62,9 +62,11 @@ public class Manager implements Runnable {
 				gui.dspInfo("서버와 연결(ALL)에 성공하였습니다.");
 				
 				connectChilds = new Childs(this, DEFAULT_PORT);
-				new Thread(connectChilds).start();
+				result = connectChilds.readyForChild();
 				
-				gui.dspInfo("자식을 받을 준비가 되었습니다.");
+				if (result) {
+					gui.dspInfo("자식을 받을 준비가 되었습니다.");
+				}
 			}
 			else {
 				gui.dspInfo("서버와 연결(ALL)에 실패하였습니다. 다른 닉네임을 사용하세요.");

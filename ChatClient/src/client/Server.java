@@ -31,6 +31,8 @@ public class Server  implements Runnable {
 			
 			fromServerMsg = new BufferedReader(new InputStreamReader(toServerSocket.getInputStream()));
 			toServerMsg = new BufferedWriter(new OutputStreamWriter(toServerSocket.getOutputStream()));
+			
+			new Thread(this).run();
 		}
 		catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -228,25 +230,23 @@ public class Server  implements Runnable {
 	
 	@Override
 	public void run() {
-		if (loginServer()) {
-			while (toServerSocket.isConnected()) {
-				String line = null;
-				Message fromServerMessage = null;
+		while (toServerSocket.isConnected()) {
+			String line = null;
+			Message fromServerMessage = null;
 				
-				try {
-					while ((line = fromServerMsg.readLine()) != null) {
-						if (fromServerMessage == null) {
-							fromServerMessage = Message.parsType(line);
-						}
-						else if (fromServerMessage.parse(line)) {
-							connectManager.addPacket(new Packet(fromServerMessage, toServerSocket.getInetAddress().getHostAddress()));
-							fromServerMessage = null;
-						}
+			try {
+				while ((line = fromServerMsg.readLine()) != null) {
+					if (fromServerMessage == null) {
+						fromServerMessage = Message.parsType(line);
+					}
+					else if (fromServerMessage.parse(line)) {
+						connectManager.addPacket(new Packet(fromServerMessage, toServerSocket.getInetAddress().getHostAddress()));
+						fromServerMessage = null;
 					}
 				}
-				catch (IOException e) {
-					e.printStackTrace();
-				}
+			}
+			catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}

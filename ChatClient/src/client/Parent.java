@@ -31,6 +31,8 @@ public class Parent implements Runnable {
 			
 			fromParentMsg = new BufferedReader(new InputStreamReader(toParentSocket.getInputStream()));
 			toParentMsg = new BufferedWriter(new OutputStreamWriter(toParentSocket.getOutputStream()));
+			
+			new Thread(this).run();
 		}
 		catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -84,25 +86,23 @@ public class Parent implements Runnable {
 	
 	@Override
 	public void run() {
-		if (loginParent()) {
-			while (toParentSocket.isConnected()) {
-				String line = null;
-				Message fromParentMessage = null;
+		while (toParentSocket.isConnected()) {
+			String line = null;
+			Message fromParentMessage = null;
 				
-				try {
-					while ((line = fromParentMsg.readLine()) != null) {
-						if (fromParentMessage == null) {
-							fromParentMessage = Message.parsType(line);
-						}
-						else if (fromParentMessage.parse(line)) {
-							connectManager.addPacket(new Packet(fromParentMessage, toParentSocket.getInetAddress().getHostAddress()));
-							fromParentMessage = null;
-						}
+			try {
+				while ((line = fromParentMsg.readLine()) != null) {
+					if (fromParentMessage == null) {
+						fromParentMessage = Message.parsType(line);
+					}
+					else if (fromParentMessage.parse(line)) {
+						connectManager.addPacket(new Packet(fromParentMessage, toParentSocket.getInetAddress().getHostAddress()));
+						fromParentMessage = null;
 					}
 				}
-				catch (IOException e) {
-					e.printStackTrace();
-				}
+			}
+			catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
