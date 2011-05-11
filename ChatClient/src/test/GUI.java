@@ -39,7 +39,7 @@ public class GUI extends JFrame {
 	private JButton bt_send = null;
 	private JScrollPane sp_msg = null;
 	private JTextArea ta_msg = null;
-	
+	private GUI gui;
 	private Manager connectManager;
 	private JScrollPane sp_info = null;
 	private JTextArea ta_info = null;
@@ -50,6 +50,7 @@ public class GUI extends JFrame {
 	public GUI() {
 		super();
 		initialize();
+		gui = this;
 	}
 
 	/**
@@ -181,7 +182,7 @@ public class GUI extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					System.out.println("Login actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					
-					//connectManager = new Manager();
+					connectManager = new Manager(gui);
 					
 					boolean result = connectManager.connectServer(tf_serverIP.getText(), Integer.parseInt(tf_serverPort.getText()), tf_nickName.getText());
 					
@@ -375,6 +376,8 @@ public class GUI extends JFrame {
 	private JTextArea getTa_msg() {
 		if (ta_msg == null) {
 			ta_msg = new JTextArea();
+			ta_msg.setText("Msg");
+			ta_msg.setLineWrap(true);
 		}
 		return ta_msg;
 	}
@@ -394,11 +397,11 @@ public class GUI extends JFrame {
 	}
 
 	public void dspMsg(String msg) {
-		ta_msg.append(msg);
+		ta_msg.append("\n" + msg);
 	}
 	
 	public void dspInfo(String info) {
-		ta_info.append(info);
+		ta_info.append("\n" + info);
 	}
 	
 	/**
@@ -410,6 +413,8 @@ public class GUI extends JFrame {
 		if (ta_info == null) {
 			ta_info = new JTextArea();
 			ta_info.setColumns(0);
+			ta_info.setText("Info");
+			ta_info.setLineWrap(true);
 			ta_info.setRows(5);
 		}
 		return ta_info;
