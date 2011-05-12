@@ -20,9 +20,16 @@ public class Request extends Message {
 	@Override
 	public boolean parse(String line) {
 		StringTokenizer token = new StringTokenizer(line, ":");
-		String typeStr = token.nextToken();
+		String typeStr;
+		String value;
+		if(token.hasMoreElements()){
+			typeStr = token.nextToken();
+			value = token.nextToken().trim();
+		}else{
+			typeStr = line;
+			value="";
+		}
 		TYPE type = getStringToType(typeStr);
-		String value = token.nextToken().trim();
 		
 		switch (type) {
 			case CHANNEL:

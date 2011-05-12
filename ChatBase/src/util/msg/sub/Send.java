@@ -46,9 +46,16 @@ public class Send extends Message {
 	public boolean parse(String line) {
 		// TODO Auto-generated method stub
 		StringTokenizer token = new StringTokenizer(line, ":");
-		String typeStr = token.nextToken().trim();
+		String typeStr;
+		String value;
+		if(token.hasMoreElements()){
+			typeStr = token.nextToken();
+			value = token.nextToken().trim();
+		}else{
+			typeStr = line;
+			value="";
+		}
 		TYPE type = getStringToType(typeStr);
-		String value = token.nextToken().trim();
 		
 		switch (type) {
 			case CAST:

@@ -33,9 +33,16 @@ public class Set extends Message {
 	public boolean parse(String line) {
 		// TODO Auto-generated method stub
 		StringTokenizer token = new StringTokenizer(line, ":");
-		TYPE type = getStringToType(token.nextToken().trim());
-		String value = token.nextToken().trim();
-		
+		String typeStr;
+		String value;
+		if(token.hasMoreElements()){
+			typeStr = token.nextToken();
+			value = token.nextToken().trim();
+		}else{
+			typeStr = line;
+			value="";
+		}
+		TYPE type = getStringToType(typeStr);
 		switch (type) {
 			case CHANNEL:
 				channel = value;
