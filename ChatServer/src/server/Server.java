@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.TreeSet;
 
+import util.Definition;
 import util.msg.Message;
 /**
  * 
@@ -16,7 +17,7 @@ import util.msg.Message;
 @SuppressWarnings("unused")
 public class Server implements Runnable {
 	public static final int port = 30000;
-	private ServerSocket sSocket;
+	private static ServerSocket sSocket;
 	private static Server server = null;
 	private MessageProcessor messageProcessor=null;
 	
@@ -26,9 +27,10 @@ public class Server implements Runnable {
 	}
 	private void initialize() throws IOException
 	{
-		sSocket = new ServerSocket(port);
+		sSocket = new ServerSocket(Definition.DEFAULT_PORT);
 		messageProcessor=new MessageProcessor();
 		User.setMessageProcessor(messageProcessor);
+		Channel.setMessageProcessor(messageProcessor);
 	}
 	public static Server getServer() {
 		if(server==null)
@@ -53,7 +55,7 @@ public class Server implements Runnable {
 		}
 	}
 
-	public static void main(String args) {
+	public static void main(String[] args) {
 
 		Server s=null;
 		try {
@@ -64,6 +66,10 @@ public class Server implements Runnable {
 			System.exit(1);
 		}
 		new Thread(s).start();
+	}
+	public static String getIP() {
+		// TODO Auto-generated method stub
+		return sSocket.getInetAddress().toString();
 	}
 
 }

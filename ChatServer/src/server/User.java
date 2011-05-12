@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import util.Definition;
 import util.msg.Message;
 import util.msg.sub.*;
 
@@ -41,7 +42,7 @@ public class User implements Comparable<User>, Runnable {
 	/**
 	 * Server 클레스에서만 호출 할것.
 	 */
-	static void setMessageProcessor(MessageProcessor messageProcessor) {
+	public static void setMessageProcessor(MessageProcessor messageProcessor) {
 		User.messageProcessor = messageProcessor;
 	}
 	
@@ -56,14 +57,23 @@ public class User implements Comparable<User>, Runnable {
 				line = in.readLine();
 				if (message == null) {
 					message = Message.parsType(line);
+					
+				} else {
 					if (!(message instanceof Join)) {
 						disconnect();
+						return;
 					}
-				} else {
 					boolean isMessageEnd = message.parse(line);
 					if (isMessageEnd) {
-						messageProcessor.enqueue(message);
-						message = null;
+						Join join=(Join)message;
+						if(Definition.ALL.equals(join.getChannel()))
+						{
+							name=join.getNick();
+							messageProcessor.add(this);
+						}else{
+							disconnect();
+						}
+						return;
 					}
 				}
 				
@@ -74,7 +84,10 @@ public class User implements Comparable<User>, Runnable {
 		}
 		messageProcessor.add(this);
 	}
-	
+	public String getIP()
+	{
+		return socket.getInetAddress().toString();
+	}
 	@Override
 	public int compareTo(User o) {
 		// TODO Auto-generated method stub
@@ -96,6 +109,10 @@ public class User implements Comparable<User>, Runnable {
 	
 	public void disconnect() {
 		
+	}
+	public void stop()
+	{
+		isRun=false;
 	}
 	
 	@Override

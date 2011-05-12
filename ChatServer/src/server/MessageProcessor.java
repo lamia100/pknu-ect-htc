@@ -25,8 +25,7 @@ public class MessageProcessor implements Runnable {
 	}
 	
 	public synchronized boolean add(User user)
-	{
-		
+	{		
 		if(users.containsKey(user.getName()))
 		{
 			user.disconnect();			
@@ -101,6 +100,11 @@ public class MessageProcessor implements Runnable {
 			
 		}
 		
+	}
+
+	public User getUser(String nick) {
+		// TODO Auto-generated method stub
+		return users.get(nick);
 	}
 	
 }
