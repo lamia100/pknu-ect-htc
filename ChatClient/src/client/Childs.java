@@ -14,13 +14,13 @@ import util.msg.Message;
 import static util.Definition.*;
 
 public class Childs implements Runnable {
-	private Manager connectManager;
+	private Channel connectChannel;
 	private int myPort;
 	private ServerSocket forChildSocket;
 	private Map<String, Child> childList;
 	
-	public Childs(Manager connectManager, int myPort) {
-		this.connectManager = connectManager;
+	public Childs(Channel connectChannel, int myPort) {
+		this.connectChannel = connectChannel;
 		this.myPort = myPort;
 		
 		childList = new HashMap<String, Childs.Child>();
@@ -255,7 +255,12 @@ public class Childs implements Runnable {
 							fromChildMessage = Message.parsType(line);
 						}
 						else if (fromChildMessage.parse(line)) {
-							connectManager.addPacket(new Packet(fromChildMessage, fromChildSocket.getInetAddress().getHostAddress()));
+							Packet packet = new Packet(fromChildMessage, fromChildSocket.getInetAddress().getHostAddress());
+							
+							if (packet.getMessage().isValid()) {
+								connectChannel.addPacket(packet);
+							}
+							
 							fromChildMessage = null;
 						}
 					}

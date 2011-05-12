@@ -240,7 +240,12 @@ public class Server  implements Runnable {
 						fromServerMessage = Message.parsType(line);
 					}
 					else if (fromServerMessage.parse(line)) {
-						connectManager.addPacket(new Packet(fromServerMessage, toServerSocket.getInetAddress().getHostAddress()));
+						Packet packet = new Packet(fromServerMessage, toServerSocket.getInetAddress().getHostAddress());
+						
+						if (packet.getMessage().isValid()) {
+							connectManager.addServerPacket(packet);
+						}
+						
 						fromServerMessage = null;
 					}
 				}

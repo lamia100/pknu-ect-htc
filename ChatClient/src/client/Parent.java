@@ -11,7 +11,7 @@ import util.msg.Message;
 import static util.Definition.*;
 
 public class Parent implements Runnable {
-	private Manager connectManager;
+	private Channel connectChannel;
 	private String parentIP;
 	private int parentPort;
 	
@@ -19,8 +19,8 @@ public class Parent implements Runnable {
 	private BufferedReader fromParentMsg;
 	private BufferedWriter toParentMsg;
 	
-	public Parent(Manager connectManager, String parentIP, int parentPort) {
-		this.connectManager = connectManager;
+	public Parent(Channel connectChannel, String parentIP, int parentPort) {
+		this.connectChannel = connectChannel;
 		this.parentIP = parentIP;
 		this.parentPort = parentPort;
 	}
@@ -96,7 +96,12 @@ public class Parent implements Runnable {
 						fromParentMessage = Message.parsType(line);
 					}
 					else if (fromParentMessage.parse(line)) {
-						connectManager.addPacket(new Packet(fromParentMessage, toParentSocket.getInetAddress().getHostAddress()));
+						Packet packet = new Packet(fromParentMessage, toParentSocket.getInetAddress().getHostAddress());
+						
+						if (packet.getMessage().isValid()) {
+							connectChannel.addPacket(packet);
+						}
+						
 						fromParentMessage = null;
 					}
 				}

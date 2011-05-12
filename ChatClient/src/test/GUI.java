@@ -13,7 +13,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 
-import client.Manager;
+import client.Channel;
 
 public class GUI extends JFrame {
 
@@ -40,7 +40,7 @@ public class GUI extends JFrame {
 	private JScrollPane sp_msg = null;
 	private JTextArea ta_msg = null;
 	private GUI gui;
-	private Manager connectManager;
+	private Channel connectManager;
 	private JScrollPane sp_info = null;
 	private JTextArea ta_info = null;
 	
@@ -182,7 +182,7 @@ public class GUI extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					System.out.println("Login actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					
-					connectManager = new Manager(gui);
+					connectManager = new Channel(gui);
 					
 					boolean result = connectManager.connectServer(tf_serverIP.getText(), Integer.parseInt(tf_serverPort.getText()), tf_nickName.getText());
 					
