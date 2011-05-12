@@ -98,7 +98,9 @@ public class Manager implements Runnable {
 			gui.dspInfo("서버에 채널 퇴장 메세지를 보내지 못했습니다. 이전에 서버와 연결이 끊겼습니다.");
 		}
 		
-		channelList.remove(channel);
+		if (channel != ALL) {
+			channelList.remove(channel);
+		}
 		
 		return result;
 	}

@@ -114,7 +114,7 @@ public class GUI extends JFrame {
 	private JTextField getTf_serverIP() {
 		if (tf_serverIP == null) {
 			tf_serverIP = new JTextField();
-			tf_serverIP.setText("127.0.0.1");
+			tf_serverIP.setText("112.162.198.121");
 			tf_serverIP.setColumns(10);
 		}
 		return tf_serverIP;

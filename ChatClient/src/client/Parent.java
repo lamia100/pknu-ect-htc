@@ -99,6 +99,7 @@ public class Parent implements Runnable {
 						Packet packet = new Packet(fromParentMessage, toParentSocket.getInetAddress().getHostAddress());
 						
 						if (packet.getMessage().isValid()) {
+							System.out.println(packet.getMessage().toString());
 							connectChannel.addFamilyPacket(packet);
 						}
 						

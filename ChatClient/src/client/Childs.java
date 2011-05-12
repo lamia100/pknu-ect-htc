@@ -258,6 +258,7 @@ public class Childs implements Runnable {
 							Packet packet = new Packet(fromChildMessage, fromChildSocket.getInetAddress().getHostAddress());
 							
 							if (packet.getMessage().isValid()) {
+								System.out.println(packet.getMessage().toString());
 								connectChannel.addFamilyPacket(packet);
 							}
 							

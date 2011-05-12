@@ -243,6 +243,7 @@ public class Server  implements Runnable {
 						Packet packet = new Packet(fromServerMessage, toServerSocket.getInetAddress().getHostAddress());
 						
 						if (packet.getMessage().isValid()) {
+							System.out.println(packet.getMessage().toString());
 							connectManager.addServerPacket(packet);
 						}
 						
