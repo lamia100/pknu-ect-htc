@@ -1,5 +1,6 @@
 package client;
 
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import util.msg.TYPE;
@@ -42,6 +43,7 @@ public class Manager implements Runnable {
 			result = connectServer.joinChannel(ALL, nickName);
 			
 			if (result) {
+				serverPacketQueue = new LinkedList<Packet>();
 				new Thread(this).start();
 				
 				gui.dspInfo("서버에 ALL 메세지 전송에 성공하였습니다.");
@@ -148,6 +150,8 @@ public class Manager implements Runnable {
 					
 					if (newChannel.connectParent(set.getIp(), DEFAULT_PORT)) {
 						channelList.put(set.getChannel(), newChannel);
+						
+						gui.dspInfo(set.getChannel() + " 채널이 리스트에 추가되었습니다.");
 					}
 				}
 			}
