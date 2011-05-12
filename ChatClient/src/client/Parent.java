@@ -32,7 +32,7 @@ public class Parent implements Runnable {
 			fromParentMsg = new BufferedReader(new InputStreamReader(toParentSocket.getInputStream()));
 			toParentMsg = new BufferedWriter(new OutputStreamWriter(toParentSocket.getOutputStream()));
 			
-			new Thread(this).run();
+			new Thread(this).start();
 		}
 		catch (UnknownHostException e) {
 			e.printStackTrace();

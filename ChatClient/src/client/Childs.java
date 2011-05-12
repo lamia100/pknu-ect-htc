@@ -30,7 +30,7 @@ public class Childs implements Runnable {
 		try {
 			forChildSocket = new ServerSocket(myPort);
 			
-			new Thread(this).run();
+			new Thread(this).start();
 		}
 		catch (IOException e) {
 			e.printStackTrace();

@@ -67,7 +67,7 @@ public class Channel implements Runnable {
 			result = connectChilds.readyForChild();
 			
 			if (result) {
-				new Thread(this).run();
+				new Thread(this).start();
 				
 				gui.dspInfo("자식을 받을 준비에 성공하였습니다.");
 			}

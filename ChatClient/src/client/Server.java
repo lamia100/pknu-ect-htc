@@ -32,7 +32,7 @@ public class Server  implements Runnable {
 			fromServerMsg = new BufferedReader(new InputStreamReader(toServerSocket.getInputStream()));
 			toServerMsg = new BufferedWriter(new OutputStreamWriter(toServerSocket.getOutputStream()));
 			
-			new Thread(this).run();
+			new Thread(this).start();
 		}
 		catch (UnknownHostException e) {
 			e.printStackTrace();
@@ -233,7 +233,7 @@ public class Server  implements Runnable {
 		while (toServerSocket.isConnected()) {
 			String line = null;
 			Message fromServerMessage = null;
-				
+			
 			try {
 				while ((line = fromServerMsg.readLine()) != null) {
 					if (fromServerMessage == null) {

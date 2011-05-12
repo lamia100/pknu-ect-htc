@@ -42,7 +42,7 @@ public class Manager implements Runnable {
 			result = connectServer.joinChannel(ALL, nickName);
 			
 			if (result) {
-				new Thread(this).run();
+				new Thread(this).start();
 				
 				gui.dspInfo("서버에 ALL 메세지 전송에 성공하였습니다.");
 			}
