@@ -1,5 +1,6 @@
 package client;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
@@ -20,6 +21,9 @@ public class Manager implements Runnable {
 	private boolean isService;
 	
 	public Manager(String nickName, GUI gui) {
+		channelList = new HashMap<String, Channel>();
+		serverPacketQueue = new LinkedList<Packet>();
+		
 		this.nickName = nickName;
 		this.gui = gui;
 		
@@ -43,7 +47,6 @@ public class Manager implements Runnable {
 			result = connectServer.joinChannel(ALL, nickName);
 			
 			if (result) {
-				serverPacketQueue = new LinkedList<Packet>();
 				new Thread(this).start();
 				
 				gui.dspInfo("서버에 ALL 메세지 전송에 성공하였습니다.");
