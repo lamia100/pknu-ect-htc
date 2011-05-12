@@ -21,6 +21,14 @@ public class Set extends Message {
 		super(TYPE.SET);
 	}
 	
+	public Set(String channel, String ip, TYPE family, int sequence) {
+		super(TYPE.SET);
+		this.channel=channel;
+		this.family=family;
+		this.ip=ip;
+		this.sequence=sequence;
+	}
+	
 	@Override
 	public boolean parse(String line) {
 		// TODO Auto-generated method stub
@@ -49,7 +57,7 @@ public class Set extends Message {
 					sequence = Integer.parseInt(value);
 				} catch (NumberFormatException e) {
 					e.printStackTrace();
-					isValid=false;
+					isValid = false;
 					return false;
 				}
 				break;
