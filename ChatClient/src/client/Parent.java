@@ -70,7 +70,7 @@ public class Parent implements Runnable {
 		try {
 			toParentMsg.write(HEAD_TYPE_REQUEST + TOKEN_HEAD);
 			toParentMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
-			toParentMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD);
+			toParentMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD);
 			toParentMsg.flush();
 		}
 		catch (IOException e) {

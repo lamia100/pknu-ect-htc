@@ -70,7 +70,7 @@ public class Server  implements Runnable {
 		try {
 			toServerMsg.write(HEAD_TYPE_JOIN + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
-			toServerMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
+			toServerMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 		}
 		catch (Exception e) {
@@ -85,7 +85,7 @@ public class Server  implements Runnable {
 		try {
 			toServerMsg.write(HEAD_TYPE_EXIT + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
-			toServerMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
+			toServerMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 		}
 		catch (IOException e) {
@@ -102,7 +102,7 @@ public class Server  implements Runnable {
 			toServerMsg.write(HEAD_CAST + ":" + HEAD_CAST_BROAD + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 			toServerMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
-			toServerMsg.write(HEAD_MSG + ":" + msg + TOKEN_HEAD);
+			toServerMsg.write(HEAD_MSG + ":" + msg + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 		}
 		catch (Exception e) {
@@ -119,7 +119,7 @@ public class Server  implements Runnable {
 			toServerMsg.write(HEAD_CAST + ":" + HEAD_CAST_BROAD + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 			toServerMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
-			toServerMsg.write(HEAD_MSG + ":" + script + TOKEN_HEAD);
+			toServerMsg.write(HEAD_MSG + ":" + script + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 		}
 		catch (Exception e) {
@@ -136,7 +136,7 @@ public class Server  implements Runnable {
 			toServerMsg.write(HEAD_CAST + ":" + HEAD_CAST_UNI + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 			toServerMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
-			toServerMsg.write(HEAD_MSG + ":" + script + TOKEN_HEAD);
+			toServerMsg.write(HEAD_MSG + ":" + script + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 		}
 		catch (Exception e) {
@@ -152,7 +152,7 @@ public class Server  implements Runnable {
 			toServerMsg.write(HEAD_TYPE_SUCCESS + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD);
-			toServerMsg.write(HEAD_IP + ":" + childIP + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + childIP + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 		}
 		catch (Exception e) {
@@ -168,7 +168,7 @@ public class Server  implements Runnable {
 			toServerMsg.write(HEAD_TYPE_FAIL + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD);
-			toServerMsg.write(HEAD_IP + ":" + childIP + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + childIP + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 		}
 		catch (Exception e) {
@@ -184,7 +184,7 @@ public class Server  implements Runnable {
 			toServerMsg.write(HEAD_TYPE_SUCCESS + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_PARENT + TOKEN_HEAD);
-			toServerMsg.write(HEAD_IP + ":" + parentIP + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + parentIP + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 		}
 		catch (Exception e) {
@@ -200,7 +200,7 @@ public class Server  implements Runnable {
 			toServerMsg.write(HEAD_TYPE_FAIL + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_PARENT + TOKEN_HEAD);
-			toServerMsg.write(HEAD_IP + ":" + parentIP + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + parentIP + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 		}
 		catch (Exception e) {
@@ -215,7 +215,7 @@ public class Server  implements Runnable {
 		try {
 			toServerMsg.write(HEAD_TYPE_REQUEST + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
-			toServerMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD);
+			toServerMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 		}
 		catch (Exception e) {

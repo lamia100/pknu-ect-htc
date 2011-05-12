@@ -13,7 +13,6 @@ import javax.swing.BoxLayout;
 import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 
-import client.Channel;
 import client.Manager;
 
 public class GUI extends JFrame {

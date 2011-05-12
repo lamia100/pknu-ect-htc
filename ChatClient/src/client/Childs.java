@@ -196,7 +196,7 @@ public class Childs implements Runnable {
 			try {
 				toChildMsg.write(HEAD_TYPE_JOIN + TOKEN_HEAD);
 				toChildMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
-				toChildMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
+				toChildMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD + TOKEN_HEAD);
 				toChildMsg.flush();
 			}
 			catch (Exception e) {
@@ -211,7 +211,7 @@ public class Childs implements Runnable {
 			try {
 				toChildMsg.write(HEAD_TYPE_EXIT + TOKEN_HEAD);
 				toChildMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
-				toChildMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
+				toChildMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD + TOKEN_HEAD);
 				toChildMsg.flush();
 			}
 			catch (IOException e) {
@@ -229,7 +229,7 @@ public class Childs implements Runnable {
 				toChildMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 				toChildMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD);
 				toChildMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
-				toChildMsg.write(HEAD_MSG + ":" + msg + TOKEN_HEAD);
+				toChildMsg.write(HEAD_MSG + ":" + msg + TOKEN_HEAD + TOKEN_HEAD);
 				toChildMsg.flush();
 			}
 			catch (IOException e) {
