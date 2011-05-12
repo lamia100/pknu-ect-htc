@@ -14,6 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 
 import client.Channel;
+import client.Manager;
 
 public class GUI extends JFrame {
 
@@ -40,7 +41,7 @@ public class GUI extends JFrame {
 	private JScrollPane sp_msg = null;
 	private JTextArea ta_msg = null;
 	private GUI gui;
-	private Channel connectManager;
+	private Manager connectManager;
 	private JScrollPane sp_info = null;
 	private JTextArea ta_info = null;
 	
@@ -182,15 +183,16 @@ public class GUI extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					System.out.println("Login actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					
-					connectManager = new Channel(gui);
+					String serverIP = tf_serverIP.getText();
+					int serverPort = Integer.parseInt(tf_serverPort.getText());
+					String nickName = tf_nickName.getText();
 					
-					boolean result = connectManager.connectServer(tf_serverIP.getText(), Integer.parseInt(tf_serverPort.getText()), tf_nickName.getText());
+					connectManager = new Manager(nickName, gui);
 					
-					if (result) {
-						dspInfo("서버 연결 성공");
-					}
-					else {
-						dspInfo("서버 연결 실패");
+					boolean result = connectManager.connectServer(serverIP, serverPort);
+					
+					if (!result) {
+						connectManager = null;
 					}
 				}
 			});
@@ -225,13 +227,17 @@ public class GUI extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					System.out.println("Join actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					
-					boolean result = connectManager.joinChannel(tf_channel.getText(), tf_nickName.getText());
-					
-					if (result) {
-						dspInfo("채널 접속 성공");
+					if (connectManager != null) {
+						String channel = tf_channel.getText();
+						
+						boolean result = connectManager.joinChannel(channel);
+						
+						if (!result) {
+							connectManager = null;
+						}
 					}
 					else {
-						dspInfo("채널 접속 실패");
+						dspInfo("Login을 하세요.");
 					}
 				}
 			});
@@ -252,9 +258,18 @@ public class GUI extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					System.out.println("Exit actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					
-					connectManager.exitChannel(tf_channel.getText(), tf_nickName.getText());
-					
-					dspInfo("채널에서 나감");
+					if (connectManager != null) {
+						String channel = tf_channel.getText();
+						
+						boolean result = connectManager.exitChannel(channel);
+						
+						if (!result) {
+							connectManager = null;
+						}
+					}
+					else {
+						dspInfo("Login을 하세요.");
+					}
 				}
 			});
 		}
@@ -274,9 +289,15 @@ public class GUI extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					System.out.println("Logout actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					
-					connectManager.disconnectServer(tf_nickName.getText());
-					
-					dspInfo("서버 연결 해제");
+					if (connectManager != null) {
+						connectManager.disconnectServer();
+						connectManager = null;
+						
+						dspInfo("서버 연결 해제");
+					}
+					else {
+						dspInfo("Login을 하세요.");
+					}
 				}
 			});
 		}
@@ -327,7 +348,19 @@ public class GUI extends JFrame {
 					System.out.println("Msg keyTyped()"); // TODO Auto-generated Event stub keyTyped()
 					
 					if (e.getKeyChar() == KeyEvent.VK_ENTER) {
-						connectManager.sendMsg(tf_channel.getText(), tf_nickName.getName(), tf_msg.getText());
+						if (connectManager != null) {
+							String channel = tf_channel.getText();
+							String msg = tf_msg.getText();
+							
+							boolean result = connectManager.sendMsg(channel, msg);
+							
+							if (!result) {
+								connectManager = null;
+							}
+						}
+						else {
+							dspInfo("Login을 하세요.");
+						}
 					}
 				}
 			});
@@ -348,7 +381,19 @@ public class GUI extends JFrame {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					System.out.println("Send actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					
-					connectManager.sendMsg(tf_channel.getText(), tf_nickName.getName(), tf_msg.getText());
+					if (connectManager != null) {
+						String channel = tf_channel.getText();
+						String msg = tf_msg.getText();
+						
+						boolean result = connectManager.sendMsg(channel, msg);
+						
+						if (!result) {
+							connectManager = null;
+						}
+					}
+					else {
+						dspInfo("Login을 하세요.");
+					}
 				}
 			});
 		}
@@ -363,6 +408,7 @@ public class GUI extends JFrame {
 	private JScrollPane getSp_msg() {
 		if (sp_msg == null) {
 			sp_msg = new JScrollPane();
+			sp_msg.setBorder(null);
 			sp_msg.setViewportView(getTa_msg());
 		}
 		return sp_msg;

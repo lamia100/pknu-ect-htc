@@ -9,8 +9,6 @@ import static util.Definition.*;
 import test.GUI;
 
 public class Channel implements Runnable {
-	private final static int MAX_CHILD = 2;
-	
 	private Queue<Packet> familyPacketQueue;
 	private ArrayList<Send> msgList;
 	private int msgOffset;
@@ -22,6 +20,8 @@ public class Channel implements Runnable {
 	private String channel;
 	private String nickName;
 	private GUI gui;
+	
+	private boolean isService;
 	private boolean isFirstConnect;
 	
 	public Channel(Server connectServer, String channel, String nickName, GUI gui) {
@@ -33,10 +33,12 @@ public class Channel implements Runnable {
 		this.channel = channel;
 		this.nickName = nickName;
 		this.gui = gui;
+		
 		isFirstConnect = true;
+		isService = true;
 	}
 	
-	public boolean addPacket(Packet addPacket) {
+	public boolean addFamilyPacket(Packet addPacket) {
 		return familyPacketQueue.offer(addPacket);
 	}
 	
@@ -65,6 +67,8 @@ public class Channel implements Runnable {
 			result = connectChilds.readyForChild();
 			
 			if (result) {
+				new Thread(this).run();
+				
 				gui.dspInfo("자식을 받을 준비에 성공하였습니다.");
 			}
 			else {
@@ -82,6 +86,8 @@ public class Channel implements Runnable {
 		connectServer.exitChannel(channel, nickName);
 		connectChilds.closeAllChild();
 		connectParent.logoutParent();
+		
+		isService = false;
 		
 		gui.dspInfo("채널 연결을 끊었습니다.");
 	}
@@ -108,7 +114,7 @@ public class Channel implements Runnable {
 	
 	@Override
 	public void run() {
-		while (true) {
+		while (isService) {
 			Packet packet = null;
 			
 			if ((packet = familyPacketQueue.poll()) != null) {
@@ -200,7 +206,6 @@ public class Channel implements Runnable {
 				}
 				
 				break;
-			default:	
 			}
 			
 			break;
