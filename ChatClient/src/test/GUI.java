@@ -260,11 +260,7 @@ public class GUI extends JFrame {
 					if (connectManager != null) {
 						String channel = tf_channel.getText();
 						
-						boolean result = connectManager.exitChannel(channel);
-						
-						if (!result) {
-							connectManager = null;
-						}
+						connectManager.exitChannel(channel);
 					}
 					else {
 						dspInfo("Login을 하세요.");

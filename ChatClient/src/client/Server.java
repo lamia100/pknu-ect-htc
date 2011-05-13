@@ -78,9 +78,10 @@ public class Server  implements Runnable {
 		isService = false;
 		
 		try {
-			fromServerMsg.close();
-			toServerMsg.close();
 			toServerSocket.close();
+			toServerSocket = null;
+			fromServerMsg = null;
+			toServerMsg = null;
 		}
 		catch (IOException e) {
 			e.printStackTrace();

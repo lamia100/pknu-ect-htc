@@ -24,7 +24,6 @@ public class Channel implements Runnable {
 	private boolean isService;
 	private boolean isFirstConnect;
 	
-	@SuppressWarnings("unused")
 	private void debug(String msg) {
 		System.out.println("[채널(" + channel + ")] : " + msg);
 	}
@@ -56,11 +55,11 @@ public class Channel implements Runnable {
 		return familyPacketQueue.offer(addPacket);
 	}
 	
-	private int getLastSequence() {
+	public int getLastSequence() {
 		return msgOffset + msgList.size() - 1;
 	}
 	
-	private Send getMsg(int sequence) {
+	public Send getMsg(int sequence) {
 		return msgList.get(sequence - msgOffset - 1);
 	}
 	
@@ -73,13 +72,13 @@ public class Channel implements Runnable {
 		
 		if (result) {			
 			connectChilds = new Childs(this, DEFAULT_PORT + 1);
-			result = connectChilds.readyForChild();
 			
-			if (result) {				
-				connectServer.successConnectToParent(parentIP, parentIP, sequence);
-				
-				new Thread(this).start();
-			}
+			new Thread(this).start();
+			
+			connectServer.successConnectToParent(parentIP, parentIP, sequence);
+		}
+		else {
+			connectServer.failConnectToParent(parentIP, parentIP, sequence);
 		}
 		
 		debug("연결", result);
@@ -89,11 +88,15 @@ public class Channel implements Runnable {
 	
 	public void disconnectChannel() {
 		connectServer.exitChannel(channel, nickName);
-		connectChilds.closeAllChild();		
-		connectParent.logoutParent();
 		
 		isService = false;
 		addFamilyPacket(new Packet(new Send(), ""));
+		
+		connectChilds.closeAllChild();
+		
+		debug("11");
+		
+		connectParent.logoutParent();
 		
 		debug("연결 해제", true);
 	}
@@ -207,10 +210,12 @@ public class Channel implements Runnable {
 				break;
 			case FAMILY_CHILD:
 				if (connectChilds.getChildSize() < MAX_CHILD) {
-					connectServer.successOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
-					
-					Send msg = msgList.get(msgList.size() - 1);
-					connectChilds.sendMsgToSomeChild(set.getIp(), msg.getChannel(), msg.getSeq(), msg.getNick(), msg.getMsg());
+					if (connectChilds.readyForChild()) {
+						connectServer.successOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
+					}
+					else {
+						connectServer.failOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
+					}
 				}
 				else {
 					connectServer.failOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());

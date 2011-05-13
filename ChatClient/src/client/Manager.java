@@ -71,16 +71,18 @@ public class Manager implements Runnable {
 			gui.dspInfo("서버 연결에 실패하였습니다.");
 		}
 		
-		return isService = result;
+		return result;
 	}
 	
 	public void disconnectServer() {
+		isService = false;
+		addServerPacket(new Packet(new Send(), ""));
+		
 		for (Channel ch : channelList.values()) {
 			ch.disconnectChannel();
 		}
 		
 		connectServer.exitChannel(ALL, nickName);
-		isService = false;
 		connectServer.logoutServer();
 		
 		gui.dspInfo("서버 연결을 끊었습니다.");
@@ -90,35 +92,29 @@ public class Manager implements Runnable {
 		boolean result = connectServer.joinChannel(channel, nickName);
 		
 		if (!result) {
+			disconnectServer();
+			
 			gui.dspInfo("서버에 채널 입장 메세지를 보내지 못했습니다. 이전에 서버와 연결이 끊겼습니다.");
 		}
 		
-		return isService = result;
+		return result;
 	}
 	
-	public boolean exitChannel(String channel) {
-		boolean result = connectServer.exitChannel(channel, nickName);
-		
-		if (!result) {
-			gui.dspInfo("서버에 채널 퇴장 메세지를 보내지 못했습니다. 이전에 서버와 연결이 끊겼습니다.");
-		}
-		
-		if (channel != ALL) {
-			channelList.get(channel).disconnectChannel();
-			channelList.remove(channel);
-		}
-		
-		return isService = result;
+	public void exitChannel(String channel) {
+		channelList.get(channel).disconnectChannel();
+		channelList.remove(channel);
 	}
 	
 	public boolean sendMsg(String channel, String msg) {
 		boolean result = connectServer.sendMsgToServer(channel, nickName, msg);
 		
 		if (!result) {
+			disconnectServer();
+			
 			gui.dspInfo("서버에 메세지를 보내지 못했습니다. 이전에 서버와 연결이 끊겼습니다.");
 		}
 		
-		return isService = result;
+		return result;
 	}
 	
 	
@@ -168,12 +164,11 @@ public class Manager implements Runnable {
 					
 					if (newChannel.connectParent(set.getIp(), DEFAULT_PORT, set.getSequence())) {
 						channelList.put(set.getChannel(), newChannel);
-						connectServer.successConnectToParent(set.getChannel(), set.getIp(), set.getSequence());
-							
-						gui.dspInfo(set.getChannel() + " 채널이 리스트에 추가되었습니다.");
+													
+						gui.dspInfo(set.getChannel() + " 채널 접속에 성공하였습니다.");
 					}
 					else {
-						connectServer.failConnectToParent(set.getChannel(), set.getIp(), set.getSequence());
+						gui.dspInfo(set.getChannel() + " 채널 접속에 실패하였습니다.");
 					}
 				}
 			}

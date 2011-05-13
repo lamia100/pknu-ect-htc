@@ -68,7 +68,7 @@ public class Parent implements Runnable {
 		
 		debug("연결", result);
 		
-		return isService = result;
+		return result;
 	}
 	
 	/**
@@ -78,9 +78,10 @@ public class Parent implements Runnable {
 		isService = false;
 		
 		try {
-			fromParentMsg.close();
-			toParentMsg.close();
 			toParentSocket.close();
+			toParentSocket = null;
+			fromParentMsg = null;
+			toParentMsg = null;
 		}
 		catch (IOException e) {
 			e.printStackTrace();
@@ -122,7 +123,7 @@ public class Parent implements Runnable {
 		
 		debug("REQ/" + channel + "/" + sequence + "/보내기", result);
 		
-		return isService = result;
+		return result;
 	}
 
 	

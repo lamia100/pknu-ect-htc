@@ -2,6 +2,7 @@ package client;
 
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.SocketTimeoutException;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import util.msg.Message;
+import util.msg.sub.Send;
 import static util.Definition.*;
 
 public class Childs implements Runnable {
@@ -18,8 +20,6 @@ public class Childs implements Runnable {
 	private int myPort;
 	private ServerSocket forChildSocket;
 	private Map<String, Child> childList;
-	
-	private boolean isService;
 	
 	private void debug(String msg) {
 		System.out.println("[자식들] : " + msg);
@@ -39,8 +39,6 @@ public class Childs implements Runnable {
 		
 		this.connectChannel = connectChannel;
 		this.myPort = myPort;
-		
-		isService = true;
 	}
 	
 	/**
@@ -52,6 +50,7 @@ public class Childs implements Runnable {
 		
 		try {
 			forChildSocket = new ServerSocket(myPort);
+			forChildSocket.setSoTimeout(5000);
 			
 			new Thread(this).start();
 			
@@ -63,25 +62,16 @@ public class Childs implements Runnable {
 		
 		debug("받을 준비", result);
 		
-		return isService = result;
+		return result;
 	}
 
 	/**
 	 * 모든 자식들 연결 해제, 자식을 받을 소켓 해제, 쓰레드 멈춤
 	 */
 	public void closeAllChild() {
-		isService = false;
-		
 		Iterator<Child> it = childList.values().iterator();
 		while (it.hasNext()) {
 			it.next().closeToChild();
-		}
-		
-		try {
-			forChildSocket.close();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
 		}
 		
 		debug("받을 소켓 해제", true);
@@ -202,7 +192,7 @@ public class Childs implements Runnable {
 	
 	@Override
 	public void run() {
-		while (isService && forChildSocket.isBound()) {			
+		if (forChildSocket.isBound()) {			
 			try {
 				Socket fromChildSocket = forChildSocket.accept();
 				
@@ -212,6 +202,9 @@ public class Childs implements Runnable {
 				if (newChild.readyFromChild()) {
 					childList.put(fromChildSocket.getInetAddress().getHostAddress(), newChild);
 				}
+			}
+			catch (SocketTimeoutException e) {
+				e.printStackTrace();
 			}
 			catch (IOException e) {
 				e.printStackTrace();
@@ -247,7 +240,7 @@ public class Childs implements Runnable {
 		}
 		
 		/**
-		 * 자식 소켓에 대한 버퍼를 준비하고 쓰레드로 돌림, 실질적인 초기화를 담당
+		 * 자식 소켓에 대한 버퍼를 준비하고 자식이 마지막 메세지를 받는다면 쓰레드로 돌림, 실질적인 초기화를 담당
 		 * @return 준비 성공 여부, 성공이라면 쓰레드로 돌아감
 		 */
 		private boolean readyFromChild() {
@@ -257,9 +250,13 @@ public class Childs implements Runnable {
 				fromChildMsg = new BufferedReader(new InputStreamReader(fromChildSocket.getInputStream()));
 				toChildMsg = new BufferedWriter(new OutputStreamWriter(fromChildSocket.getOutputStream()));
 				
-				new Thread(this).start();
+				Send msg = connectChannel.getMsg(connectChannel.getLastSequence());				
 				
-				result = true;
+				if (sendMsgToChild(msg.getChannel(), msg.getSeq(), msg.getNick(), msg.getMsg())) {
+					new Thread(this).start();
+					
+					result = true;
+				}
 			}
 			catch (IOException e) {
 				e.printStackTrace();
@@ -267,7 +264,7 @@ public class Childs implements Runnable {
 			
 			this.debug("연결", result);
 			
-			return this.isService = result;
+			return result;
 		}
 		
 		/**
@@ -277,9 +274,10 @@ public class Childs implements Runnable {
 			this.isService = false;
 			
 			try {
-				fromChildMsg.close();
-				toChildMsg.close();
 				fromChildSocket.close();
+				fromChildSocket = null;
+				fromChildMsg = null;
+				toChildMsg = null;
 			}
 			catch (IOException e) {
 				e.printStackTrace();
@@ -322,7 +320,7 @@ public class Childs implements Runnable {
 			
 			this.debug("JOIN/" + channel + "/" + nickName + "/보내기", result);
 			
-			return this.isService = result;
+			return result;
 		}
 		
 		/**
@@ -348,7 +346,7 @@ public class Childs implements Runnable {
 			
 			this.debug("EXIT/" + channel + "/" + nickName + "/보내기", result);
 			
-			return this.isService = result;
+			return result;
 		}
 		
 		/**
@@ -379,14 +377,14 @@ public class Childs implements Runnable {
 			
 			this.debug("SEND/BROAD " + channel + "/" + nickName + "/" + msg + "/보내기", result);
 			
-			return this.isService = result;
+			return result;
 		}
 		
 		
 		// ------------------------------------------------- R E C E I V E -------------------------------------------------
 		
 		@Override
-		public void run() {
+		public void run() {			
 			String line = null;
 			Message fromChildMessage = null;
 			
