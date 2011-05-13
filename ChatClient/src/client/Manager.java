@@ -72,9 +72,8 @@ public class Manager implements Runnable {
 		}
 		
 		connectServer.exitChannel(ALL, nickName);
-		connectServer.logoutServer();
-		
 		isService = false;
+		connectServer.logoutServer();
 		
 		gui.dspInfo("서버 연결을 끊었습니다.");
 	}
@@ -128,10 +127,20 @@ public class Manager implements Runnable {
 	@Override
 	public void run() {
 		while (isService) {
+			debug("Manager Thread Loop");
+			
 			Packet packet = null;
 			
 			if ((packet = serverPacketQueue.poll()) != null) {
 				performService(packet);
+			}
+			
+			// 루프가 너무 빨리 돌아서
+			try {
+				Thread.sleep(100);
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 	}

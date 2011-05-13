@@ -389,7 +389,7 @@ public class Childs implements Runnable {
 		
 		@Override
 		public void run() {
-			while (isService && fromChildSocket.isConnected()) {
+			while (this.isService && fromChildSocket.isConnected()) {
 				String line = null;
 				Message fromChildMessage = null;
 					

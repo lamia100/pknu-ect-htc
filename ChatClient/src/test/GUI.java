@@ -114,7 +114,7 @@ public class GUI extends JFrame {
 	private JTextField getTf_serverIP() {
 		if (tf_serverIP == null) {
 			tf_serverIP = new JTextField();
-			tf_serverIP.setText("112.162.198.121");
+			tf_serverIP.setText("127.0.0.1");
 			tf_serverIP.setColumns(10);
 		}
 		return tf_serverIP;
@@ -408,6 +408,7 @@ public class GUI extends JFrame {
 		if (sp_msg == null) {
 			sp_msg = new JScrollPane();
 			sp_msg.setBorder(null);
+			sp_msg.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 			sp_msg.setViewportView(getTa_msg());
 		}
 		return sp_msg;
@@ -421,7 +422,7 @@ public class GUI extends JFrame {
 	private JTextArea getTa_msg() {
 		if (ta_msg == null) {
 			ta_msg = new JTextArea();
-			ta_msg.setText("Msg");
+			ta_msg.setText("Msg\n");
 			ta_msg.setLineWrap(true);
 		}
 		return ta_msg;
@@ -436,17 +437,20 @@ public class GUI extends JFrame {
 		if (sp_info == null) {
 			sp_info = new JScrollPane();
 			sp_info.setBorder(null);
+			sp_info.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 			sp_info.setViewportView(getTa_info());
 		}
 		return sp_info;
 	}
 
 	public void dspMsg(String msg) {
-		ta_msg.append("\n" + msg);
+		sp_msg.getVerticalScrollBar().setValue(sp_msg.getVerticalScrollBar().getMaximum());
+		ta_msg.append(msg + "\n");
 	}
 	
 	public void dspInfo(String info) {
-		ta_info.append("\n" + info);
+		sp_info.getVerticalScrollBar().setValue(sp_info.getVerticalScrollBar().getMaximum());
+		ta_info.append(info + "\n");
 	}
 	
 	/**
@@ -458,7 +462,7 @@ public class GUI extends JFrame {
 		if (ta_info == null) {
 			ta_info = new JTextArea();
 			ta_info.setColumns(0);
-			ta_info.setText("Info");
+			ta_info.setText("Info\n");
 			ta_info.setLineWrap(true);
 			ta_info.setRows(5);
 		}

@@ -22,7 +22,7 @@ public class Server  implements Runnable {
 	private boolean isService;
 	
 	private void debug(String msg) {
-		System.out.println("서버로부터 " + msg + " :: 받음");
+		System.out.println(msg);
 	}
 	
 	private void debug(String msg, boolean result) {
@@ -378,6 +378,8 @@ public class Server  implements Runnable {
 	@Override
 	public void run() {
 		while (isService && toServerSocket.isConnected()) {
+			debug("Server Thread Loop");
+			
 			String line = null;
 			Message fromServerMessage = null;
 			
@@ -392,7 +394,7 @@ public class Server  implements Runnable {
 						Packet packet = new Packet(fromServerMessage, toServerSocket.getInetAddress().getHostAddress());
 						
 						if (packet.getMessage().isValid()) {
-							debug(packet.getMessage().toString() + " 정상 패킷");
+							debug("서버로부터 " + packet.getMessage().toString() + " 정상 패킷 :: 받음");
 							connectManager.addServerPacket(packet);
 						}
 						
