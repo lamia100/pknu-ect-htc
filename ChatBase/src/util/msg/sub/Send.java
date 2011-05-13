@@ -4,6 +4,7 @@ import java.util.StringTokenizer;
 
 import util.msg.Message;
 import util.msg.TYPE;
+import static util.Definition.*;
 
 /**
  * 
@@ -48,12 +49,12 @@ public class Send extends Message {
 		StringTokenizer token = new StringTokenizer(line, ":");
 		String typeStr;
 		String value;
-		if(token.hasMoreElements()){
+		if (token.hasMoreElements()) {
 			typeStr = token.nextToken();
 			value = token.nextToken().trim();
-		}else{
+		} else {
 			typeStr = line;
-			value="";
+			value = "";
 		}
 		TYPE type = getStringToType(typeStr);
 		
@@ -92,17 +93,30 @@ public class Send extends Message {
 	
 	/**
 	 * 사용자로부터 받은 메세지에 시퀀스를 붙이는 작업.
+	 * 
 	 * @param sequence
 	 * @return
 	 */
-	public Send getClone(int sequence)
-	{
-		Send send=new Send();
-		send.cast=cast;
-		send.seq=sequence;
-		send.nick=nick;
-		send.msg=msg;
+	public Send getClone(int sequence) {
+		Send send = new Send();
+		send.cast = cast;
+		send.seq = sequence;
+		send.nick = nick;
+		send.msg = msg;
 		
 		return send;
+	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		String temp = 
+		HEAD_TYPE_SEND + TOKEN_HEAD +
+		HEAD_CAST + ":" + cast.toString() + TOKEN_HEAD + 
+		HEAD_CHANNEL + ":"+ channel + TOKEN_HEAD + 
+		HEAD_NICK + ":" + nick + TOKEN_HEAD + 
+		HEAD_MSG + ":" + msg + TOKEN_HEAD + 
+		TOKEN_HEAD;
+		return temp;
 	}
 }

@@ -84,4 +84,6 @@ public abstract class Message {
 	{
 		return isValid;
 	}
+	
+	public abstract String toString();
 }

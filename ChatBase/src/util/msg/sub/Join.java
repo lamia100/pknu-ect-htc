@@ -3,7 +3,7 @@ package util.msg.sub;
 import util.msg.Message;
 import util.msg.TYPE;
 import java.util.StringTokenizer;
-
+import static util.Definition.*;
 /**
  * 
  * @author ¼­º¸·æ
@@ -20,7 +20,6 @@ public class Join extends Message {
 	@Override
 	public boolean parse(String line) {
 		StringTokenizer token = new StringTokenizer(line, ":");
-		System.out.println("Join : "+ line);
 		String typeStr;
 		String value;
 		if(token.hasMoreElements()){
@@ -55,5 +54,15 @@ public class Join extends Message {
 
 	public String getNick() {
 		return nick;
+	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		String temp=HEAD_TYPE_JOIN + TOKEN_HEAD + 
+		 HEAD_CHANNEL+ ":"+ channel+ TOKEN_HEAD + 
+		 HEAD_NICK +":"+ nick+ TOKEN_HEAD + 
+		 TOKEN_HEAD;
+		return temp;
 	}
 }

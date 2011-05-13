@@ -72,4 +72,10 @@ public class Script extends Message {
 	public String getMsg() {
 		return msg;
 	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "scr";
+	}
 }

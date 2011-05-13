@@ -71,4 +71,10 @@ public class Fail extends Message {
 	public int getSequence() {
 		return sequence;
 	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "fail";
+	}
 }

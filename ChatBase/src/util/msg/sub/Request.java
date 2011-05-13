@@ -61,4 +61,10 @@ public class Request extends Message {
 	public int getSeq() {
 		return seq;
 	}
+
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "req";
+	}
 }

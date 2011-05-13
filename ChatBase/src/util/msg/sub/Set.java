@@ -5,6 +5,8 @@ import java.util.StringTokenizer;
 import util.msg.Message;
 import util.msg.TYPE;
 
+import static util.Definition.*;
+
 /**
  * 
  * @author malloc
@@ -23,10 +25,10 @@ public class Set extends Message {
 	
 	public Set(String channel, String ip, TYPE family, int sequence) {
 		super(TYPE.SET);
-		this.channel=channel;
-		this.family=family;
-		this.ip=ip;
-		this.sequence=sequence;
+		this.channel = channel;
+		this.family = family;
+		this.ip = ip;
+		this.sequence = sequence;
 	}
 	
 	@Override
@@ -35,12 +37,12 @@ public class Set extends Message {
 		StringTokenizer token = new StringTokenizer(line, ":");
 		String typeStr;
 		String value;
-		if(token.hasMoreElements()){
+		if (token.hasMoreElements()) {
 			typeStr = token.nextToken();
 			value = token.nextToken().trim();
-		}else{
+		} else {
 			typeStr = line;
-			value="";
+			value = "";
 		}
 		TYPE type = getStringToType(typeStr);
 		switch (type) {
@@ -88,5 +90,17 @@ public class Set extends Message {
 	
 	public int getSequence() {
 		return sequence;
+	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		String temp = HEAD_TYPE_SET + TOKEN_HEAD + 
+		HEAD_CHANNEL + ":" + channel + TOKEN_HEAD + 
+		HEAD_FAMILY + ":"+ family.toString() + TOKEN_HEAD + 
+		HEAD_IP + ":" + ip + TOKEN_HEAD + 
+		HEAD_SEQ + ":" + sequence + TOKEN_HEAD +
+		TOKEN_HEAD;
+		return temp;
 	}
 }

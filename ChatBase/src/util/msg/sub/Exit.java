@@ -62,4 +62,9 @@ public class Exit extends Message {
 	public String getNick() {
 		return nick;
 	}
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return "exit";
+	}
 }
