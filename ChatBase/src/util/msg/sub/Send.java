@@ -100,6 +100,7 @@ public class Send extends Message {
 	public Send getClone(int sequence) {
 		Send send = new Send();
 		send.cast = cast;
+		send.channel=channel;
 		send.seq = sequence;
 		send.nick = nick;
 		send.msg = msg;
@@ -113,6 +114,7 @@ public class Send extends Message {
 		String temp = 
 		HEAD_TYPE_SEND + TOKEN_HEAD +
 		HEAD_CAST + ":" + cast.toString() + TOKEN_HEAD + 
+		HEAD_SEQ + ":" + seq + TOKEN_HEAD + 
 		HEAD_CHANNEL + ":"+ channel + TOKEN_HEAD + 
 		HEAD_NICK + ":" + nick + TOKEN_HEAD + 
 		HEAD_MSG + ":" + msg + TOKEN_HEAD + 
