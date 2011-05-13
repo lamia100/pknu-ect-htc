@@ -103,11 +103,12 @@ public class Set extends Message {
 
 	@Override
 	public String toString() {
-		String format = HEAD_TYPE_SET + TOKEN_HEAD
-					+ HEAD_CHANNEL + ":" + channel + TOKEN_HEAD
-					+ HEAD_FAMILY + ":" + family.toString()	+ TOKEN_HEAD
-					+ HEAD_IP + ":" + ip + TOKEN_HEAD
-					+ HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD;
+		String format = HEAD_TYPE_SET + TOKEN_HEAD+ 
+			HEAD_CHANNEL + ":" + channel + TOKEN_HEAD + 
+			HEAD_FAMILY + ":" + family.toString() + TOKEN_HEAD + 
+			HEAD_IP + ":" + ip + TOKEN_HEAD + 
+			HEAD_SEQ + ":" + sequence + TOKEN_HEAD + 
+			TOKEN_HEAD;
 		
 		return format;
 	}
