@@ -205,6 +205,8 @@ public class Childs implements Runnable {
 	@Override
 	public void run() {
 		while (isService && forChildSocket.isBound()) {
+			debug("Childs Thread Loop");
+			
 			try {
 				Socket fromChildSocket = forChildSocket.accept();
 				
@@ -390,6 +392,8 @@ public class Childs implements Runnable {
 		@Override
 		public void run() {
 			while (this.isService && fromChildSocket.isConnected()) {
+				debug("Child Thread Loop");
+				
 				String line = null;
 				Message fromChildMessage = null;
 					

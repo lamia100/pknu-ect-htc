@@ -131,6 +131,8 @@ public class Parent implements Runnable {
 	@Override
 	public void run() {
 		while (isService && toParentSocket.isConnected()) {
+			debug("Parent Thread Loop");
+			
 			String line = null;
 			Message fromParentMessage = null;
 				
