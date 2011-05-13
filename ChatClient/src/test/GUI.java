@@ -445,9 +445,9 @@ public class GUI extends JFrame {
 		return sp_info;
 	}
 
-	public void dspMsg(String msg) {
+	public void dspMsg(String nickName, String msg) {
 		sp_msg.getVerticalScrollBar().setValue(sp_msg.getVerticalScrollBar().getMaximum());
-		ta_msg.append(msg);
+		ta_msg.append("[" + nickName + "] " + msg);
 	}
 	
 	public void dspInfo(String info) {
