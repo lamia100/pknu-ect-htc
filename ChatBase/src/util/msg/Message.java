@@ -33,10 +33,14 @@ public abstract class Message {
 		Message msg;
 		if (str==null)
 		{
-			throw new NullPointerException("Message.ParsType input is Null");
+			//throw new NullPointerException("Message.ParsType input is Null");
 			//return null;
 		}
 		TYPE type = getTypeTable().get(str);
+		
+		if (type == null) {
+			return null;
+		}
 		
 		switch (type) {
 		case SEND:
