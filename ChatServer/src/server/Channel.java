@@ -11,6 +11,7 @@ import util.msg.Message;
 import util.msg.TYPE;
 import util.msg.sub.Exit;
 import util.msg.sub.Join;
+import util.msg.sub.Send;
 import util.msg.sub.Set;
 import util.msg.sub.Success;
 
@@ -28,7 +29,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 	private final Map<Integer, LinkSequence> changes;
 	private String name = "";
 	private boolean isRun = true;
-	
+	private int messageSqeuence=0;
 	public int setID = 0;
 	
 	public Channel(String name) {
@@ -53,6 +54,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 	
 	/**
 	 * Server 클레스에서만 호출 할것.
+	 * @param messageProcessor 서버에서 사용하는 유일한 {@link MessageProcessor}
 	 */
 	public static void setMessageProcessor(MessageProcessor messageProcessor) {
 		Channel.messageProcessor = messageProcessor;
@@ -83,8 +85,15 @@ public class Channel implements Comparable<Channel>, Runnable {
 	}
 	
 	private void send(Message message) {
+		System.out.println("CH : Send");
+		Send send;
+		if(message.getType()==TYPE.SEND)
+			send=(Send)message;
+		else
+			return;
+		
 		if(users.size()>1)
-			users.get(1).send(message);
+			users.get(1).send(send.getClone(messageSqeuence++));
 	}
 	
 	private void join(Join message) {
@@ -125,21 +134,27 @@ public class Channel implements Comparable<Channel>, Runnable {
 				System.out.println("체널 디큐 \n 내용 : " + message);
 				switch (message.getType()) {
 					case SEND:
+						System.out.println("CH CASE SEND");
 						send(message);
 						break;
 					case JOIN:
+						System.out.println("CH CASE JOIN");
 						join((Join) message);
 						break;
 					case EXIT:
+						System.out.println("CH CASE EXIT");
 						exit((Exit) message);
 						break;
 					case SET:
+						System.out.println("CH CASE SET");
 						set((Set) message);
 						break;
 					case SUCCESS:
+						System.out.println("CH CASE SUCCESS");
 						success((Success) message);
 						break;
 					default:
+						System.out.println("CH CASE DEFAULT");
 						break;
 				}
 			}

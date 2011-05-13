@@ -68,11 +68,10 @@ public class MessageProcessor implements Runnable {
 				e.printStackTrace();
 			}
 			System.out.println("MP : 메세지 있음");
-			System.out.println(message);
+			System.out.println("MP : 내용\n"+message);
 			if (message != null) {
 				switch (message.getType()) {
 					case SEND:
-						//
 						send((Send) message);
 						break;
 					case JOIN:
@@ -92,6 +91,9 @@ public class MessageProcessor implements Runnable {
 		if (channel != null) {
 			System.out.println("메세지 받았음");
 			channel.enqueue(send);
+		}else {
+			System.out.println(send.getChannel() + "체널이 없음");
+			
 		}
 	}
 	
@@ -101,6 +103,7 @@ public class MessageProcessor implements Runnable {
 			channel.enqueue(join);
 		} else {
 			channel = new Channel(join.getChannel());
+			channels.put(join.getChannel(),channel);
 			new Thread(channel).start();
 			channel.enqueue(join);
 			

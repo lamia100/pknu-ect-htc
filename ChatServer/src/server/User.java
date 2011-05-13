@@ -53,7 +53,7 @@ public class User implements Comparable<User>, Runnable {
 		try {
 			while (isRun) {
 				line = in.readLine();
-				System.out.println(line);
+				System.out.println("User Line : "+line);
 				if (message == null) {
 					message = Message.parsType(line);
 					
@@ -97,7 +97,7 @@ public class User implements Comparable<User>, Runnable {
 	public synchronized void send(Message message) {
 		try {
 			System.out.println("user : 메세지 전송");
-			System.out.println(message);
+			System.out.println("user 내용 :\n"+message);
 			
 			out.write(message.toString());
 			out.flush();
@@ -107,7 +107,13 @@ public class User implements Comparable<User>, Runnable {
 	}
 	
 	public void disconnect() {
-		
+		send(new Send());
+		try {
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	public void stop()
 	{
@@ -125,7 +131,7 @@ public class User implements Comparable<User>, Runnable {
 		try {
 			while (isRun) {
 				line = in.readLine();
-				System.out.println(line);
+				System.out.println("User line : "+line);
 				if (message == null) {
 					message = Message.parsType(line);
 					
