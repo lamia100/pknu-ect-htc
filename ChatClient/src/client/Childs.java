@@ -19,30 +19,60 @@ public class Childs implements Runnable {
 	private ServerSocket forChildSocket;
 	private Map<String, Child> childList;
 	
+	private boolean isService;
+	
+	private void debug(String msg) {
+		System.out.println(msg);
+	}
+	
+	private void debug(String msg, boolean result) {
+		if (result) {
+			System.out.println(msg + " :: 성공");
+		}
+		else {
+			System.out.println(msg + " :: 실패");
+		}
+	}
+	
 	public Childs(Channel connectChannel, int myPort) {
+		childList = new HashMap<String, Childs.Child>();
+		
 		this.connectChannel = connectChannel;
 		this.myPort = myPort;
 		
-		childList = new HashMap<String, Childs.Child>();
+		isService = true;
 	}
 	
+	/**
+	 * 자식을 받을 서버 소켓을 준비, 실질적인 초기화를 담당
+	 * @return 준비 성공 여부, 성공이라면 쓰레드로 돌아감
+	 */
 	public boolean readyForChild() {
+		boolean result = false;
+		
 		try {
 			forChildSocket = new ServerSocket(myPort);
 			
 			new Thread(this).start();
+			
+			result = true;
 		}
 		catch (IOException e) {
 			e.printStackTrace();
-			return false;
 		}
 		
-		return true;
+		debug("자식을 받을 준비", result);
+		
+		return isService = result;
 	}
 
-	public boolean closeAllChild() {
+	/**
+	 * 모든 자식들 연결 해제, 자식을 받을 소켓 해제, 쓰레드 멈춤
+	 */
+	public void closeAllChild() {
+		isService = false;
+		
 		Iterator<Child> it = childList.values().iterator();
-				
 		while (it.hasNext()) {
 			it.next().closeToChild();
 		}
@@ -52,19 +82,26 @@ public class Childs implements Runnable {
 		}
 		catch (IOException e) {
 			e.printStackTrace();
-			return false;
 		}
 		
-		return true;
+		debug("자식을 받을 소켓 해제", true);
 	}
 	
-	public boolean closeSomeChild(String childIP) {
-		boolean result = childList.get(childIP).closeToChild();
+	/**
+	 * 자식 하나 연결 해제, 쓰레드 계속 진행
+	 * @param childIP
+	 */
+	public void closeSomeChild(String childIP) {
+		childList.get(childIP).closeToChild();
 		childList.remove(childIP);
 		
-		return result;
+		debug("자식 하나 " + childIP + " 연결 해제", true);
 	}
 	
+	/**
+	 * 모든 자식들의 IP를 반환
+	 * @return 모든 자식의 IP가 담겨있는 배열
+	 */
 	public String[] getChildIPList() {
 		String childIPList[] = new String[childList.size()];
 		
@@ -79,6 +116,10 @@ public class Childs implements Runnable {
 		return childIPList;
 	}
 	
+	/**
+	 * 현재 자식들의 수를 반환
+	 * @return 현재 자식들의 수
+	 */
 	public int getChildSize() {
 		return childList.size();
 	}
