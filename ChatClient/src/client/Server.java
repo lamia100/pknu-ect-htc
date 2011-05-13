@@ -392,27 +392,27 @@ public class Server  implements Runnable {
 	
 	@Override
 	public void run() {
+		String line = null;
+		Message fromServerMessage = null;
+		
 		while (isService && toServerSocket.isConnected()) {			
-			String line = null;
-			Message fromServerMessage = null;
-			
 			try {
-				while ((line = fromServerMsg.readLine()) != null) {
-					debug(line + "/받음");
+				line = fromServerMsg.readLine();
 					
-					if (fromServerMessage == null) {						
-						fromServerMessage = Message.parsType(line);
-					}
-					else if (fromServerMessage.parse(line)) {						
-						Packet packet = new Packet(fromServerMessage, toServerSocket.getInetAddress().getHostAddress());
+				debug(line + "/받음");
+					
+				if (fromServerMessage == null) {						
+					fromServerMessage = Message.parsType(line);
+				}
+				else if (fromServerMessage.parse(line)) {						
+					Packet packet = new Packet(fromServerMessage, toServerSocket.getInetAddress().getHostAddress());
 						
-						if (packet.getMessage().isValid()) {
-							debug(packet.getMessage().getType() + "/정상 패킷 받음");
-							connectManager.addServerPacket(packet);
-						}
-						
-						fromServerMessage = null;
+					if (packet.getMessage().isValid()) {
+						debug(packet.getMessage().getType() + "/정상 패킷 받음");
+						connectManager.addServerPacket(packet);
 					}
+					
+					fromServerMessage = null;
 				}
 			}
 			catch (IOException e) {

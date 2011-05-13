@@ -91,10 +91,11 @@ public class Channel implements Runnable {
 	
 	public void disconnectChannel() {
 		connectServer.exitChannel(channel, nickName);
-		connectChilds.closeAllChild();
+		connectChilds.closeAllChild();		
 		connectParent.logoutParent();
 		
 		isService = false;
+		addFamilyPacket(new Packet(new Send(), ""));
 		
 		debug("연결 해제", true);
 	}

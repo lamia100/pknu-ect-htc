@@ -10,8 +10,8 @@ import static util.Definition.*;
 import test.GUI;
 
 public class Manager implements Runnable {
-	private Map<String, Channel> channelList;
 	private BlockingQueue<Packet> serverPacketQueue;
+	private Map<String, Channel> channelList;
 	
 	private Server connectServer;
 	
@@ -104,6 +104,7 @@ public class Manager implements Runnable {
 		}
 		
 		if (channel != ALL) {
+			channelList.get(channel).disconnectChannel();
 			channelList.remove(channel);
 		}
 		

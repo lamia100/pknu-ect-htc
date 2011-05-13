@@ -387,37 +387,32 @@ public class Childs implements Runnable {
 		
 		@Override
 		public void run() {
+			String line = null;
+			Message fromChildMessage = null;
+			
 			while (this.isService && fromChildSocket.isConnected()) {
-				debug("Child " + getChildIP() + " Thread Loop :: Start");
-				
-				String line = null;
-				Message fromChildMessage = null;
-					
 				try {
-					while ((line = fromChildMsg.readLine()) != null) {
-						this.debug(line + "/받음");
+					line = fromChildMsg.readLine();
+					this.debug(line + "/받음");
 						
-						if (fromChildMessage == null) {
-							fromChildMessage = Message.parsType(line);
-						}
-						else if (fromChildMessage.parse(line)) {
-							Packet packet = new Packet(fromChildMessage, fromChildSocket.getInetAddress().getHostAddress());
+					if (fromChildMessage == null) {
+						fromChildMessage = Message.parsType(line);
+					}
+					else if (fromChildMessage.parse(line)) {
+						Packet packet = new Packet(fromChildMessage, fromChildSocket.getInetAddress().getHostAddress());
 							
-							if (packet.getMessage().isValid()) {
-								this.debug(packet.getMessage().getType() + "/정상 패킷 받음");
-								connectChannel.addFamilyPacket(packet);
-							}
-							
-							fromChildMessage = null;
+						if (packet.getMessage().isValid()) {
+							this.debug(packet.getMessage().getType() + "/정상 패킷 받음");
+							connectChannel.addFamilyPacket(packet);
 						}
+							
+						fromChildMessage = null;
 					}
 				}
 				catch (IOException e) {
 					e.printStackTrace();
 				}
 			}
-			
-			debug("Child " + getChildIP() + " Thread Loop :: End");
 		}
 	}
 }

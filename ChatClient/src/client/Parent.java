@@ -130,27 +130,27 @@ public class Parent implements Runnable {
 	
 	@Override
 	public void run() {
-		while (isService && toParentSocket.isConnected()) {			
-			String line = null;
-			Message fromParentMessage = null;
-				
+		String line = null;
+		Message fromParentMessage = null;
+		
+		while (isService && toParentSocket.isConnected()) {
 			try {
-				while ((line = fromParentMsg.readLine()) != null) {
-					debug(line + "/받음");
+				line = fromParentMsg.readLine();
 					
-					if (fromParentMessage == null) {						
-						fromParentMessage = Message.parsType(line);
-					}
-					else if (fromParentMessage.parse(line)) {
-						Packet packet = new Packet(fromParentMessage, toParentSocket.getInetAddress().getHostAddress());
+				debug(line + "/받음");
+					
+				if (fromParentMessage == null) {						
+					fromParentMessage = Message.parsType(line);
+				}
+				else if (fromParentMessage.parse(line)) {
+					Packet packet = new Packet(fromParentMessage, toParentSocket.getInetAddress().getHostAddress());
 						
-						if (packet.getMessage().isValid()) {
-							debug(packet.getMessage().getType() + "/정상 패킷 받음");
-							connectChannel.addFamilyPacket(packet);
-						}
-						
-						fromParentMessage = null;
+					if (packet.getMessage().isValid()) {
+						debug(packet.getMessage().getType() + "/정상 패킷 받음");
+						connectChannel.addFamilyPacket(packet);
 					}
+						
+					fromParentMessage = null;
 				}
 			}
 			catch (IOException e) {
