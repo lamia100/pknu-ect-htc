@@ -447,7 +447,7 @@ public class GUI extends JFrame {
 
 	public void dspMsg(String msg) {
 		sp_msg.getVerticalScrollBar().setValue(sp_msg.getVerticalScrollBar().getMaximum());
-		ta_msg.append(msg + "\n");
+		ta_msg.append(msg);
 	}
 	
 	public void dspInfo(String info) {
