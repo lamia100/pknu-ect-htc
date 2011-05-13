@@ -22,6 +22,7 @@ public class Definition {
 	public final static String HEAD_CAST_UNI = "uni";
 	
 	public final static String HEAD_CHANNEL = "ch";
+	public final static String ALL="*";
 	
 	public final static String HEAD_SEQ = "seq";
 	
@@ -37,7 +38,7 @@ public class Definition {
 	
 	public final static String HEAD_END = "";
 	
-	public final static String ALL="*";
+	
 	// ---------------------------------------------- Client -> Server ----------------------------------------------
 	
 	/*

@@ -1,20 +1,29 @@
 package util.msg.sub;
 
+import java.util.StringTokenizer;
 import util.msg.Message;
 import util.msg.TYPE;
-import java.util.StringTokenizer;
+import static util.Definition.*;
+
 
 /**
  * 
- * @author ¼­º¸·æ
- *
+ * @author inter6
+ * 
  */
 public class Exit extends Message {
 	private String channel = "";
 	private String nick = "";
-	
+
 	public Exit() {
 		super(TYPE.EXIT);
+	}
+
+	public Exit(String channel, String nick) {
+		super(TYPE.EXIT);
+		
+		this.channel = channel;
+		this.nick = nick;
 	}
 	
 	@Override
@@ -22,39 +31,34 @@ public class Exit extends Message {
 		StringTokenizer token = new StringTokenizer(line, ":");
 		String typeStr;
 		String value;
-		if(token.hasMoreElements()){
+		
+		if (token.hasMoreElements()) {
 			typeStr = token.nextToken();
 			value = token.nextToken().trim();
-		}else{
+		}
+		else {
 			typeStr = line;
-			value="";
+			value = "";
 		}
+
 		TYPE type = getStringToType(typeStr);
-		
+
 		switch (type) {
-			case CHANNEL:
-				channel = value;
-				break;
-			case NICK:
-				nick = value;
-				break;
-			case END:
-				return true;
-			default:
-				break;
+		case CHANNEL:
+			channel = value;
+			
+			break;
+		case NICK:
+			nick = value;
+			
+			break;
+		case END:
+			return true;
 		}
-		
+
 		return false;
 	}
-	
-	public Exit getClone(String channel)
-	{
-		Exit exit=new Exit();
-		exit.channel=channel;
-		exit.nick=nick;
-		return exit;
-	}
-	
+
 	public String getChannel() {
 		return channel;
 	}
@@ -62,9 +66,13 @@ public class Exit extends Message {
 	public String getNick() {
 		return nick;
 	}
+
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return "exit";
+		String format = HEAD_TYPE_EXIT + TOKEN_HEAD
+					+ HEAD_CHANNEL + ":" + channel + TOKEN_HEAD
+					+ HEAD_NICK + ":" + nick + TOKEN_HEAD + TOKEN_HEAD;
+		
+		return format;
 	}
 }

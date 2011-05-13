@@ -1,63 +1,92 @@
 package util.msg.sub;
 
 import java.util.StringTokenizer;
-
 import util.msg.Message;
 import util.msg.TYPE;
+import static util.Definition.*;
 
+/**
+ * 
+ * @author inter6
+ * 
+ */
 public class Fail extends Message {
+	private String channel = "";
 	private TYPE family = null;
 	private String ip = "";
 	private int sequence = 0;
-	
+
 	public Fail() {
-		// TODO Auto-generated constructor stub
 		super(TYPE.FAIL);
+	}
+
+	public Fail(String channel, String ip, TYPE family, int sequence) {
+		super(TYPE.FAIL);
+		
+		this.channel = channel;
+		this.family = family;
+		this.ip = ip;
+		this.sequence = sequence;
 	}
 	
 	@Override
 	public boolean parse(String line) {
-		// TODO Auto-generated method stub
 		StringTokenizer token = new StringTokenizer(line, ":");
 		String typeStr;
 		String value;
-		if(token.hasMoreElements()){
+		
+		if (token.hasMoreElements()) {
 			typeStr = token.nextToken();
 			value = token.nextToken().trim();
-		}else{
-			typeStr = line;
-			value="";
 		}
+		else {
+			typeStr = line;
+			value = "";
+		}
+		
 		TYPE type = getStringToType(typeStr);
 		
 		switch (type) {
-			case FAMILY:
-				if (TYPE.FAMILY_PARENT.toString().equals(value)) {
-					family = TYPE.FAMILY_PARENT;
-				}
-				else if (TYPE.FAMILY_CHILD.toString().equals(value)) {
-					family = TYPE.FAMILY_CHILD;
-				}
-				else {
-					isValid = false;
-				}
-				break;
-			case IP:
-				ip = value;
-				break;
-			case SEQ:
-				try {
-					sequence = Integer.parseInt(value);
-				} catch (NumberFormatException e) {
-					e.printStackTrace();
-					isValid=false;
-					return false;
-				}
-				break;
-			default:
-				break;
+		case CHANNEL:
+			channel = value;
+			
+			break;
+		case FAMILY:
+			if (TYPE.FAMILY_PARENT.toString().equals(value)) {
+				family = TYPE.FAMILY_PARENT;
+			}
+			else if (TYPE.FAMILY_CHILD.toString().equals(value)) {
+				family = TYPE.FAMILY_CHILD;
+			}
+			else {
+				isValid = false;
+			}
+			
+			break;
+		case IP:
+			ip = value;
+			
+			break;
+		case SEQ:
+			try {
+				sequence = Integer.parseInt(value);
+			}
+			catch (NumberFormatException e) {
+				e.printStackTrace();
+				isValid = false;
+				return false;
+			}
+			
+			break;
+		case END:
+			return true;
 		}
+		
 		return false;
+	}
+
+	public String getChannel() {
+		return channel;
 	}
 
 	public TYPE getFamily() {
@@ -74,7 +103,12 @@ public class Fail extends Message {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		return "fail";
+		String format = HEAD_TYPE_FAIL + TOKEN_HEAD
+					+ HEAD_CHANNEL + ":" + channel + TOKEN_HEAD
+					+ HEAD_FAMILY + ":" + family.toString()	+ TOKEN_HEAD
+					+ HEAD_IP + ":" + ip + TOKEN_HEAD
+					+ HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD;
+
+		return format;
 	}
 }

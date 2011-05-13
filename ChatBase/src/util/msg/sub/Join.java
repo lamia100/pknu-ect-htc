@@ -1,20 +1,29 @@
 package util.msg.sub;
 
+import java.util.StringTokenizer;
 import util.msg.Message;
 import util.msg.TYPE;
-import java.util.StringTokenizer;
 import static util.Definition.*;
+
+
 /**
  * 
- * @author ¼­º¸·æ
- *
+ * @author inter6
+ * 
  */
 public class Join extends Message {
 	private String channel = "";
 	private String nick = "";
-	
+
 	public Join() {
 		super(TYPE.JOIN);
+	}
+
+	public Join(String channel, String nick) {
+		super(TYPE.JOIN);
+		
+		this.channel = channel;
+		this.nick = nick;
 	}
 	
 	@Override
@@ -22,29 +31,31 @@ public class Join extends Message {
 		StringTokenizer token = new StringTokenizer(line, ":");
 		String typeStr;
 		String value;
-		if(token.hasMoreElements()){
+		
+		if (token.hasMoreElements()) {
 			typeStr = token.nextToken();
 			value = token.nextToken().trim();
-		}else{
+		}
+		else {
 			typeStr = line;
-			value="";
+			value = "";
 		}
-		
+
 		TYPE type = getStringToType(typeStr);
-		
+
 		switch (type) {
-			case CHANNEL:
-				channel = value;
-				break;
-			case NICK:
-				nick = value;
-				break;
-			case END:
-				return true;
-			default:
-				break;
+		case CHANNEL:
+			channel = value;
+			
+			break;
+		case NICK:
+			nick = value;
+			
+			break;
+		case END:
+			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -58,11 +69,10 @@ public class Join extends Message {
 
 	@Override
 	public String toString() {
-		// TODO Auto-generated method stub
-		String temp=HEAD_TYPE_JOIN + TOKEN_HEAD + 
-		 HEAD_CHANNEL+ ":"+ channel+ TOKEN_HEAD + 
-		 HEAD_NICK +":"+ nick+ TOKEN_HEAD + 
-		 TOKEN_HEAD;
-		return temp;
+		String format = HEAD_TYPE_JOIN + TOKEN_HEAD
+					+ HEAD_CHANNEL + ":" + channel + TOKEN_HEAD
+					+ HEAD_NICK + ":" + nick + TOKEN_HEAD + TOKEN_HEAD;
+		
+		return format;
 	}
 }

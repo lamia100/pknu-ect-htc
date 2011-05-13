@@ -1,6 +1,6 @@
 package util.msg;
-import static util.Definition.*;
 
+import static util.Definition.*;
 
 public enum TYPE {
 	SEND(HEAD_TYPE_SEND), REQUEST(HEAD_TYPE_REQUEST), SET(HEAD_TYPE_SET), SUCCESS(HEAD_TYPE_SUCCESS),
@@ -13,16 +13,16 @@ public enum TYPE {
 	IP(HEAD_IP), 
 	MSG(HEAD_MSG),
 	END(HEAD_END);
-	
+
 	String str = "";
-	
+
 	TYPE(String str) {
 		this.str = str;
 	}
-	
+
 	/*
-	Comparator<TYPE> cmp=new Comparator<TYPE>() {
-		
+	Comparator<TYPE> cmp = new Comparator<TYPE>() {
+
 		@Override
 		public int compare(TYPE o1, TYPE o2) {
 			// TODO Auto-generated method stub
@@ -30,6 +30,7 @@ public enum TYPE {
 		}
 	};
 	*/
+
 	public String toString() {
 		return str;
 	}
