@@ -34,6 +34,10 @@ public class Manager implements Runnable {
 		serverPacketQueue.offer(addPacket);
 	}
 	
+	public void debug(String msg) {
+		System.out.println(msg);
+	}
+	
 	
 	// ------------------------------------------------- GUI input -------------------------------------------------
 	

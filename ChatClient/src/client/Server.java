@@ -377,7 +377,7 @@ public class Server  implements Runnable {
 	
 	@Override
 	public void run() {
-		while (isService) {
+		while (isService && toServerSocket.isConnected()) {
 			String line = null;
 			Message fromServerMessage = null;
 			

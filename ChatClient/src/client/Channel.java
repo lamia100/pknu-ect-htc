@@ -54,6 +54,7 @@ public class Channel implements Runnable {
 		System.out.println(msg);
 	}
 	
+	
 	// ------------------------------------------------- GUI input -------------------------------------------------
 	
 	public boolean connectParent(String parentIP, int parentPort) {

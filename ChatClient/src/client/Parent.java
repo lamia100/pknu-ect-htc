@@ -130,7 +130,7 @@ public class Parent implements Runnable {
 	
 	@Override
 	public void run() {
-		while (isService) {
+		while (isService && toParentSocket.isConnected()) {
 			String line = null;
 			Message fromParentMessage = null;
 				

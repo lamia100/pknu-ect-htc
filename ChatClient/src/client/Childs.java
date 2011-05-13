@@ -44,7 +44,7 @@ public class Childs implements Runnable {
 	}
 	
 	/**
-	 * 자식을 받을 서버 소켓을 준비, 실질적인 초기화를 담당
+	 * 자식을 받을 서버 소켓을 준비하고 쓰레드로 돌림, 실질적인 초기화를 담당
 	 * @return 준비 성공 여부, 성공이라면 쓰레드로 돌아감
 	 */
 	public boolean readyForChild() {
@@ -124,8 +124,15 @@ public class Childs implements Runnable {
 		return childList.size();
 	}
 	
+	
 	// ------------------------------------------------- S E N D -------------------------------------------------
 	
+	/**
+	 * 모든 자식들에게 JOIN 메세지를 보냄
+	 * @param channel
+	 * @param nickName
+	 * @return 의미 없음
+	 */
 	public boolean whoJoinToAllChild(String channel, String nickName) {
 		Iterator<Child> it = childList.values().iterator();
 		Child child;
@@ -139,6 +146,12 @@ public class Childs implements Runnable {
 		return true;
 	}
 	
+	/**
+	 * 모든 자식들에게 EXIT 메세지를 보냄
+	 * @param channel
+	 * @param nickName
+	 * @return 의미 없음
+	 */
 	public boolean whoExitToAllChild(String channel, String nickName) {
 		Iterator<Child> it = childList.values().iterator();
 		Child child;
@@ -152,6 +165,14 @@ public class Childs implements Runnable {
 		return true;
 	}
 	
+	/**
+	 * 모든 자식들에게 SEND-BROAD 메세지를 보냄
+	 * @param channel
+	 * @param sequence
+	 * @param nickName
+	 * @param msg
+	 * @return 의미 없음
+	 */
 	public boolean sendMsgToAllChild(String channel, int sequence, String nickName, String msg) {
 		Iterator<Child> it = childList.values().iterator();
 		Child child;
@@ -165,6 +186,15 @@ public class Childs implements Runnable {
 		return true;
 	}
 	
+	/**
+	 * 특정 자식에게 SEND-BROAD 메세지를 보냄
+	 * @param childIP
+	 * @param channel
+	 * @param sequence
+	 * @param nickName
+	 * @param msg
+	 * @return 전송 성공 여부, 실패라면 특정 자식의 쓰레드가 멈춤
+	 */
 	public boolean sendMsgToSomeChild(String childIP, String channel, int sequence, String nickName, String msg) {
 		return childList.get(childIP).sendMsgToChild(channel, sequence, nickName, msg);
 	}
@@ -174,10 +204,12 @@ public class Childs implements Runnable {
 	
 	@Override
 	public void run() {
-		while (forChildSocket.isBound()) {
+		while (isService && forChildSocket.isBound()) {
 			try {
 				Socket fromChildSocket = forChildSocket.accept();
-					
+				
+				debug("자식 " + fromChildSocket.getInetAddress().getHostAddress() + " 이 접속함");
+				
 				Child newChild = new Child(fromChildSocket);
 				if (newChild.readyFromChild()) {
 					childList.put(fromChildSocket.getInetAddress().getHostAddress(), newChild);
@@ -189,31 +221,63 @@ public class Childs implements Runnable {
 		}
 	}
 	
+	
 	private class Child implements Runnable {
 		private Socket fromChildSocket;
 		private BufferedReader fromChildMsg;
 		private BufferedWriter toChildMsg;
 		
-		public Child(Socket fromChildSocket) {
-			this.fromChildSocket = fromChildSocket;
+		private boolean isService;
+		
+		private void debug(String msg) {
+			System.out.println("자식 " + getChildIP() + " 로부터 " + msg + " :: 받음");
 		}
 		
+		private void debug(String msg, boolean result) {
+			if (result) {
+				System.out.println("자식 " + getChildIP() + " 에 "  + msg + " :: 성공");
+			}
+			else {
+				System.out.println("자식 " + getChildIP() + " 에 "  + msg + " :: 실패");
+			}
+		}
+		
+		public Child(Socket fromChildSocket) {
+			this.fromChildSocket = fromChildSocket;
+			
+			this.isService = true;
+		}
+		
+		/**
+		 * 자식 소켓에 대한 버퍼를 준비하고 쓰레드로 돌림, 실질적인 초기화를 담당
+		 * @return 준비 성공 여부, 성공이라면 쓰레드로 돌아감
+		 */
 		private boolean readyFromChild() {
+			boolean result = false;
+			
 			try {
 				fromChildMsg = new BufferedReader(new InputStreamReader(fromChildSocket.getInputStream()));
 				toChildMsg = new BufferedWriter(new OutputStreamWriter(fromChildSocket.getOutputStream()));
 				
 				new Thread(this).start();
+				
+				result = true;
 			}
 			catch (IOException e) {
 				e.printStackTrace();
-				return false;
 			}
 			
-			return true;
+			this.debug("연결", result);
+			
+			return this.isService = result;
 		}
 		
-		public boolean closeToChild() {
+		/**
+		 * 자식 소켓과 연결 해제, 쓰레드 멈춤
+		 */
+		public void closeToChild() {
+			this.isService = false;
+			
 			try {
 				fromChildMsg.close();
 				toChildMsg.close();
@@ -221,49 +285,85 @@ public class Childs implements Runnable {
 			}
 			catch (IOException e) {
 				e.printStackTrace();
-				return false;
 			}
 			
-			return true;
+			this.debug("연결 해제", true);
 		}
 		
+		/**
+		 * 자식 IP를 반환
+		 * @return 자식 IP
+		 */
 		public String getChildIP() {
 			return fromChildSocket.getInetAddress().getHostAddress();
 		}
 		
+		
 		// ------------------------------------------------- S E N D -------------------------------------------------
 		
+		/**
+		 * 자식에 JOIN 메세지를 보냄
+		 * @param channel
+		 * @param nickName
+		 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
+		 */
 		public boolean whoJoinToChild(String channel, String nickName) {
+			boolean result = false;
+			
 			try {
 				toChildMsg.write(HEAD_TYPE_JOIN + TOKEN_HEAD);
 				toChildMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 				toChildMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD + TOKEN_HEAD);
 				toChildMsg.flush();
+				
+				result = true;
 			}
 			catch (Exception e) {
 				e.printStackTrace();
-				return false;
 			}
 			
-			return true;
+			this.debug("JOIN " + channel + " 보내기", result);
+			
+			return this.isService = result;
 		}
 		
+		/**
+		 * 자식에 EXIT 메세지를 보냄
+		 * @param channel
+		 * @param nickName
+		 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
+		 */
 		public boolean whoExitToChild(String channel, String nickName) {
+			boolean result = false;
+			
 			try {
 				toChildMsg.write(HEAD_TYPE_EXIT + TOKEN_HEAD);
 				toChildMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 				toChildMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD + TOKEN_HEAD);
 				toChildMsg.flush();
+				
+				result = true;
 			}
 			catch (IOException e) {
 				e.printStackTrace();
-				return false;
 			}
 			
-			return true;
+			this.debug("EXIT " + channel + " 보내기", result);
+			
+			return this.isService = result;
 		}
 		
+		/**
+		 * 자식에 SEND-BROAD 메세지를 보냄
+		 * @param channel
+		 * @param sequence
+		 * @param nickName
+		 * @param msg
+		 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
+		 */
 		public boolean sendMsgToChild(String channel, int sequence, String nickName, String msg) {
+			boolean result = false;
+			
 			try {
 				toChildMsg.write(HEAD_TYPE_SEND + TOKEN_HEAD);
 				toChildMsg.write(HEAD_CAST + ":" + HEAD_CAST_BROAD + TOKEN_HEAD);
@@ -272,13 +372,16 @@ public class Childs implements Runnable {
 				toChildMsg.write(HEAD_NICK + ":" + nickName + TOKEN_HEAD);
 				toChildMsg.write(HEAD_MSG + ":" + msg + TOKEN_HEAD + TOKEN_HEAD);
 				toChildMsg.flush();
+				
+				result = true;
 			}
 			catch (IOException e) {
 				e.printStackTrace();
-				return false;
 			}
 			
-			return true;
+			this.debug("SEND-BROAD " + channel + " " + nickName + " " + msg + " 보내기", result);
+			
+			return this.isService = result;
 		}
 		
 		
@@ -286,12 +389,14 @@ public class Childs implements Runnable {
 		
 		@Override
 		public void run() {
-			while (fromChildSocket.isConnected()) {
+			while (isService && fromChildSocket.isConnected()) {
 				String line = null;
 				Message fromChildMessage = null;
 					
 				try {
 					while ((line = fromChildMsg.readLine()) != null) {
+						this.debug(line);
+						
 						if (fromChildMessage == null) {
 							fromChildMessage = Message.parsType(line);
 						}
@@ -299,7 +404,7 @@ public class Childs implements Runnable {
 							Packet packet = new Packet(fromChildMessage, fromChildSocket.getInetAddress().getHostAddress());
 							
 							if (packet.getMessage().isValid()) {
-								System.out.println(packet.getMessage().toString());
+								this.debug(packet.getMessage().toString() + " 정상 패킷");
 								connectChannel.addFamilyPacket(packet);
 							}
 							
