@@ -76,11 +76,9 @@ public class Channel implements Runnable {
 			result = connectChilds.readyForChild();
 			
 			if (result) {				
-				result = connectServer.successConnectToParent(parentIP, parentIP, sequence);
+				connectServer.successConnectToParent(parentIP, parentIP, sequence);
 				
-				if (result) {			
-					new Thread(this).start();
-				}
+				new Thread(this).start();
 			}
 		}
 		
@@ -156,8 +154,8 @@ public class Channel implements Runnable {
 					display(send);
 					connectChilds.sendMsgToAllChild(send.getChannel(), send.getSeq(), send.getNick(), send.getMsg());
 				}
-				else {
-					if (send.getSeq() == getLastSequence() - 1) {
+				else {					
+					if (send.getSeq() == getLastSequence() + 1) {
 						display(send);
 						connectChilds.sendMsgToAllChild(send.getChannel(), send.getSeq(), send.getNick(), send.getMsg());
 					}

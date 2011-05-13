@@ -147,16 +147,11 @@ public class Manager implements Runnable {
 		case SEND:
 			Send send = (Send)packet.getMessage();
 			
-			/*
 			targetChannel = channelList.get(send.getChannel());
 			
 			if (targetChannel != null) {
 				targetChannel.addFamilyPacket(packet);
 			}
-			*/
-			
-			// 채널 우회 처리
-			gui.dspMsg(send.getNick(), send.getMsg());
 			
 			break;
 		case SET:
