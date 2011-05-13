@@ -2,7 +2,6 @@ package server;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.ArrayList;
 
 import util.Definition;
 import util.msg.Message;
@@ -17,7 +16,6 @@ public class User implements Comparable<User>, Runnable {
 	// 서버 필요함 >> 필요없음. 
 	private static MessageProcessor messageProcessor = null;
 	
-	@SuppressWarnings("unused")
 	private Socket socket = null;
 	private String name = null;
 	private BufferedReader in = null;
@@ -55,6 +53,7 @@ public class User implements Comparable<User>, Runnable {
 		try {
 			while (isRun) {
 				line = in.readLine();
+				System.out.println(line);
 				if (message == null) {
 					message = Message.parsType(line);
 					
@@ -96,11 +95,8 @@ public class User implements Comparable<User>, Runnable {
 	}
 	
 	public synchronized void send(Message message) {
-		ArrayList<String> lines = message.getMessages();
 		try {
-			for (String str : lines) {
-				out.println(str);
-			}
+			out.write(message.toString());
 			out.flush();
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -126,10 +122,13 @@ public class User implements Comparable<User>, Runnable {
 		try {
 			while (isRun) {
 				line = in.readLine();
+				System.out.println(line);
 				if (message == null) {
 					message = Message.parsType(line);
+					
 				} else if (message.parse(line)) {
 					// server 의 messageQ에 message를 add
+					
 					messageProcessor.enqueue(message);
 					message = null;
 				}

@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import util.msg.Message;
 import util.msg.TYPE;
@@ -21,10 +22,10 @@ import util.msg.sub.Success;
 public class Channel implements Comparable<Channel>, Runnable {
 	private static MessageProcessor messageProcessor = null;
 	
-	private ArrayList<User> users = null;
-	private java.util.Set<String> names = null;
-	private Queue<Message> messageQ = null;
-	private Map<Integer, LinkSequence> changes = null;
+	private final ArrayList<User> users;
+	private final java.util.Set<String> names;
+	private final BlockingQueue<Message> messageQ;
+	private final Map<Integer, LinkSequence> changes;
 	private String name = "";
 	private boolean isRun = true;
 	
@@ -37,15 +38,14 @@ public class Channel implements Comparable<Channel>, Runnable {
 		users.add(null);
 		names = new HashSet<String>();
 		changes = new HashMap<Integer, Channel.LinkSequence>();
+		messageQ = new LinkedBlockingQueue<Message>();
 	}
 	
 	public synchronized void enqueue(Message message) {
 		messageQ.offer(message);
 	}
 	
-	private synchronized Message dequeue() {
-		return messageQ.poll();
-	}
+
 	
 	public ArrayList<User> getUsers() {
 		return users;
@@ -101,16 +101,27 @@ public class Channel implements Comparable<Channel>, Runnable {
 	private void set(Set message) {
 		//
 	}
-	private void success(Success message)
-	{
+	
+	private void success(Success message) {
 		//
 	}
+	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		while (isRun) {
-			if (!messageQ.isEmpty()) {
-				Message message = dequeue();
+			Message message=null;
+			System.out.println("CH 동작중");
+			try {
+				message = messageQ.take();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			System.out.println("CH 동작중");
+			if (message != null) {
+				System.out.println("CH : 메세지 있음");
+				System.out.println("체널 디큐 \n 내용 : " + message);
 				switch (message.getType()) {
 					case SEND:
 						send(message);
@@ -125,7 +136,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 						set((Set) message);
 						break;
 					case SUCCESS:
-						success((Success)message);
+						success((Success) message);
 						break;
 					default:
 						break;
@@ -133,8 +144,6 @@ public class Channel implements Comparable<Channel>, Runnable {
 			}
 		}
 	}
-	
-	
 	
 	/*-----------------------------LinkSequence---------------------------------*/
 	static final TYPE CHILD = TYPE.FAMILY_CHILD;
@@ -158,7 +167,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 		public LinkSequence(int id) {
 			// TODO Auto-generated constructor stub
 			this.id = id;
-			sequence=1;
+			sequence = 1;
 		}
 	}
 	
@@ -167,14 +176,21 @@ public class Channel implements Comparable<Channel>, Runnable {
 		User parent;
 		User added;
 		Join join;
-		int index=0;
+		int index = 0;
+		
 		AddSequence(Join join, int id) {
 			// TODO Auto-generated constructor stub
 			super(id);
 			this.join = join;
-			User user=messageProcessor.getUser(join.getNick());
-			index=users.size();
-			users.add(user);
+			added = messageProcessor.getUser(join.getNick());
+			if (!names.contains(added.getName())) {
+				names.add(added.getName());
+				index = users.size();
+				users.add(added);
+			}else{
+				sequence = -1;
+			}
+			
 		}
 		
 		@Override
@@ -202,26 +218,29 @@ public class Channel implements Comparable<Channel>, Runnable {
 		 * 자식의 위치 = (자신의 위치)*2 +(0|1)
 		 */
 		private synchronized void first() {
-			int index = users.size();
-			users.add(added);
+			//int index = users.size();
+			System.out.println(index);
+			
+			//users.add(added);
 			parent = users.get(index / 2);
+			System.out.println(added.getName());
+			System.out.println(parent);
+
 			if (parent != null) {
 				parent.send(new Set(name, added.getIP(), CHILD, id));//자식 IP 알림.
 				sequence++;
 			} else {
 				added.send(new Set(name, Server.getIP(), PARENT, id)); // 최초사용자 이므로 서버가 부모
-				sequence=100;
+				sequence = 100;
 				
 			}
 		}
 		
-		private synchronized void second(Message message)
-		{
-			if(message.getType()==TYPE.SUCCESS)
-			{
+		private synchronized void second(Message message) {
+			if (message.getType() == TYPE.SUCCESS) {
 				added.send(new Set(name, parent.getIP(), PARENT, id));
-				sequence=100;
-			}else{
+				sequence = 100;
+			} else {
 				//현제는 성공하는것만 가정하겠음..
 				first();
 			}
@@ -229,10 +248,10 @@ public class Channel implements Comparable<Channel>, Runnable {
 		
 		private synchronized void last(Message message) {
 			
-			if(message.getType()==TYPE.SUCCESS){
+			if (message.getType() == TYPE.SUCCESS) {
 				changes.remove(id);
 				send(join);
-			}else{
+			} else {
 				//
 				first();
 			}

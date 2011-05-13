@@ -16,7 +16,7 @@ import util.msg.Message;
  */
 @SuppressWarnings("unused")
 public class Server implements Runnable {
-	public static final int port = 30000;
+	public static final int port = Definition.DEFAULT_PORT;
 	private static ServerSocket sSocket;
 	private static Server server = null;
 	private MessageProcessor messageProcessor=null;
@@ -29,6 +29,7 @@ public class Server implements Runnable {
 	{
 		sSocket = new ServerSocket(Definition.DEFAULT_PORT);
 		messageProcessor=new MessageProcessor();
+		new Thread(messageProcessor).start();
 		User.setMessageProcessor(messageProcessor);
 		Channel.setMessageProcessor(messageProcessor);
 	}
@@ -69,7 +70,7 @@ public class Server implements Runnable {
 	}
 	public static String getIP() {
 		// TODO Auto-generated method stub
-		return sSocket.getInetAddress().toString();
+		return sSocket.getInetAddress().getHostAddress().toString();
 	}
 
 }
