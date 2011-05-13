@@ -148,7 +148,7 @@ public class Manager implements Runnable {
 		
 		switch (packet.getMessage().getType()) {
 		case SEND:
-			Send send = (Send)packet.getMessage();
+			Send send = (Send)packet.getMessage();			
 			targetChannel = channelList.get(send.getChannel());
 			targetChannel.addFamilyPacket(packet);
 			

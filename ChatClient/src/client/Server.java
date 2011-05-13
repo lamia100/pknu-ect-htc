@@ -245,14 +245,15 @@ public class Server  implements Runnable {
 	 * @param childIP
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
-	public boolean successOpenSocketForChild(String channel, String childIP) {
+	public boolean successOpenSocketForChild(String channel, String childIP, int sequence) {
 		boolean result = false;
 		
 		try {
 			toServerMsg.write(HEAD_TYPE_SUCCESS + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD);
-			toServerMsg.write(HEAD_IP + ":" + childIP + TOKEN_HEAD + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + childIP + TOKEN_HEAD);
+			toServerMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 			
 			result = true;
@@ -261,7 +262,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("SUC-CHILD " + channel + " " + childIP + " 보내기", result);
+		debug("SUC-CHILD " + channel + " " + childIP + " " + sequence + " 보내기", result);
 		
 		return isService = result;
 	}
@@ -272,14 +273,15 @@ public class Server  implements Runnable {
 	 * @param childIP
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
-	public boolean failOpenSocketForChild(String channel, String childIP) {
+	public boolean failOpenSocketForChild(String channel, String childIP, int sequence) {
 		boolean result = false;
 		
 		try {
 			toServerMsg.write(HEAD_TYPE_FAIL + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD);
-			toServerMsg.write(HEAD_IP + ":" + childIP + TOKEN_HEAD + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + childIP + TOKEN_HEAD);
+			toServerMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 			
 			result = true;
@@ -288,7 +290,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("FAIL-CHILD " + channel + " " + childIP + " 보내기", result);
+		debug("FAIL-CHILD " + channel + " " + childIP + " " + sequence + " 보내기", result);
 		
 		return isService = result;
 	}
@@ -299,14 +301,15 @@ public class Server  implements Runnable {
 	 * @param parentIP
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
-	public boolean successConnectToParent(String channel, String parentIP) {
+	public boolean successConnectToParent(String channel, String parentIP, int sequence) {
 		boolean result = false;
 		
 		try {
 			toServerMsg.write(HEAD_TYPE_SUCCESS + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_PARENT + TOKEN_HEAD);
-			toServerMsg.write(HEAD_IP + ":" + parentIP + TOKEN_HEAD + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + parentIP + TOKEN_HEAD);
+			toServerMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 			
 			result = true;
@@ -315,7 +318,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("SUC-PARENT " + channel + " " + parentIP + " 보내기", result);
+		debug("SUC-PARENT " + channel + " " + parentIP + " " + sequence + " 보내기", result);
 		
 		return isService = result;
 	}
@@ -326,14 +329,15 @@ public class Server  implements Runnable {
 	 * @param parentIP
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
-	public boolean failConnectToParent(String channel, String parentIP) {
+	public boolean failConnectToParent(String channel, String parentIP, int sequence) {
 		boolean result = false;
 		
 		try {
 			toServerMsg.write(HEAD_TYPE_FAIL + TOKEN_HEAD);
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_PARENT + TOKEN_HEAD);
-			toServerMsg.write(HEAD_IP + ":" + parentIP + TOKEN_HEAD + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + parentIP + TOKEN_HEAD);
+			toServerMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 			
 			result = true;
@@ -342,7 +346,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("FAIL-PARENT " + channel + " " + parentIP + " 보내기", result);
+		debug("FAIL-PARENT " + channel + " " + parentIP + " " + sequence + " 보내기", result);
 		
 		return isService = result;
 	}
@@ -397,8 +401,6 @@ public class Server  implements Runnable {
 							debug("서버로부터 " + packet.getMessage().toString() + " 정상 패킷 :: 받음");
 							connectManager.addServerPacket(packet);
 						}
-						
-						fromServerMessage = null;
 					}
 				}
 			}

@@ -344,9 +344,11 @@ public class GUI extends JFrame {
 			tf_msg.setColumns(30);
 			tf_msg.addKeyListener(new java.awt.event.KeyAdapter() {
 				public void keyTyped(java.awt.event.KeyEvent e) {
-					System.out.println("Msg keyTyped()"); // TODO Auto-generated Event stub keyTyped()
+					// TODO Auto-generated Event stub keyTyped()
 					
 					if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+						System.out.println("Msg keyTyped()");
+						
 						if (connectManager != null) {
 							String channel = tf_channel.getText();
 							String msg = tf_msg.getText();

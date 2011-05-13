@@ -188,22 +188,22 @@ public class Channel implements Runnable {
 				
 				if (newParent.loginParent()) {
 					connectParent = newParent;
-					result = connectServer.successConnectToParent(set.getChannel(), set.getIp());
+					result = connectServer.successConnectToParent(set.getChannel(), set.getIp(), set.getSequence());
 				}
 				else {
-					result = connectServer.failOpenSocketForChild(set.getChannel(), set.getIp());
+					result = connectServer.failOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
 				}
 				
 				break;
 			case FAMILY_CHILD:
 				if (connectChilds.getChildSize() < MAX_CHILD) {
-					result = connectServer.successOpenSocketForChild(set.getChannel(), set.getIp());
+					result = connectServer.successOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
 					
 					Send msg = msgList.get(msgList.size() - 1);
 					connectChilds.sendMsgToSomeChild(set.getIp(), msg.getChannel(), msg.getSeq(), msg.getNick(), msg.getMsg());
 				}
 				else {
-					result = connectServer.failOpenSocketForChild(set.getChannel(), set.getIp());
+					result = connectServer.failOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
 				}
 				
 				break;
