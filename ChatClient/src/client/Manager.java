@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-
 import util.msg.TYPE;
 import util.msg.sub.*;
 import static util.Definition.*;
@@ -152,7 +151,10 @@ public class Manager implements Runnable {
 		case SEND:
 			Send send = (Send)packet.getMessage();			
 			targetChannel = channelList.get(send.getChannel());
-			targetChannel.addFamilyPacket(packet);
+			
+			if (targetChannel != null) {
+				targetChannel.addFamilyPacket(packet);
+			}
 			
 			break;
 		case SET:

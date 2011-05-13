@@ -22,7 +22,7 @@ public class Parent implements Runnable {
 	private boolean isService;
 	
 	private void debug(String msg) {
-		System.out.println("부모로부터 " + msg + " :: 받음");
+		System.out.println(msg);
 	}
 	
 	private void debug(String msg, boolean result) {
@@ -138,16 +138,20 @@ public class Parent implements Runnable {
 				
 			try {
 				while ((line = fromParentMsg.readLine()) != null) {
-					debug(line);
+					debug("부모로부터 " + line + " :: 받음");
 					
 					if (fromParentMessage == null) {
+						debug("1");
+						
 						fromParentMessage = Message.parsType(line);
 					}
 					else if (fromParentMessage.parse(line)) {
+						debug("2");
+						
 						Packet packet = new Packet(fromParentMessage, toParentSocket.getInetAddress().getHostAddress());
 						
 						if (packet.getMessage().isValid()) {
-							debug(packet.getMessage().toString() + " 정상 패킷");
+							debug("부모로부터 " + packet.getMessage().toString() + " 정상 패킷");
 							connectChannel.addFamilyPacket(packet);
 						}
 						

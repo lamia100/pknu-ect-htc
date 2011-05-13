@@ -1,15 +1,15 @@
 package client;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import util.msg.Message;
 import util.msg.sub.*;
 import static util.Definition.*;
 import test.GUI;
 
 public class Channel implements Runnable {
-	private Queue<Packet> familyPacketQueue;
+	private BlockingQueue<Packet> familyPacketQueue;
 	private ArrayList<Send> msgList;
 	private int msgOffset;
 	
@@ -25,7 +25,7 @@ public class Channel implements Runnable {
 	private boolean isFirstConnect;
 	
 	public Channel(Server connectServer, String channel, String nickName, GUI gui) {
-		familyPacketQueue = new LinkedList<Packet>();
+		familyPacketQueue = new LinkedBlockingQueue<Packet>();
 		msgList = new ArrayList<Send>();
 		msgOffset = 0;
 		
@@ -64,7 +64,7 @@ public class Channel implements Runnable {
 		if (result) {
 			gui.dspInfo("부모와 연결 설정(3way Handshake)에 성공하였습니다.");
 			
-			connectChilds = new Childs(this, DEFAULT_PORT);
+			connectChilds = new Childs(this, DEFAULT_PORT + 1);
 			result = connectChilds.readyForChild();
 			
 			if (result) {
@@ -120,8 +120,13 @@ public class Channel implements Runnable {
 			
 			Packet packet = null;
 			
-			if ((packet = familyPacketQueue.poll()) != null) {
-				performService(packet);
+			try {
+				if ((packet = familyPacketQueue.take()) != null) {
+					performService(packet);
+				}
+			}
+			catch (InterruptedException e) {
+				e.printStackTrace();
 			}
 		}
 		

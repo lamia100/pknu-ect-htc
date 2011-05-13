@@ -389,16 +389,16 @@ public class Server  implements Runnable {
 			
 			try {
 				while ((line = fromServerMsg.readLine()) != null) {
-					debug("서버로부터 " + line + " :: 받음");
+					debug("서버로부터 " + line + " 받음");
 					
-					if (fromServerMessage == null) {
+					if (fromServerMessage == null) {						
 						fromServerMessage = Message.parsType(line);
 					}
-					else if (fromServerMessage.parse(line)) {
+					else if (fromServerMessage.parse(line)) {						
 						Packet packet = new Packet(fromServerMessage, toServerSocket.getInetAddress().getHostAddress());
 						
 						if (packet.getMessage().isValid()) {
-							debug("서버로부터 " + packet.getMessage().toString() + " 정상 패킷 :: 받음");
+							debug("서버로부터 정상 " + packet.getMessage().getType() + " 패킷 받음");
 							connectManager.addServerPacket(packet);
 						}
 					}
