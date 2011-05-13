@@ -102,12 +102,18 @@ public class Channel implements Runnable {
 			Send send = (Send)msg;
 			msgList.add(send);
 			gui.dspMsg(send.getNick() + " : " + send.getMsg());
+			
+			break;
 		case JOIN:
 			Join join = (Join)msg;
 			gui.dspInfo(join.getChannel() + " 채널에 " + join.getNick() + "이(가) 접속하였습니다.");
+			
+			break;
 		case EXIT:
 			Exit exit = (Exit)msg;
 			gui.dspInfo(exit.getChannel() + " 채널에서 " + exit.getNick() + "이(가) 나가셨습니다.");
+			
+			break;
 		}
 	}
 	
