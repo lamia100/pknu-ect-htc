@@ -389,7 +389,7 @@ public class Server  implements Runnable {
 			
 			try {
 				while ((line = fromServerMsg.readLine()) != null) {
-					debug("서버로부터 " + line + " : 받음");
+					debug("서버로부터 " + line + " :: 받음");
 					
 					if (fromServerMessage == null) {
 						fromServerMessage = Message.parsType(line);
