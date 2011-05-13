@@ -116,12 +116,16 @@ public class Channel implements Runnable {
 	@Override
 	public void run() {
 		while (isService) {
+			debug("Channel Thread Loop :: Start");
+			
 			Packet packet = null;
 			
 			if ((packet = familyPacketQueue.poll()) != null) {
 				performService(packet);
 			}
 		}
+		
+		debug("Channel Thread Loop :: End");
 	}
 	
 	private boolean performService(Packet packet) {

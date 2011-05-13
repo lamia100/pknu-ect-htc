@@ -382,7 +382,7 @@ public class Server  implements Runnable {
 	@Override
 	public void run() {
 		while (isService && toServerSocket.isConnected()) {
-			debug("Server Thread Loop");
+			debug("Server Thread Loop :: Start");
 			
 			String line = null;
 			Message fromServerMessage = null;
@@ -408,5 +408,7 @@ public class Server  implements Runnable {
 				e.printStackTrace();
 			}
 		}
+		
+		debug("Server Thread Loop :: End");
 	}
 }

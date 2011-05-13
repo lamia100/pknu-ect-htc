@@ -128,7 +128,7 @@ public class Manager implements Runnable {
 	@Override
 	public void run() {
 		while (isService) {
-			debug("Manager Thread Loop");
+			debug("Manager Thread Loop :: Start");
 			
 			Packet packet = null;
 			
@@ -141,6 +141,8 @@ public class Manager implements Runnable {
 				e.printStackTrace();
 			}
 		}
+		
+		debug("Manager Thread Loop :: End");
 	}
 	
 	private void performService(Packet packet) {

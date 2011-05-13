@@ -131,7 +131,7 @@ public class Parent implements Runnable {
 	@Override
 	public void run() {
 		while (isService && toParentSocket.isConnected()) {
-			debug("Parent Thread Loop");
+			debug("Parent Thread Loop :: Start");
 			
 			String line = null;
 			Message fromParentMessage = null;
@@ -159,5 +159,7 @@ public class Parent implements Runnable {
 				e.printStackTrace();
 			}
 		}
+		
+		debug("Parent Thread Loop :: End");
 	}
 }
