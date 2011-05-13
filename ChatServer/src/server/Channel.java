@@ -83,7 +83,8 @@ public class Channel implements Comparable<Channel>, Runnable {
 	}
 	
 	private void send(Message message) {
-		users.get(0).send(message);
+		if(users.size()>1)
+			users.get(1).send(message);
 	}
 	
 	private void join(Join message) {

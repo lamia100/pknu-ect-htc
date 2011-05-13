@@ -19,7 +19,7 @@ public class User implements Comparable<User>, Runnable {
 	private Socket socket = null;
 	private String name = null;
 	private BufferedReader in = null;
-	private PrintWriter out = null;
+	private BufferedWriter out = null;
 	private boolean isRun = true;
 	
 	public String getName() {
@@ -30,7 +30,7 @@ public class User implements Comparable<User>, Runnable {
 		this.socket = socket;
 		try {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			out = new PrintWriter(socket.getOutputStream());
+			out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -96,6 +96,9 @@ public class User implements Comparable<User>, Runnable {
 	
 	public synchronized void send(Message message) {
 		try {
+			System.out.println("user : 메세지 전송");
+			System.out.println(message);
+			
 			out.write(message.toString());
 			out.flush();
 		} catch (Exception e) {
