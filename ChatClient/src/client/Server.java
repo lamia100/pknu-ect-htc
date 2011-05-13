@@ -66,7 +66,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("연결", result);
+		debug(getServerIP() + " 연결", result);
 		
 		return isService = result;
 	}
@@ -86,7 +86,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("연결 해제", true);
+		debug(getServerIP() + " 연결 해제", true);
 	}
 	
 	/**

@@ -66,7 +66,7 @@ public class Parent implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("연결", result);
+		debug(getParentIP() + " 연결", result);
 		
 		return isService = result;
 	}
@@ -86,7 +86,7 @@ public class Parent implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("연결 해제", true);
+		debug(getParentIP() + " 연결 해제", true);
 	}
 	
 	/**
@@ -138,7 +138,7 @@ public class Parent implements Runnable {
 				
 			try {
 				while ((line = fromParentMsg.readLine()) != null) {
-					debug("부모로부터 " + line + " :: 받음");
+					debug("부모로부터 " + line + " 받음");
 					
 					if (fromParentMessage == null) {
 						debug("1");
@@ -151,7 +151,7 @@ public class Parent implements Runnable {
 						Packet packet = new Packet(fromParentMessage, toParentSocket.getInetAddress().getHostAddress());
 						
 						if (packet.getMessage().isValid()) {
-							debug("부모로부터 " + packet.getMessage().toString() + " 정상 패킷");
+							debug("부모로부터 정상 " + packet.getMessage().getType() + " 패킷 받음");
 							connectChannel.addFamilyPacket(packet);
 						}
 						
