@@ -264,7 +264,7 @@ public class Childs implements Runnable {
 			
 			this.debug("연결", result);
 			
-			return result;
+			return this.isService = result;
 		}
 		
 		/**
@@ -320,7 +320,7 @@ public class Childs implements Runnable {
 			
 			this.debug("JOIN/" + channel + "/" + nickName + "/보내기", result);
 			
-			return result;
+			return this.isService = result;
 		}
 		
 		/**
@@ -346,7 +346,7 @@ public class Childs implements Runnable {
 			
 			this.debug("EXIT/" + channel + "/" + nickName + "/보내기", result);
 			
-			return result;
+			return this.isService = result;
 		}
 		
 		/**
@@ -377,7 +377,7 @@ public class Childs implements Runnable {
 			
 			this.debug("SEND/BROAD " + channel + "/" + nickName + "/" + msg + "/보내기", result);
 			
-			return result;
+			return this.isService = result;
 		}
 		
 		
@@ -409,6 +409,8 @@ public class Childs implements Runnable {
 				}
 				catch (IOException e) {
 					e.printStackTrace();
+					
+					this.isService = false;
 				}
 			}
 		}

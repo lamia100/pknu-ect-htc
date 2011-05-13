@@ -68,7 +68,7 @@ public class Parent implements Runnable {
 		
 		debug("연결", result);
 		
-		return result;
+		return isService = result;
 	}
 	
 	/**
@@ -123,7 +123,7 @@ public class Parent implements Runnable {
 		
 		debug("REQ/" + channel + "/" + sequence + "/보내기", result);
 		
-		return result;
+		return isService = result;
 	}
 
 	
@@ -156,6 +156,8 @@ public class Parent implements Runnable {
 			}
 			catch (IOException e) {
 				e.printStackTrace();
+				
+				isService = false;
 			}
 		}
 	}

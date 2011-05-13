@@ -83,7 +83,7 @@ public class Channel implements Runnable {
 		
 		debug("¿¬°á", result);
 		
-		return result;
+		return isService = result;
 	}
 	
 	public void disconnectChannel() {

@@ -10,7 +10,7 @@ import java.io.OutputStreamWriter;
 import util.msg.Message;
 import static util.Definition.*;
 
-public class Server  implements Runnable {
+public class Server implements Runnable {
 	private Manager connectManager;
 	private String serverIP;
 	private int serverPort;
@@ -418,6 +418,8 @@ public class Server  implements Runnable {
 			}
 			catch (IOException e) {
 				e.printStackTrace();
+				
+				isService = false;
 			}
 		}
 	}

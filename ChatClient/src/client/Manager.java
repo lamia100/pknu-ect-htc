@@ -71,7 +71,7 @@ public class Manager implements Runnable {
 			gui.dspInfo("서버 연결에 실패하였습니다.");
 		}
 		
-		return result;
+		return isService = result;
 	}
 	
 	public void disconnectServer() {
@@ -97,7 +97,7 @@ public class Manager implements Runnable {
 			gui.dspInfo("서버에 채널 입장 메세지를 보내지 못했습니다. 이전에 서버와 연결이 끊겼습니다.");
 		}
 		
-		return result;
+		return isService = result;
 	}
 	
 	public void exitChannel(String channel) {
@@ -114,7 +114,7 @@ public class Manager implements Runnable {
 			gui.dspInfo("서버에 메세지를 보내지 못했습니다. 이전에 서버와 연결이 끊겼습니다.");
 		}
 		
-		return result;
+		return isService = result;
 	}
 	
 	
