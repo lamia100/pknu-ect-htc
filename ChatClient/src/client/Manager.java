@@ -4,6 +4,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 import util.msg.TYPE;
 import util.msg.sub.*;
 import static util.Definition.*;
@@ -11,7 +14,7 @@ import test.GUI;
 
 public class Manager implements Runnable {
 	private Map<String, Channel> channelList;
-	private Queue<Packet> serverPacketQueue;
+	private BlockingQueue<Packet> serverPacketQueue;
 	
 	private Server connectServer;
 	
@@ -22,7 +25,7 @@ public class Manager implements Runnable {
 	
 	public Manager(String nickName, GUI gui) {
 		channelList = new HashMap<String, Channel>();
-		serverPacketQueue = new LinkedList<Packet>();
+		serverPacketQueue = new LinkedBlockingQueue<Packet>();
 		
 		this.nickName = nickName;
 		this.gui = gui;
@@ -131,13 +134,10 @@ public class Manager implements Runnable {
 			
 			Packet packet = null;
 			
-			if ((packet = serverPacketQueue.poll()) != null) {
-				performService(packet);
-			}
-			
-			// 루프가 너무 빨리 돌아서
 			try {
-				Thread.sleep(100);
+				if ((packet = serverPacketQueue.take()) != null) {
+					performService(packet);
+				}
 			}
 			catch (InterruptedException e) {
 				e.printStackTrace();
