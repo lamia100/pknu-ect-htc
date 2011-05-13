@@ -54,7 +54,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 	
 	/**
 	 * Server 클레스에서만 호출 할것.
-	 * @param messageProcessor 서버에서 사용하는 유일한 {@link MessageProcessor}
+	 * @param messageProcessor 서버에서 사용하는 유일한 MessageProcessor
 	 */
 	public static void setMessageProcessor(MessageProcessor messageProcessor) {
 		Channel.messageProcessor = messageProcessor;

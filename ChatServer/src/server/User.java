@@ -110,6 +110,7 @@ public class User implements Comparable<User>, Runnable {
 		send(new Send());
 		try {
 			socket.close();
+			messageProcessor.enqueue(new Exit("*",name));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -133,8 +134,14 @@ public class User implements Comparable<User>, Runnable {
 				line = in.readLine();
 				System.out.println("User line : "+line);
 				if (message == null) {
+					try{
 					message = Message.parsType(line);
-					
+					}catch (NullPointerException e){
+						e.printStackTrace();
+
+						this.disconnect();
+						this.stop();
+					}
 				} else if (message.parse(line)) {
 					// server ÀÇ messageQ¿¡ message¸¦ add
 					
