@@ -24,6 +24,20 @@ public class Channel implements Runnable {
 	private boolean isService;
 	private boolean isFirstConnect;
 	
+	@SuppressWarnings("unused")
+	private void debug(String msg) {
+		System.out.println("[채널(" + channel + ")] : " + msg);
+	}
+	
+	private void debug(String msg, boolean result) {
+		if (result) {
+			System.out.println("[채널(" + channel + ")] : " + msg + " -> 성공");
+		}
+		else {
+			System.out.println("[채널(" + channel + ")] : " + msg + " -> 실패");
+		}
+	}
+	
 	public Channel(Server connectServer, String channel, String nickName, GUI gui) {
 		familyPacketQueue = new LinkedBlockingQueue<Packet>();
 		msgList = new ArrayList<Send>();
@@ -50,35 +64,27 @@ public class Channel implements Runnable {
 		return msgList.get(sequence - msgOffset - 1);
 	}
 	
-	public void debug(String msg) {
-		System.out.println(msg);
-	}
-	
 	
 	// ------------------------------------------------- GUI input -------------------------------------------------
 	
-	public boolean connectParent(String parentIP, int parentPort) {
+	public boolean connectParent(String parentIP, int parentPort, int sequence) {
 		connectParent = new Parent(this, parentIP, parentPort);
 		boolean result = connectParent.loginParent();
 		
-		if (result) {
-			gui.dspInfo("부모와 연결 설정(3way Handshake)에 성공하였습니다.");
-			
+		if (result) {			
 			connectChilds = new Childs(this, DEFAULT_PORT + 1);
 			result = connectChilds.readyForChild();
 			
-			if (result) {
-				new Thread(this).start();
+			if (result) {				
+				result = connectServer.successConnectToParent(parentIP, parentIP, sequence);
 				
-				gui.dspInfo("자식을 받을 준비에 성공하였습니다.");
-			}
-			else {
-				gui.dspInfo("자식을 받을 준비에 실패하였습니다.");
+				if (result) {			
+					new Thread(this).start();
+				}
 			}
 		}
-		else {
-			gui.dspInfo("부모와 연결 설정(3way Handshake)에 실패하였습니다.");
-		}
+		
+		debug("연결", result);
 		
 		return result;
 	}
@@ -90,7 +96,7 @@ public class Channel implements Runnable {
 		
 		isService = false;
 		
-		gui.dspInfo("채널 연결을 끊었습니다.");
+		debug("연결 해제", true);
 	}
 	
 	
@@ -121,9 +127,7 @@ public class Channel implements Runnable {
 	
 	@Override
 	public void run() {
-		while (isService) {
-			debug("Channel Thread Loop :: Start");
-			
+		while (isService) {			
 			Packet packet = null;
 			
 			try {
@@ -135,13 +139,9 @@ public class Channel implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		
-		debug("Channel Thread Loop :: End");
 	}
 	
-	private boolean performService(Packet packet) {
-		boolean result = false;
-		
+	private void performService(Packet packet) {
 		switch (packet.getMessage().getType()) {
 		case SEND:
 			Send send = (Send)packet.getMessage();
@@ -153,22 +153,21 @@ public class Channel implements Runnable {
 					isFirstConnect = false;
 					
 					display(send);
-					result = connectChilds.sendMsgToAllChild(send.getChannel(), send.getSeq(), send.getNick(), send.getMsg());
+					connectChilds.sendMsgToAllChild(send.getChannel(), send.getSeq(), send.getNick(), send.getMsg());
 				}
 				else {
 					if (send.getSeq() == getLastSequence() - 1) {
 						display(send);
-						result = connectChilds.sendMsgToAllChild(send.getChannel(), send.getSeq(), send.getNick(), send.getMsg());
+						connectChilds.sendMsgToAllChild(send.getChannel(), send.getSeq(), send.getNick(), send.getMsg());
 					}
 					else {
-						result = connectParent.requestMsgToParent(send.getChannel(), Integer.toString(getLastSequence() + 1));
+						connectParent.requestMsgToParent(send.getChannel(), Integer.toString(getLastSequence() + 1));
 					}
 				}
 				
 				break;
 			case CAST_UNI:
 				display(send);
-				result = true;
 				
 				break;
 			default:
@@ -179,19 +178,16 @@ public class Channel implements Runnable {
 			Request request = (Request)packet.getMessage();
 			
 			int startSequence = request.getSeq();
-			boolean sendResult = true;
 			
 			if (startSequence > getLastSequence()) {
-				sendResult = connectServer.requestMsgToServer(request.getChannel(), startSequence);
+				connectServer.requestMsgToServer(request.getChannel(), startSequence);
 			}
 			else {
-				while (startSequence <= getLastSequence() && sendResult) {
+				while (startSequence <= getLastSequence()) {
 					Send msg = getMsg(startSequence++);
-					sendResult = connectChilds.sendMsgToSomeChild(packet.getFromIP(), msg.getChannel(), msg.getSeq(), msg.getNick(), msg.getMsg());
+					connectChilds.sendMsgToSomeChild(packet.getFromIP(), msg.getChannel(), msg.getSeq(), msg.getNick(), msg.getMsg());
 				}
 			}
-			
-			result = sendResult;
 			
 			break;
 		case SET:
@@ -203,22 +199,22 @@ public class Channel implements Runnable {
 				
 				if (newParent.loginParent()) {
 					connectParent = newParent;
-					result = connectServer.successConnectToParent(set.getChannel(), set.getIp(), set.getSequence());
+					connectServer.successConnectToParent(set.getChannel(), set.getIp(), set.getSequence());
 				}
 				else {
-					result = connectServer.failOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
+					connectServer.failOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
 				}
 				
 				break;
 			case FAMILY_CHILD:
 				if (connectChilds.getChildSize() < MAX_CHILD) {
-					result = connectServer.successOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
+					connectServer.successOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
 					
 					Send msg = msgList.get(msgList.size() - 1);
 					connectChilds.sendMsgToSomeChild(set.getIp(), msg.getChannel(), msg.getSeq(), msg.getNick(), msg.getMsg());
 				}
 				else {
-					result = connectServer.failOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
+					connectServer.failOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
 				}
 				
 				break;
@@ -229,18 +225,16 @@ public class Channel implements Runnable {
 			Join join = (Join)packet.getMessage();
 			
 			display(join);
-			result = connectChilds.whoJoinToAllChild(join.getChannel(), join.getNick());
+			connectChilds.whoJoinToAllChild(join.getChannel(), join.getNick());
 			
 			break;
 		case EXIT:
 			Exit exit = (Exit)packet.getMessage(); 
 			
 			display(exit);
-			result = connectChilds.whoExitToAllChild(exit.getChannel(), exit.getNick());
+			connectChilds.whoExitToAllChild(exit.getChannel(), exit.getNick());
 			
 			break;
 		}
-		
-		return result;
 	}
 }

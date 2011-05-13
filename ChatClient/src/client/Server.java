@@ -22,15 +22,15 @@ public class Server  implements Runnable {
 	private boolean isService;
 	
 	private void debug(String msg) {
-		System.out.println(msg);
+		System.out.println("[서버(" + getServerIP() + ")] : " + msg);
 	}
 	
 	private void debug(String msg, boolean result) {
 		if (result) {
-			System.out.println("서버에 " + msg + " :: 성공");
+			System.out.println("[서버(" + getServerIP() + ")] : " + msg + " -> 성공");
 		}
 		else {
-			System.out.println("서버에 " + msg + " :: 실패");
+			System.out.println("[서버(" + getServerIP() + ")] : " + msg + " -> 실패");
 		}
 	}
 	
@@ -66,7 +66,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug(getServerIP() + " 연결", result);
+		debug("연결", result);
 		
 		return isService = result;
 	}
@@ -86,7 +86,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug(getServerIP() + " 연결 해제", true);
+		debug("연결 해제", true);
 	}
 	
 	/**
@@ -97,9 +97,20 @@ public class Server  implements Runnable {
 		return serverIP;
 	}
 	
+	public Socket getToServerSocket() {
+		return toServerSocket;
+	}
+
+	public BufferedReader getFromServerMsg() {
+		return fromServerMsg;
+	}
+
+	public BufferedWriter getToServerMsg() {
+		return toServerMsg;
+	}
 	
 	// ------------------------------------------------- S E N D -------------------------------------------------
-	
+
 	/**
 	 * 서버에 JOIN 메세지를 보냄
 	 * @param channel
@@ -121,7 +132,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("JOIN " + channel + " 보내기", result);
+		debug("JOIN/" + channel + "/" + nickName + "/보내기", result);
 		
 		return isService = result;
 	}
@@ -147,7 +158,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("EXIT " + channel + " 보내기", result);
+		debug("EXIT/" + channel + "/" + nickName + "/보내기", result);
 		
 		return isService = result;
 	}
@@ -176,7 +187,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("SEND-BROAD " + channel + " " + nickName + " " + msg + " 보내기", result);
+		debug("SEND/BROAD/" + channel + "/" + nickName + "/" + msg + "/보내기", result);
 		
 		return isService = result;
 	}
@@ -205,7 +216,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("SCRIPT-BROAD " + channel + " " + nickName + " " + script + " 보내기", result);
+		debug("SCRIPT/BROAD/" + channel + "/" + nickName + "/" + script + "/보내기", result);
 		
 		return isService = result;
 	}
@@ -234,7 +245,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("SCRIPT-UNI " + channel + " " + nickName + " " + script + " 보내기", result);
+		debug("SCRIPT/UNI/" + channel + "/" + nickName + "/" + script + " 보내기", result);
 		
 		return isService = result;
 	}
@@ -262,7 +273,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("SUC-CHILD " + channel + " " + childIP + " " + sequence + " 보내기", result);
+		debug("SUC/CHILD/" + channel + "/" + childIP + "/" + sequence + "/보내기", result);
 		
 		return isService = result;
 	}
@@ -290,7 +301,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("FAIL-CHILD " + channel + " " + childIP + " " + sequence + " 보내기", result);
+		debug("FAIL/CHILD/" + channel + "/" + childIP + "/" + sequence + "/보내기", result);
 		
 		return isService = result;
 	}
@@ -318,7 +329,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("SUC-PARENT " + channel + " " + parentIP + " " + sequence + " 보내기", result);
+		debug("SUC/PARENT/" + channel + "/" + parentIP + "/" + sequence + "/보내기", result);
 		
 		return isService = result;
 	}
@@ -346,7 +357,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("FAIL-PARENT " + channel + " " + parentIP + " " + sequence + " 보내기", result);
+		debug("FAIL/PARENT/" + channel + "/" + parentIP + "/" + sequence + "/보내기", result);
 		
 		return isService = result;
 	}
@@ -372,7 +383,7 @@ public class Server  implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("REQ " + channel + " " + sequence + " 보내기", result);
+		debug("REQ/" + channel + "/" + sequence + "/보내기", result);
 		
 		return isService = result;
 	}
@@ -381,15 +392,13 @@ public class Server  implements Runnable {
 	
 	@Override
 	public void run() {
-		while (isService && toServerSocket.isConnected()) {
-			debug("Server Thread Loop :: Start");
-			
+		while (isService && toServerSocket.isConnected()) {			
 			String line = null;
 			Message fromServerMessage = null;
 			
 			try {
 				while ((line = fromServerMsg.readLine()) != null) {
-					debug("서버로부터 " + line + " 받음");
+					debug(line + "/받음");
 					
 					if (fromServerMessage == null) {						
 						fromServerMessage = Message.parsType(line);
@@ -398,7 +407,7 @@ public class Server  implements Runnable {
 						Packet packet = new Packet(fromServerMessage, toServerSocket.getInetAddress().getHostAddress());
 						
 						if (packet.getMessage().isValid()) {
-							debug("서버로부터 정상 " + packet.getMessage().getType() + " 패킷 받음");
+							debug(packet.getMessage().getType() + "/정상 패킷 받음");
 							connectManager.addServerPacket(packet);
 						}
 						
@@ -410,7 +419,5 @@ public class Server  implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		
-		debug("Server Thread Loop :: End");
 	}
 }

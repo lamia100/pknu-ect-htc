@@ -22,15 +22,15 @@ public class Childs implements Runnable {
 	private boolean isService;
 	
 	private void debug(String msg) {
-		System.out.println(msg);
+		System.out.println("[자식들] : " + msg);
 	}
 	
 	private void debug(String msg, boolean result) {
 		if (result) {
-			System.out.println(msg + " :: 성공");
+			System.out.println("[자식들] : " + msg + " -> 성공");
 		}
 		else {
-			System.out.println(msg + " :: 실패");
+			System.out.println("[자식들] : " + msg + " -> 실패");
 		}
 	}
 	
@@ -61,7 +61,7 @@ public class Childs implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("자식을 받을 준비", result);
+		debug("받을 준비", result);
 		
 		return isService = result;
 	}
@@ -84,7 +84,7 @@ public class Childs implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("자식을 받을 소켓 해제", true);
+		debug("받을 소켓 해제", true);
 	}
 	
 	/**
@@ -94,8 +94,6 @@ public class Childs implements Runnable {
 	public void closeSomeChild(String childIP) {
 		childList.get(childIP).closeToChild();
 		childList.remove(childIP);
-		
-		debug("자식 하나 " + childIP + " 연결 해제", true);
 	}
 	
 	/**
@@ -204,13 +202,11 @@ public class Childs implements Runnable {
 	
 	@Override
 	public void run() {
-		while (isService && forChildSocket.isBound()) {
-			debug("Childs Thread Loop :: Start");
-			
+		while (isService && forChildSocket.isBound()) {			
 			try {
 				Socket fromChildSocket = forChildSocket.accept();
 				
-				debug("자식 " + fromChildSocket.getInetAddress().getHostAddress() + " 이 접속함");
+				debug("자식(" + fromChildSocket.getInetAddress().getHostAddress() + ")이 접속함");
 				
 				Child newChild = new Child(fromChildSocket);
 				if (newChild.readyFromChild()) {
@@ -221,8 +217,6 @@ public class Childs implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		
-		debug("Childs Thread Loop :: End");
 	}
 	
 	
@@ -234,15 +228,15 @@ public class Childs implements Runnable {
 		private boolean isService;
 		
 		private void debug(String msg) {
-			System.out.println("자식 " + getChildIP() + " 로부터 " + msg + " :: 받음");
+			System.out.println("[자식(" + getChildIP() + ")] : " + msg);
 		}
 		
 		private void debug(String msg, boolean result) {
 			if (result) {
-				System.out.println("자식 " + getChildIP() + " 에 "  + msg + " :: 성공");
+				System.out.println("[자식(" + getChildIP() + ")] : " + msg + " -> 성공");
 			}
 			else {
-				System.out.println("자식 " + getChildIP() + " 에 "  + msg + " :: 실패");
+				System.out.println("[자식(" + getChildIP() + ")] : " + msg + " -> 실패");
 			}
 		}
 		
@@ -326,7 +320,7 @@ public class Childs implements Runnable {
 				e.printStackTrace();
 			}
 			
-			this.debug("JOIN " + channel + " 보내기", result);
+			this.debug("JOIN/" + channel + "/" + nickName + "/보내기", result);
 			
 			return this.isService = result;
 		}
@@ -352,7 +346,7 @@ public class Childs implements Runnable {
 				e.printStackTrace();
 			}
 			
-			this.debug("EXIT " + channel + " 보내기", result);
+			this.debug("EXIT/" + channel + "/" + nickName + "/보내기", result);
 			
 			return this.isService = result;
 		}
@@ -383,7 +377,7 @@ public class Childs implements Runnable {
 				e.printStackTrace();
 			}
 			
-			this.debug("SEND-BROAD " + channel + " " + nickName + " " + msg + " 보내기", result);
+			this.debug("SEND/BROAD " + channel + "/" + nickName + "/" + msg + "/보내기", result);
 			
 			return this.isService = result;
 		}
@@ -401,7 +395,7 @@ public class Childs implements Runnable {
 					
 				try {
 					while ((line = fromChildMsg.readLine()) != null) {
-						this.debug(line);
+						this.debug(line + "/받음");
 						
 						if (fromChildMessage == null) {
 							fromChildMessage = Message.parsType(line);
@@ -410,7 +404,7 @@ public class Childs implements Runnable {
 							Packet packet = new Packet(fromChildMessage, fromChildSocket.getInetAddress().getHostAddress());
 							
 							if (packet.getMessage().isValid()) {
-								this.debug(packet.getMessage().toString() + " 정상 패킷");
+								this.debug(packet.getMessage().getType() + "/정상 패킷 받음");
 								connectChannel.addFamilyPacket(packet);
 							}
 							

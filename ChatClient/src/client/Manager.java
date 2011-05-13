@@ -20,6 +20,21 @@ public class Manager implements Runnable {
 	
 	private boolean isService;
 	
+	@SuppressWarnings("unused")
+	private void debug(String msg) {
+		System.out.println("[매니저] : " + msg);
+	}
+	
+	@SuppressWarnings("unused")
+	private void debug(String msg, boolean result) {
+		if (result) {
+			System.out.println("[매니저] : " + msg + " -> 성공");
+		}
+		else {
+			System.out.println("[매니저] : " + msg + " -> 실패");
+		}
+	}
+	
 	public Manager(String nickName, GUI gui) {
 		channelList = new HashMap<String, Channel>();
 		serverPacketQueue = new LinkedBlockingQueue<Packet>();
@@ -34,10 +49,6 @@ public class Manager implements Runnable {
 		serverPacketQueue.offer(addPacket);
 	}
 	
-	public void debug(String msg) {
-		System.out.println(msg);
-	}
-	
 	
 	// ------------------------------------------------- GUI input -------------------------------------------------
 	
@@ -45,25 +56,22 @@ public class Manager implements Runnable {
 		connectServer = new Server(this, serverIP, serverPort);
 		boolean result = connectServer.loginServer();
 		
-		if (result) {
-			gui.dspInfo("서버와 연결 설정(3way Handshake)에 성공하였습니다.");
-			
+		if (result) {			
 			result = connectServer.joinChannel(ALL, nickName);
 			
 			if (result) {
 				new Thread(this).start();
-				
-				gui.dspInfo("서버에 ALL 메세지 전송에 성공하였습니다.");
 			}
-			else {
-				gui.dspInfo("서버에 ALL 메세지 전송에 실패하였습니다.");
-			}
-		}
-		else {
-			gui.dspInfo("서버와 연결 설정(3way Handshake)에 실패하였습니다.");
 		}
 		
-		return result;
+		if (result) {
+			gui.dspInfo("서버 연결에 성공하였습니다.");
+		}
+		else {
+			gui.dspInfo("서버 연결에 실패하였습니다.");
+		}
+		
+		return isService = result;
 	}
 	
 	public void disconnectServer() {
@@ -81,23 +89,17 @@ public class Manager implements Runnable {
 	public boolean joinChannel(String channel) {
 		boolean result = connectServer.joinChannel(channel, nickName);
 		
-		if (result) {
-			gui.dspInfo("서버에 채널 입장 메세지를 보냈습니다.");
-		}
-		else {
+		if (!result) {
 			gui.dspInfo("서버에 채널 입장 메세지를 보내지 못했습니다. 이전에 서버와 연결이 끊겼습니다.");
 		}
 		
-		return result;
+		return isService = result;
 	}
 	
 	public boolean exitChannel(String channel) {
 		boolean result = connectServer.exitChannel(channel, nickName);
 		
-		if (result) {
-			gui.dspInfo("서버에 채널 퇴장 메세지를 보냈습니다.");
-		}
-		else {
+		if (!result) {
 			gui.dspInfo("서버에 채널 퇴장 메세지를 보내지 못했습니다. 이전에 서버와 연결이 끊겼습니다.");
 		}
 		
@@ -105,20 +107,17 @@ public class Manager implements Runnable {
 			channelList.remove(channel);
 		}
 		
-		return result;
+		return isService = result;
 	}
 	
 	public boolean sendMsg(String channel, String msg) {
 		boolean result = connectServer.sendMsgToServer(channel, nickName, msg);
 		
-		if (result) {
-			gui.dspInfo("서버에 메세지를 보냈습니다.");
-		}
-		else {
+		if (!result) {
 			gui.dspInfo("서버에 메세지를 보내지 못했습니다. 이전에 서버와 연결이 끊겼습니다.");
 		}
 		
-		return result;
+		return isService = result;
 	}
 	
 	
@@ -126,9 +125,7 @@ public class Manager implements Runnable {
 	
 	@Override
 	public void run() {
-		while (isService) {
-			debug("Manager Thread Loop :: Start");
-			
+		while (isService) {			
 			Packet packet = null;
 			
 			try {
@@ -140,8 +137,6 @@ public class Manager implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		
-		debug("Manager Thread Loop :: End");
 	}
 	
 	private void performService(Packet packet) {
@@ -151,8 +146,6 @@ public class Manager implements Runnable {
 		case SEND:
 			Send send = (Send)packet.getMessage();
 			
-			gui.dspMsg(send.getNick(), send.getMsg());
-			
 			/*
 			targetChannel = channelList.get(send.getChannel());
 			
@@ -161,22 +154,30 @@ public class Manager implements Runnable {
 			}
 			*/
 			
+			// 채널 우회 처리
+			gui.dspMsg(send.getNick(), send.getMsg());
+			
 			break;
 		case SET:
-			Set set = ((Set)packet.getMessage());
+			Set set = (Set)packet.getMessage();
+			
 			targetChannel = channelList.get(set.getChannel());
 			
-			if (channelList.containsKey(targetChannel)) {
+			if (targetChannel != null) {
 				targetChannel.addFamilyPacket(packet);
 			}
 			else {
 				if (set.getFamily() == TYPE.FAMILY_PARENT) {
 					Channel newChannel = new Channel(connectServer, set.getChannel(), nickName, gui);
 					
-					if (newChannel.connectParent(set.getIp(), DEFAULT_PORT)) {
+					if (newChannel.connectParent(set.getIp(), DEFAULT_PORT, set.getSequence())) {
 						channelList.put(set.getChannel(), newChannel);
-						
+						connectServer.successConnectToParent(set.getChannel(), set.getIp(), set.getSequence());
+							
 						gui.dspInfo(set.getChannel() + " 채널이 리스트에 추가되었습니다.");
+					}
+					else {
+						connectServer.failConnectToParent(set.getChannel(), set.getIp(), set.getSequence());
 					}
 				}
 			}

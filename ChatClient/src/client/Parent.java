@@ -22,15 +22,15 @@ public class Parent implements Runnable {
 	private boolean isService;
 	
 	private void debug(String msg) {
-		System.out.println(msg);
+		System.out.println("[부모(" + getParentIP() + ")] : " + msg);
 	}
 	
 	private void debug(String msg, boolean result) {
 		if (result) {
-			System.out.println("부모에 " + msg + " :: 성공");
+			System.out.println("[부모(" + getParentIP() + ")] : " + msg + " -> 성공");
 		}
 		else {
-			System.out.println("부모에 " + msg + " :: 실패");
+			System.out.println("[부모(" + getParentIP() + ")] : " + msg + " -> 실패");
 		}
 	}
 	
@@ -66,7 +66,7 @@ public class Parent implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug(getParentIP() + " 연결", result);
+		debug("연결", result);
 		
 		return isService = result;
 	}
@@ -86,7 +86,7 @@ public class Parent implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug(getParentIP() + " 연결 해제", true);
+		debug("연결 해제", true);
 	}
 	
 	/**
@@ -120,7 +120,7 @@ public class Parent implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("REQ " + channel + " " + sequence + " 보내기", result);
+		debug("REQ/" + channel + "/" + sequence + "/보내기", result);
 		
 		return isService = result;
 	}
@@ -130,28 +130,22 @@ public class Parent implements Runnable {
 	
 	@Override
 	public void run() {
-		while (isService && toParentSocket.isConnected()) {
-			debug("Parent Thread Loop :: Start");
-			
+		while (isService && toParentSocket.isConnected()) {			
 			String line = null;
 			Message fromParentMessage = null;
 				
 			try {
 				while ((line = fromParentMsg.readLine()) != null) {
-					debug("부모로부터 " + line + " 받음");
+					debug(line + "/받음");
 					
-					if (fromParentMessage == null) {
-						debug("1");
-						
+					if (fromParentMessage == null) {						
 						fromParentMessage = Message.parsType(line);
 					}
 					else if (fromParentMessage.parse(line)) {
-						debug("2");
-						
 						Packet packet = new Packet(fromParentMessage, toParentSocket.getInetAddress().getHostAddress());
 						
 						if (packet.getMessage().isValid()) {
-							debug("부모로부터 정상 " + packet.getMessage().getType() + " 패킷 받음");
+							debug(packet.getMessage().getType() + "/정상 패킷 받음");
 							connectChannel.addFamilyPacket(packet);
 						}
 						
@@ -163,7 +157,5 @@ public class Parent implements Runnable {
 				e.printStackTrace();
 			}
 		}
-		
-		debug("Parent Thread Loop :: End");
 	}
 }
