@@ -401,6 +401,8 @@ public class Server  implements Runnable {
 							debug("서버로부터 정상 " + packet.getMessage().getType() + " 패킷 받음");
 							connectManager.addServerPacket(packet);
 						}
+						
+						fromServerMessage = null;
 					}
 				}
 			}
