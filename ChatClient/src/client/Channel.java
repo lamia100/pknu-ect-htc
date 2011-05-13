@@ -109,7 +109,7 @@ public class Channel implements Runnable {
 		case SEND:
 			Send send = (Send)msg;
 			msgList.add(send);
-			gui.dspMsg(send.getNick(), send.getMsg());
+			gui.dspMsg(channel, send.getNick(), send.getMsg());
 			
 			break;
 		case JOIN:

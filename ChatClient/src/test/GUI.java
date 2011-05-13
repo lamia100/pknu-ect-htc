@@ -14,6 +14,7 @@ import javax.swing.JTextArea;
 import javax.swing.JScrollPane;
 
 import client.Manager;
+import javax.swing.border.SoftBevelBorder;
 
 public class GUI extends JFrame {
 
@@ -43,6 +44,9 @@ public class GUI extends JFrame {
 	private Manager connectManager;
 	private JScrollPane sp_info = null;
 	private JTextArea ta_info = null;
+	private JTextField tf_channelSend = null;
+	private JLabel lb_channelSend = null;
+	private JLabel lb_msg = null;
 	
 	/**
 	 * This is the default constructor
@@ -321,8 +325,15 @@ public class GUI extends JFrame {
 	 */
 	private JPanel getP_msg() {
 		if (p_msg == null) {
+			lb_msg = new JLabel();
+			lb_msg.setText("MSG :");
+			lb_channelSend = new JLabel();
+			lb_channelSend.setText("Channel :");
 			p_msg = new JPanel();
 			p_msg.setLayout(new FlowLayout());
+			p_msg.add(lb_channelSend, null);
+			p_msg.add(getTf_channelSend(), null);
+			p_msg.add(lb_msg, null);
 			p_msg.add(getTf_msg(), null);
 			p_msg.add(getBt_send(), null);
 		}
@@ -346,7 +357,7 @@ public class GUI extends JFrame {
 						System.out.println("Msg keyTyped()");
 						
 						if (connectManager != null) {
-							String channel = tf_channel.getText();
+							String channel = tf_channelSend.getText();
 							String msg = tf_msg.getText();
 							
 							boolean result = connectManager.sendMsg(channel, msg);
@@ -379,7 +390,7 @@ public class GUI extends JFrame {
 					System.out.println("Send actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
 					
 					if (connectManager != null) {
-						String channel = tf_channel.getText();
+						String channel = tf_channelSend.getText();
 						String msg = tf_msg.getText();
 						
 						boolean result = connectManager.sendMsg(channel, msg);
@@ -405,7 +416,7 @@ public class GUI extends JFrame {
 	private JScrollPane getSp_msg() {
 		if (sp_msg == null) {
 			sp_msg = new JScrollPane();
-			sp_msg.setBorder(null);
+			sp_msg.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
 			sp_msg.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 			sp_msg.setViewportView(getTa_msg());
 		}
@@ -434,16 +445,16 @@ public class GUI extends JFrame {
 	private JScrollPane getSp_info() {
 		if (sp_info == null) {
 			sp_info = new JScrollPane();
-			sp_info.setBorder(null);
+			sp_info.setBorder(new SoftBevelBorder(SoftBevelBorder.LOWERED));
 			sp_info.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 			sp_info.setViewportView(getTa_info());
 		}
 		return sp_info;
 	}
 
-	public void dspMsg(String nickName, String msg) {
+	public void dspMsg(String channel, String nickName, String msg) {
 		sp_msg.getVerticalScrollBar().setValue(sp_msg.getVerticalScrollBar().getMaximum());
-		ta_msg.append("[" + nickName + "] " + msg);
+		ta_msg.append("(CH " + channel + ") [" + nickName + "] " + msg);
 	}
 	
 	public void dspInfo(String info) {
@@ -465,5 +476,19 @@ public class GUI extends JFrame {
 			ta_info.setRows(5);
 		}
 		return ta_info;
+	}
+
+	/**
+	 * This method initializes tf_channelSend	
+	 * 	
+	 * @return javax.swing.JTextField	
+	 */
+	private JTextField getTf_channelSend() {
+		if (tf_channelSend == null) {
+			tf_channelSend = new JTextField();
+			tf_channelSend.setColumns(5);
+			tf_channelSend.setText("0");
+		}
+		return tf_channelSend;
 	}
 }

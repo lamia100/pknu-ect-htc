@@ -106,12 +106,19 @@ public class Manager implements Runnable {
 	}
 	
 	public boolean sendMsg(String channel, String msg) {
-		boolean result = connectServer.sendMsgToServer(channel, nickName, msg);
+		boolean result = true;
 		
-		if (!result) {
-			disconnectServer();
+		if (channelList.containsKey(channel)) {
+			result = connectServer.sendMsgToServer(channel, nickName, msg);
 			
-			gui.dspInfo("서버에 메세지를 보내지 못했습니다. 이전에 서버와 연결이 끊겼습니다.");
+			if (!result) {
+				disconnectServer();
+				
+				gui.dspInfo("서버에 메세지를 보내지 못했습니다. 이전에 서버와 연결이 끊겼습니다.");
+			}
+		}
+		else {
+			gui.dspInfo("해당 채널에 접속해있지 않기 때문에 메세지를 보내지 못했습니다.");
 		}
 		
 		return isService = result;
@@ -159,7 +166,7 @@ public class Manager implements Runnable {
 				targetChannel.addFamilyPacket(packet);
 			}
 			else {
-				if (set.getFamily() == TYPE.FAMILY_PARENT) {
+				if (set.getFamily() == TYPE.FAMILY_PARENT) {					
 					Channel newChannel = new Channel(connectServer, set.getChannel(), nickName, gui);
 					
 					if (newChannel.connectParent(set.getIp(), DEFAULT_PORT, set.getSequence())) {
