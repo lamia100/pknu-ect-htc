@@ -1,11 +1,17 @@
 package server;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.Collection;
 
 import util.Definition;
 import util.msg.Message;
-import util.msg.sub.*;
+import util.msg.sub.Exit;
+import util.msg.sub.Join;
 
 /**
  * 
@@ -21,7 +27,7 @@ public class User implements Comparable<User>, Runnable {
 	private BufferedReader in = null;
 	private BufferedWriter out = null;
 	private boolean isRun = true;
-	
+	private java.util.Set<Channel> joinChannels=null;
 	public String getName() {
 		return name;
 	}
@@ -43,7 +49,14 @@ public class User implements Comparable<User>, Runnable {
 	public static void setMessageProcessor(MessageProcessor messageProcessor) {
 		User.messageProcessor = messageProcessor;
 	}
-	
+	public Collection<Channel> getChannels()
+	{
+		return joinChannels;
+	}
+	public void add(Channel channel)
+	{
+		joinChannels.add(channel);
+	}
 	public void initialize() {
 		/*
 		 * 닉네임 설정등 초기화
@@ -54,6 +67,10 @@ public class User implements Comparable<User>, Runnable {
 			while (isRun) {
 				line = in.readLine();
 				System.out.println("User Line : "+line);
+				if(line==null){
+					isRun=false;
+					break;
+				}
 				if (message == null) {
 					message = Message.parsType(line);
 					
@@ -107,9 +124,14 @@ public class User implements Comparable<User>, Runnable {
 	}
 	
 	public void disconnect() {
-		send(new Send());
 		try {
-			socket.close();
+			User t=messageProcessor.getUser(name);
+			if(t==this)
+			{
+				messageProcessor.remove(this);
+			}
+			if(socket.isConnected())
+				socket.close();
 			messageProcessor.enqueue(new Exit("*",name));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -133,6 +155,13 @@ public class User implements Comparable<User>, Runnable {
 			while (isRun) {
 				line = in.readLine();
 				System.out.println("User line : "+line);
+				
+				if(line==null)
+				{
+					System.out.println("null Line");
+					isRun=false;
+					break;
+				}
 				if (message == null) {
 					try{
 					message = Message.parsType(line);
@@ -153,6 +182,7 @@ public class User implements Comparable<User>, Runnable {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		disconnect();
 	}
 	
 }

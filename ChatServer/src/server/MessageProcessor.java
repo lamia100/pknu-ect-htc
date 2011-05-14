@@ -5,6 +5,7 @@ import java.util.Map;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import util.Definition;
 import util.msg.Message;
 import util.msg.sub.*;
 
@@ -37,6 +38,7 @@ public class MessageProcessor implements Runnable {
 		}
 	}
 	
+	/*
 	public synchronized boolean add(Channel channel) {
 		if (channels.containsKey(channel.getName())) {
 			return false;
@@ -45,7 +47,7 @@ public class MessageProcessor implements Runnable {
 			return true;
 		}
 	}
-	
+	*/
 	public synchronized void enqueue(Message message) {
 		System.out.println("enqueue : " + message);
 		messageQ.offer(message);
@@ -68,7 +70,7 @@ public class MessageProcessor implements Runnable {
 				e.printStackTrace();
 			}
 			System.out.println("MP : 메세지 있음");
-			System.out.println("MP : 내용\n"+message);
+			System.out.println("MP : 내용\n" + message);
 			if (message != null) {
 				switch (message.getType()) {
 					case SEND:
@@ -76,6 +78,9 @@ public class MessageProcessor implements Runnable {
 						break;
 					case JOIN:
 						join((Join) message);
+						break;
+					case EXIT:
+						exit((Exit) message);
 						break;
 					default:
 						break;
@@ -86,12 +91,23 @@ public class MessageProcessor implements Runnable {
 		
 	}
 	
+	private void exit(Exit exit) {
+		// TODO Auto-generated method stub
+		if (Definition.ALL.equals(exit.getChannel())) {
+			User user = users.get(exit.getNick());
+			if (user != null)
+				for (Channel channel : user.getChannels()) {
+					channel.enqueue(new Exit(channel.getName(), exit.getNick()));
+				}
+		}
+	}
+	
 	private synchronized void send(Send send) {
 		Channel channel = channels.get(send.getChannel());
 		if (channel != null) {
 			System.out.println("메세지 받았음");
 			channel.enqueue(send);
-		}else {
+		} else {
 			System.out.println(send.getChannel() + "체널이 없음");
 			
 		}
@@ -103,7 +119,7 @@ public class MessageProcessor implements Runnable {
 			channel.enqueue(join);
 		} else {
 			channel = new Channel(join.getChannel());
-			channels.put(join.getChannel(),channel);
+			channels.put(join.getChannel(), channel);
 			new Thread(channel).start();
 			channel.enqueue(join);
 			
@@ -114,6 +130,11 @@ public class MessageProcessor implements Runnable {
 	public User getUser(String nick) {
 		// TODO Auto-generated method stub
 		return users.get(nick);
+	}
+	
+	public void remove(User user) {
+		// TODO Auto-generated method stub
+		users.remove(user.getName());
 	}
 	
 }
