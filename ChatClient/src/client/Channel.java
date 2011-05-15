@@ -27,6 +27,7 @@ public class Channel implements Runnable {
 	private boolean isService;
 	private boolean isFirstConnect;
 	
+	@SuppressWarnings("unused")
 	private void debug(String msg) {
 		System.out.println("[Ã¤³Î(" + channel + ")] : " + msg);
 	}
@@ -111,8 +112,6 @@ public class Channel implements Runnable {
 		addFamilyPacket(new Packet(new Send(), ""));
 		
 		connectChilds.closeAllChild();
-		
-		debug("11");
 		
 		connectParent.logoutParent();
 		
