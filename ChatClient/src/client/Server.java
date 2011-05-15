@@ -261,6 +261,7 @@ public class Server implements Runnable {
 	 * 서버에 SUC-CHILD 메세지를 보냄
 	 * @param channel
 	 * @param childIP
+	 * @param sequence
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
 	public boolean successOpenSocketForChild(String channel, String childIP, int sequence) {
@@ -289,6 +290,7 @@ public class Server implements Runnable {
 	 * 서버에 FAIL-CHILD 메세지를 보냄
 	 * @param channel
 	 * @param childIP
+	 * @param sequence
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
 	public boolean failOpenSocketForChild(String channel, String childIP, int sequence) {
@@ -317,6 +319,7 @@ public class Server implements Runnable {
 	 * 서버에 SUC-PARENT 메세지를 보냄
 	 * @param channel
 	 * @param parentIP
+	 * @param sequence
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
 	public boolean successConnectToParent(String channel, String parentIP, int sequence) {
@@ -345,6 +348,7 @@ public class Server implements Runnable {
 	 * 서버에 FAIL-PARENT 메세지를 보냄
 	 * @param channel
 	 * @param parentIP
+	 * @param sequence
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
 	public boolean failConnectToParent(String channel, String parentIP, int sequence) {

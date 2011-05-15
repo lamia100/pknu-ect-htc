@@ -74,7 +74,7 @@ public class Childs implements Runnable {
 			it.next().closeToChild();
 		}
 		
-		debug("받을 소켓 해제", true);
+		debug("모든 자식들 연결 해제", true);
 	}
 	
 	/**
@@ -88,7 +88,7 @@ public class Childs implements Runnable {
 	
 	/**
 	 * 모든 자식들의 IP를 반환
-	 * @return 모든 자식의 IP가 담겨있는 배열
+	 * @return 모든 자식들의 IP가 담겨있는 배열
 	 */
 	public String[] getChildIPList() {
 		String childIPList[] = new String[childList.size()];
