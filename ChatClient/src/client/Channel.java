@@ -93,10 +93,10 @@ public class Channel implements Runnable {
 			
 			new Thread(this).start();
 			
-			connectServer.successConnectToParent(parentIP, parentIP, sequence);
+			connectServer.successConnectToParent(channel, parentIP, sequence);
 		}
 		else {
-			connectServer.failConnectToParent(parentIP, parentIP, sequence);
+			connectServer.failConnectToParent(channel, parentIP, sequence);
 		}
 		
 		debug("¿¬°á", result);
