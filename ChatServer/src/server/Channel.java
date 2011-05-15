@@ -29,7 +29,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 	private final Map<Integer, LinkSequence> changes;
 	private String name = "";
 	private boolean isRun = true;
-	private int messageSqeuence=0;
+	private int messageSqeuence = 0;
 	public int setID = 0;
 	
 	public Channel(String name) {
@@ -46,15 +46,15 @@ public class Channel implements Comparable<Channel>, Runnable {
 		messageQ.offer(message);
 	}
 	
-
-	
 	public ArrayList<User> getUsers() {
 		return users;
 	}
 	
 	/**
 	 * Server 클레스에서만 호출 할것.
-	 * @param messageProcessor 서버에서 사용하는 유일한 MessageProcessor
+	 * 
+	 * @param messageProcessor
+	 *            서버에서 사용하는 유일한 MessageProcessor
 	 */
 	public static void setMessageProcessor(MessageProcessor messageProcessor) {
 		Channel.messageProcessor = messageProcessor;
@@ -87,12 +87,12 @@ public class Channel implements Comparable<Channel>, Runnable {
 	private void send(Message message) {
 		log("Send");
 		Send send;
-		if(message.getType()==TYPE.SEND)
-			send=(Send)message;
+		if (message.getType() == TYPE.SEND)
+			send = (Send) message;
 		else
 			return;
 		
-		if(users.size()>1)
+		if (users.size() > 1)
 			users.get(1).send(send.getClone(messageSqeuence++));
 	}
 	
@@ -113,7 +113,16 @@ public class Channel implements Comparable<Channel>, Runnable {
 	}
 	
 	private void success(Success message) {
-		//
+		LinkSequence sequence = changes.get(message.getSequence());
+		boolean isEndSequence=false;
+		if (sequence != null)
+		{
+			isEndSequence=sequence.next(message);
+		}
+		if(isEndSequence)
+		{
+			changes.remove(message.getSequence());
+		}
 	}
 	
 	@Override
@@ -121,7 +130,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 		// TODO Auto-generated method stub
 		Message message;
 		while (isRun) {
-			message=null;
+			message = null;
 			log("동작중");
 			try {
 				message = messageQ.take();
@@ -202,7 +211,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 				names.add(added.getName());
 				index = users.size();
 				users.add(added);
-			}else{
+			} else {
 				sequence = -1;
 			}
 			
@@ -240,7 +249,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 			parent = users.get(index / 2);
 			System.out.println(added.getName());
 			System.out.println(parent);
-
+			
 			if (parent != null) {
 				parent.send(new Set(name, added.getIP(), CHILD, id));//자식 IP 알림.
 				sequence++;
@@ -312,9 +321,8 @@ public class Channel implements Comparable<Channel>, Runnable {
 		
 	}
 	
-	private void log(String message)
-	{
-		System.out.println("CH "+name);
+	private void log(String message) {
+		System.out.println("CH " + name);
 		System.out.println(message);
 		System.out.println("----------------------------");
 	}

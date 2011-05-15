@@ -17,16 +17,23 @@ import util.msg.Message;
  */
 @SuppressWarnings("unused")
 public class Server implements Runnable {
-	public static final int port = Definition.DEFAULT_PORT;
 	private static ServerSocket sSocket;
 	private static Server server = null;
-	private MessageProcessor messageProcessor = null;
+	private static MessageProcessor messageProcessor = null;
 	
-	private Server() throws IOException {
-		initialize();
+	static{
+		try {
+			initialize();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			System.exit(1);
+		}
 	}
 	
-	private void initialize() throws IOException {
+	
+	private static void initialize() throws IOException {
+		server=new Server();
 		sSocket = new ServerSocket(Definition.DEFAULT_PORT);
 		messageProcessor = new MessageProcessor();
 		new Thread(messageProcessor).start();
@@ -63,16 +70,7 @@ public class Server implements Runnable {
 	}
 	
 	public static void main(String[] args) {
-		
-		Server s = null;
-		try {
-			s = new Server();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			System.exit(1);
-		}
-		new Thread(s).start();
+		new Thread(Server.server).start();
 	}
 	
 }

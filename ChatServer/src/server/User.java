@@ -21,17 +21,17 @@ import util.msg.sub.Join;
 public class User implements Comparable<User>, Runnable {
 	// 서버 필요함 >> 필요없음. 
 	private static MessageProcessor messageProcessor = null;
-	
 	private Socket socket = null;
 	private String name = null;
 	private BufferedReader in = null;
 	private BufferedWriter out = null;
 	private boolean isRun = true;
-	private java.util.Set<Channel> joinChannels=null;
+	private java.util.Set<Channel> joinChannels = null;
+	
 	public String getName() {
 		return name;
 	}
-
+	
 	public User(Socket socket) {
 		this.socket = socket;
 		try {
@@ -49,57 +49,19 @@ public class User implements Comparable<User>, Runnable {
 	public static void setMessageProcessor(MessageProcessor messageProcessor) {
 		User.messageProcessor = messageProcessor;
 	}
-	public Collection<Channel> getChannels()
-	{
+	
+	public Collection<Channel> getChannels() {
 		return joinChannels;
 	}
-	public void add(Channel channel)
-	{
+	
+	public void add(Channel channel) {
 		joinChannels.add(channel);
 	}
-	public void initialize() {
-		/*
-		 * 닉네임 설정등 초기화
-		 */
-		String line = "";
-		Message message = null;
-		try {
-			while (isRun&&(line = in.readLine())!=null) {
-				
-				log("initialize line : "+line);
-				if (message == null) {
-					message = Message.parsType(line);
-					
-				} else {
-					if (!(message instanceof Join)) {
-						disconnect();
-						return;
-					}
-					boolean isMessageEnd = message.parse(line);
-					if (isMessageEnd) {
-						Join join=(Join)message;
-						if(Definition.ALL.equals(join.getChannel()))
-						{
-							name=join.getNick();
-							messageProcessor.add(this);
-						}else{
-							disconnect();
-						}
-						return;
-					}
-				}
-				
-			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		messageProcessor.add(this);
-	}
-	public String getIP()
-	{
+	
+	public String getIP() {
 		return socket.getInetAddress().toString();
 	}
+	
 	@Override
 	public int compareTo(User o) {
 		// TODO Auto-generated method stub
@@ -121,22 +83,60 @@ public class User implements Comparable<User>, Runnable {
 	
 	public void disconnect() {
 		try {
-			User t=messageProcessor.getUser(name);
-			if(t==this)
-			{
+			User t = messageProcessor.getUser(name);
+			if (t == this) {
 				messageProcessor.remove(this);
 			}
-			if(socket.isConnected())
+			if (socket.isConnected())
 				socket.close();
-			messageProcessor.enqueue(new Exit("*",name));
+			messageProcessor.enqueue(new Exit("*", name));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-	public void stop()
-	{
-		isRun=false;
+	
+	public void stop() {
+		isRun = false;
+	}
+	
+	public void initialize() {
+		/*
+		 * 닉네임 설정등 초기화
+		 */
+		String line = "";
+		Message message = null;
+		try {
+			while (isRun && (line = in.readLine()) != null) {
+				
+				log("initialize line : " + line);
+				if (message == null) {
+					message = Message.parsType(line);
+					
+				} else {
+					if (!(message instanceof Join)) {
+						disconnect();
+						return;
+					}
+					boolean isMessageEnd = message.parse(line);
+					if (isMessageEnd) {
+						Join join = (Join) message;
+						if (Definition.ALL.equals(join.getChannel())) {
+							name = join.getNick();
+							messageProcessor.add(this);
+						} else {
+							disconnect();
+						}
+						return;
+					}
+				}
+				
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		messageProcessor.add(this);
 	}
 	
 	@Override
@@ -148,15 +148,15 @@ public class User implements Comparable<User>, Runnable {
 		String line = "";
 		Message message = null;
 		try {
-			while (isRun&&(line=in.readLine())!=null) {
+			while (isRun && (line = in.readLine()) != null) {
 				//line = in.readLine();
-				log("run line : "+line);
+				log("run line : " + line);
 				if (message == null) {
-					try{
-					message = Message.parsType(line);
-					}catch (NullPointerException e){
+					try {
+						message = Message.parsType(line);
+					} catch (NullPointerException e) {
 						e.printStackTrace();
-
+						
 						this.disconnect();
 						this.stop();
 					}
@@ -176,7 +176,7 @@ public class User implements Comparable<User>, Runnable {
 	
 	private void log(String log) {
 		// TODO Auto-generated method stub
-		System.out.println("User "+name);
+		System.out.println("User " + name);
 		System.out.println(log);
 		System.out.println("----------------------------");
 	}
