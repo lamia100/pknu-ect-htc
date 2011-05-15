@@ -296,6 +296,7 @@ public class Childs implements Runnable {
 			return fromChildSocket.getInetAddress().getHostAddress();
 		}
 		
+		@SuppressWarnings("unused")
 		public boolean isConnect() {
 			return this.isService;
 		}
