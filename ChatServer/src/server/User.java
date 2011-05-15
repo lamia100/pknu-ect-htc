@@ -64,13 +64,9 @@ public class User implements Comparable<User>, Runnable {
 		String line = "";
 		Message message = null;
 		try {
-			while (isRun) {
-				line = in.readLine();
-				System.out.println("User Line : "+line);
-				if(line==null){
-					isRun=false;
-					break;
-				}
+			while (isRun&&(line = in.readLine())!=null) {
+				
+				log("initialize line : "+line);
 				if (message == null) {
 					message = Message.parsType(line);
 					
@@ -113,8 +109,8 @@ public class User implements Comparable<User>, Runnable {
 	
 	public synchronized void send(Message message) {
 		try {
-			System.out.println("user : 메세지 전송");
-			System.out.println("user 내용 :\n"+message);
+			log("메세지 전송");
+			log(message.toString());
 			
 			out.write(message.toString());
 			out.flush();
@@ -152,16 +148,9 @@ public class User implements Comparable<User>, Runnable {
 		String line = "";
 		Message message = null;
 		try {
-			while (isRun) {
-				line = in.readLine();
-				System.out.println("User line : "+line);
-				
-				if(line==null)
-				{
-					System.out.println("null Line");
-					isRun=false;
-					break;
-				}
+			while (isRun&&(line=in.readLine())!=null) {
+				//line = in.readLine();
+				log("run line : "+line);
 				if (message == null) {
 					try{
 					message = Message.parsType(line);
@@ -183,6 +172,13 @@ public class User implements Comparable<User>, Runnable {
 			e.printStackTrace();
 		}
 		disconnect();
+	}
+	
+	private void log(String log) {
+		// TODO Auto-generated method stub
+		System.out.println("User "+name);
+		System.out.println(log);
+		System.out.println("----------------------------");
 	}
 	
 }

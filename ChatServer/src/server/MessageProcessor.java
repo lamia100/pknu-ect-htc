@@ -49,7 +49,7 @@ public class MessageProcessor implements Runnable {
 	}
 	*/
 	public synchronized void enqueue(Message message) {
-		System.out.println("enqueue : " + message);
+		log("enqueue\n"+message.toString());
 		messageQ.offer(message);
 	}
 	
@@ -61,7 +61,7 @@ public class MessageProcessor implements Runnable {
 	public void run() {
 		// TODO Auto-generated method stub
 		while (isRun) {
-			System.out.println("MP 동작중");
+			log("동작중");
 			Message message = null;
 			try {
 				message = messageQ.take();
@@ -69,8 +69,7 @@ public class MessageProcessor implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("MP : 메세지 있음");
-			System.out.println("MP : 내용\n" + message);
+			log("메세지 있음\n" + message);
 			if (message != null) {
 				switch (message.getType()) {
 					case SEND:
@@ -105,10 +104,10 @@ public class MessageProcessor implements Runnable {
 	private synchronized void send(Send send) {
 		Channel channel = channels.get(send.getChannel());
 		if (channel != null) {
-			System.out.println("메세지 받았음");
+			log("메세지 받았음");
 			channel.enqueue(send);
 		} else {
-			System.out.println(send.getChannel() + "체널이 없음");
+			log(send.getChannel() + "체널이 없음");
 			
 		}
 	}
@@ -135,6 +134,12 @@ public class MessageProcessor implements Runnable {
 	public void remove(User user) {
 		// TODO Auto-generated method stub
 		users.remove(user.getName());
+	}
+	
+	private void log(String message) {
+		System.out.println("MessageProcessor");
+		System.out.println(message);
+		System.out.println("----------------------------");
 	}
 	
 }

@@ -85,7 +85,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 	}
 	
 	private void send(Message message) {
-		System.out.println("CH : Send");
+		log("Send");
 		Send send;
 		if(message.getType()==TYPE.SEND)
 			send=(Send)message;
@@ -119,42 +119,41 @@ public class Channel implements Comparable<Channel>, Runnable {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		Message message;
 		while (isRun) {
-			Message message=null;
-			System.out.println("CH 동작중");
+			message=null;
+			log("동작중");
 			try {
 				message = messageQ.take();
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			System.out.println("CH 동작중");
 			if (message != null) {
-				System.out.println("CH : 메세지 있음");
-				System.out.println("체널 디큐 \n 내용 : " + message);
+				log("메세지 있음, 디큐 \n" + message);
 				switch (message.getType()) {
 					case SEND:
-						System.out.println("CH CASE SEND");
+						log("CASE SEND");
 						send(message);
 						break;
 					case JOIN:
-						System.out.println("CH CASE JOIN");
+						log("CASE JOIN");
 						join((Join) message);
 						break;
 					case EXIT:
-						System.out.println("CH CASE EXIT");
+						log("CASE EXIT");
 						exit((Exit) message);
 						break;
 					case SET:
-						System.out.println("CH CASE SET");
+						log("CASE SET");
 						set((Set) message);
 						break;
 					case SUCCESS:
-						System.out.println("CH CASE SUCCESS");
+						log("CASE SUCCESS");
 						success((Success) message);
 						break;
 					default:
-						System.out.println("CH CASE DEFAULT");
+						log("CASE DEFAULT");
 						break;
 				}
 			}
@@ -313,4 +312,10 @@ public class Channel implements Comparable<Channel>, Runnable {
 		
 	}
 	
+	private void log(String message)
+	{
+		System.out.println("CH "+name);
+		System.out.println(message);
+		System.out.println("----------------------------");
+	}
 }
