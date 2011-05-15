@@ -236,7 +236,7 @@ public class Childs implements Runnable {
 		public Child(Socket fromChildSocket) {
 			this.fromChildSocket = fromChildSocket;
 			
-			this.isService = true;
+			this.isService = false;
 		}
 		
 		/**
@@ -253,6 +253,8 @@ public class Childs implements Runnable {
 				Send msg = connectChannel.getMsg(connectChannel.getLastSequence());				
 				
 				if (sendMsgToChild(msg.getChannel(), msg.getSeq(), msg.getNick(), msg.getMsg())) {
+					this.isService = true;
+					
 					new Thread(this).start();
 					
 					result = true;
@@ -294,6 +296,9 @@ public class Childs implements Runnable {
 			return fromChildSocket.getInetAddress().getHostAddress();
 		}
 		
+		public boolean isConnect() {
+			return this.isService;
+		}
 		
 		// ------------------------------------------------- S E N D -------------------------------------------------
 		
@@ -392,7 +397,11 @@ public class Childs implements Runnable {
 				try {
 					line = fromChildMsg.readLine();
 					this.debug(line + "/¹ÞÀ½");
-						
+					
+					if (line == null) {
+						closeToChild();
+					}
+					
 					if (fromChildMessage == null) {
 						fromChildMessage = Message.parsType(line);
 					}
@@ -410,7 +419,7 @@ public class Childs implements Runnable {
 				catch (IOException e) {
 					e.printStackTrace();
 					
-					this.isService = false;
+					closeToChild();
 				}
 			}
 		}

@@ -39,7 +39,7 @@ public class Server implements Runnable {
 		this.serverIP = serverIP;
 		this.serverPort = serverPort;
 		
-		isService = true;
+		isService = false;
 	}
 	
 	/**
@@ -54,6 +54,8 @@ public class Server implements Runnable {
 			
 			fromServerMsg = new BufferedReader(new InputStreamReader(toServerSocket.getInputStream()));
 			toServerMsg = new BufferedWriter(new OutputStreamWriter(toServerSocket.getOutputStream()));
+			
+			isService = true;
 			
 			new Thread(this).start();
 			
@@ -96,6 +98,10 @@ public class Server implements Runnable {
 	 */
 	public String getServerIP() {
 		return serverIP;
+	}
+	
+	public boolean isConnect() {
+		return isService;
 	}
 	
 	public Socket getToServerSocket() {
@@ -401,7 +407,11 @@ public class Server implements Runnable {
 				line = fromServerMsg.readLine();
 					
 				debug(line + "/¹ÞÀ½");
-					
+				
+				if (line == null) {
+					logoutServer();
+				}
+				
 				if (fromServerMessage == null) {						
 					fromServerMessage = Message.parsType(line);
 				}
@@ -419,7 +429,7 @@ public class Server implements Runnable {
 			catch (IOException e) {
 				e.printStackTrace();
 				
-				isService = false;
+				logoutServer();
 			}
 		}
 	}

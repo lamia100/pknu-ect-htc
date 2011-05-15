@@ -1,5 +1,8 @@
 package client;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -63,6 +66,21 @@ public class Channel implements Runnable {
 		return msgList.get(sequence - msgOffset - 1);
 	}
 	
+	public String getServerIP() {
+		return connectServer.getServerIP();
+	}
+	
+	public Socket getToServerSocket() {
+		return connectServer.getToServerSocket();
+	}
+
+	public BufferedReader getFromServerMsg() {
+		return connectServer.getFromServerMsg();
+	}
+
+	public BufferedWriter getToServerMsg() {
+		return connectServer.getToServerMsg();
+	}
 	
 	// ------------------------------------------------- GUI input -------------------------------------------------
 	

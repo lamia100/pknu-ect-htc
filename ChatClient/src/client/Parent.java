@@ -39,7 +39,7 @@ public class Parent implements Runnable {
 		this.parentIP = parentIP;
 		this.parentPort = parentPort;
 		
-		isService = true;
+		isService = false;
 	}
 	
 	/**
@@ -49,21 +49,37 @@ public class Parent implements Runnable {
 	public boolean loginParent() {
 		boolean result = false;
 		
-		try {
-			toParentSocket = new Socket(parentIP, parentPort);
+		if (parentIP == connectChannel.getServerIP()) {
+			toParentSocket = connectChannel.getToServerSocket();
 			
-			fromParentMsg = new BufferedReader(new InputStreamReader(toParentSocket.getInputStream()));
-			toParentMsg = new BufferedWriter(new OutputStreamWriter(toParentSocket.getOutputStream()));
+			fromParentMsg = connectChannel.getFromServerMsg();
+			toParentMsg = connectChannel.getToServerMsg();
+			
+			isService = true;
 			
 			new Thread(this).start();
 			
 			result = true;
 		}
-		catch (UnknownHostException e) {
-			e.printStackTrace();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
+		else {
+			try {
+				toParentSocket = new Socket(parentIP, parentPort);
+				
+				fromParentMsg = new BufferedReader(new InputStreamReader(toParentSocket.getInputStream()));
+				toParentMsg = new BufferedWriter(new OutputStreamWriter(toParentSocket.getOutputStream()));
+				
+				isService = true;
+				
+				new Thread(this).start();
+				
+				result = true;
+			}
+			catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		debug("연결", result);
@@ -77,14 +93,21 @@ public class Parent implements Runnable {
 	public void logoutParent() {
 		isService = false;
 		
-		try {
-			toParentSocket.close();
+		if (parentIP == connectChannel.getServerIP()) {
 			toParentSocket = null;
 			fromParentMsg = null;
 			toParentMsg = null;
 		}
-		catch (IOException e) {
-			e.printStackTrace();
+		else {
+			try {
+				toParentSocket.close();
+				toParentSocket = null;
+				fromParentMsg = null;
+				toParentMsg = null;
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 		
 		debug("연결 해제", true);
@@ -96,6 +119,10 @@ public class Parent implements Runnable {
 	 */
 	public String getParentIP() {
 		return parentIP;
+	}
+	
+	public boolean isConnect() {
+		return isService;
 	}
 	
 	// ------------------------------------------------- S E N D -------------------------------------------------
@@ -139,7 +166,11 @@ public class Parent implements Runnable {
 				line = fromParentMsg.readLine();
 					
 				debug(line + "/받음");
-					
+				
+				if (line == null) {
+					logoutParent();
+				}
+				
 				if (fromParentMessage == null) {						
 					fromParentMessage = Message.parsType(line);
 				}
@@ -157,7 +188,7 @@ public class Parent implements Runnable {
 			catch (IOException e) {
 				e.printStackTrace();
 				
-				isService = false;
+				logoutParent();
 			}
 		}
 	}
