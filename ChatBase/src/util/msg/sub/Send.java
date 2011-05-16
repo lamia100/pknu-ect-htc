@@ -97,6 +97,10 @@ public class Send extends Message {
 	 * @param sequence
 	 * @return
 	 */
+	public void setSeq(int seq) {
+		this.seq = seq;
+	}
+	/*
 	public Send getClone(int sequence) {
 		Send send = new Send();
 		send.cast = cast;
@@ -107,10 +111,12 @@ public class Send extends Message {
 		
 		return send;
 	}
-	
+	*/
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
+		
+		
 		String temp = 
 		HEAD_TYPE_SEND + TOKEN_HEAD +
 		HEAD_CAST + ":" + cast.toString() + TOKEN_HEAD + 
