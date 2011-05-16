@@ -288,10 +288,6 @@ public class Childs implements Runnable {
 			this.debug("연결 해제", true);
 		}
 		
-		/**
-		 * 자식 IP를 반환
-		 * @return 자식 IP
-		 */
 		public String getChildIP() {
 			return fromChildSocket.getInetAddress().getHostAddress();
 		}
@@ -309,7 +305,7 @@ public class Childs implements Runnable {
 		 * @param nickName
 		 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 		 */
-		public boolean whoJoinToChild(String channel, String nickName) {
+		public synchronized boolean whoJoinToChild(String channel, String nickName) {
 			boolean result = false;
 			
 			try {
@@ -335,7 +331,7 @@ public class Childs implements Runnable {
 		 * @param nickName
 		 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 		 */
-		public boolean whoExitToChild(String channel, String nickName) {
+		public synchronized boolean whoExitToChild(String channel, String nickName) {
 			boolean result = false;
 			
 			try {
@@ -363,7 +359,7 @@ public class Childs implements Runnable {
 		 * @param msg
 		 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 		 */
-		public boolean sendMsgToChild(String channel, int sequence, String nickName, String msg) {
+		public synchronized boolean sendMsgToChild(String channel, int sequence, String nickName, String msg) {
 			boolean result = false;
 			
 			try {

@@ -92,10 +92,6 @@ public class Server implements Runnable {
 		debug("연결 해제", true);
 	}
 	
-	/**
-	 * 서버 IP를 반환
-	 * @return 서버 IP
-	 */
 	public String getServerIP() {
 		return serverIP;
 	}
@@ -124,7 +120,7 @@ public class Server implements Runnable {
 	 * @param nickName
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
-	public boolean joinChannel(String channel, String nickName) {
+	public synchronized boolean joinChannel(String channel, String nickName) {
 		boolean result = false;
 		
 		try {
@@ -150,7 +146,7 @@ public class Server implements Runnable {
 	 * @param nickName
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
-	public boolean exitChannel(String channel, String nickName) {
+	public synchronized boolean exitChannel(String channel, String nickName) {
 		boolean result = false;
 		
 		try {
@@ -177,7 +173,7 @@ public class Server implements Runnable {
 	 * @param msg
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
-	public boolean sendMsgToServer(String channel, String nickName, String msg) {
+	public synchronized boolean sendMsgToServer(String channel, String nickName, String msg) {
 		boolean result = false;
 		
 		try {
@@ -206,7 +202,7 @@ public class Server implements Runnable {
 	 * @param script
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
-	public boolean sendScriptBroad(String channel, String nickName, String script) {
+	public synchronized boolean sendScriptBroad(String channel, String nickName, String script) {
 		boolean result = false;
 		
 		try {
@@ -235,7 +231,7 @@ public class Server implements Runnable {
 	 * @param script
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
-	public boolean sendScriptUni(String channel, String nickName, String script) {
+	public synchronized boolean sendScriptUni(String channel, String nickName, String script) {
 		boolean result = false;
 		
 		try {
@@ -264,7 +260,7 @@ public class Server implements Runnable {
 	 * @param sequence
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
-	public boolean successOpenSocketForChild(String channel, String childIP, int sequence) {
+	public synchronized boolean successOpenSocketForChild(String channel, String childIP, int sequence) {
 		boolean result = false;
 		
 		try {
@@ -293,7 +289,7 @@ public class Server implements Runnable {
 	 * @param sequence
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
-	public boolean failOpenSocketForChild(String channel, String childIP, int sequence) {
+	public synchronized boolean failOpenSocketForChild(String channel, String childIP, int sequence) {
 		boolean result = false;
 		
 		try {
@@ -322,7 +318,7 @@ public class Server implements Runnable {
 	 * @param sequence
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
-	public boolean successConnectToParent(String channel, String parentIP, int sequence) {
+	public synchronized boolean successConnectToParent(String channel, String parentIP, int sequence) {
 		boolean result = false;
 		
 		try {
@@ -351,7 +347,7 @@ public class Server implements Runnable {
 	 * @param sequence
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
-	public boolean failConnectToParent(String channel, String parentIP, int sequence) {
+	public synchronized boolean failConnectToParent(String channel, String parentIP, int sequence) {
 		boolean result = false;
 		
 		try {
@@ -379,7 +375,7 @@ public class Server implements Runnable {
 	 * @param sequence
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
-	public boolean requestMsgToServer(String channel, int sequence) {
+	public synchronized boolean requestMsgToServer(String channel, int sequence) {
 		boolean result = false;
 		
 		try {

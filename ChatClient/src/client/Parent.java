@@ -112,11 +112,7 @@ public class Parent implements Runnable {
 		
 		debug("연결 해제", true);
 	}
-	
-	/**
-	 * 부모 IP를 반환
-	 * @return 부모 IP
-	 */
+
 	public String getParentIP() {
 		return parentIP;
 	}
@@ -133,7 +129,7 @@ public class Parent implements Runnable {
 	 * @param sequence
 	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
 	 */
-	public boolean requestMsgToParent(String channel, String sequence) {
+	public synchronized boolean requestMsgToParent(String channel, String sequence) {
 		boolean result = false;
 		
 		try {

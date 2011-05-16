@@ -90,7 +90,7 @@ public class Channel implements Runnable {
 		boolean result = connectParent.loginParent();
 		
 		if (result) {			
-			connectChilds = new Childs(this, DEFAULT_PORT + 1);
+			connectChilds = new Childs(this, DEFAULT_PORT);
 			
 			new Thread(this).start();
 			

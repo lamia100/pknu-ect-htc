@@ -101,8 +101,17 @@ public class Manager implements Runnable {
 	}
 	
 	public void exitChannel(String channel) {
-		channelList.get(channel).disconnectChannel();
-		channelList.remove(channel);
+		Channel targetChannel = channelList.get(channel);
+		
+		if (targetChannel != null) {
+			channelList.get(channel).disconnectChannel();
+			channelList.remove(channel);
+			
+			gui.dspInfo("채널 " + channel + " 연결을 끊었습니다.");
+		}
+		else {
+			gui.dspInfo("기존에 채널 " + channel + " 에 연결되어있지 않았습니다.");
+		}
 	}
 	
 	public boolean sendMsg(String channel, String msg) {
@@ -172,10 +181,10 @@ public class Manager implements Runnable {
 					if (newChannel.connectParent(set.getIp(), DEFAULT_PORT, set.getSequence())) {
 						channelList.put(set.getChannel(), newChannel);
 													
-						gui.dspInfo(set.getChannel() + " 채널 접속에 성공하였습니다.");
+						gui.dspInfo("채널 " + set.getChannel() + " 연결에 성공하였습니다.");
 					}
 					else {
-						gui.dspInfo(set.getChannel() + " 채널 접속에 실패하였습니다.");
+						gui.dspInfo("채널 " + set.getChannel() + " 연결에 실패하였습니다.");
 					}
 				}
 			}
