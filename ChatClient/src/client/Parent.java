@@ -51,10 +51,10 @@ public class Parent implements Runnable {
 		boolean result = false;
 
 		if ("0.0.0.0".equals(parentIP)) {
-			toParentSocket = connectChannel.getToServerSocket();
+			toParentSocket = connectChannel.getConnectServer().getToServerSocket();
 			
-			fromParentMsg = connectChannel.getFromServerMsg();
-			toParentMsg = connectChannel.getToServerMsg();
+			fromParentMsg = connectChannel.getConnectServer().getFromServerMsg();
+			toParentMsg = connectChannel.getConnectServer().getToServerMsg();
 			
 			result = true;
 		}
@@ -90,22 +90,18 @@ public class Parent implements Runnable {
 	public void logoutParent() {
 		isService = false;
 		
-		if ("0.0.0.0".equals(parentIP)) {
-			toParentSocket = null;
-			fromParentMsg = null;
-			toParentMsg = null;
-		}
-		else {
+		if (!"0.0.0.0".equals(parentIP)) {
 			try {
 				toParentSocket.close();
-				toParentSocket = null;
-				fromParentMsg = null;
-				toParentMsg = null;
 			}
 			catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+		
+		toParentSocket = null;
+		fromParentMsg = null;
+		toParentMsg = null;
 		
 		debug("연결 해제", true);
 	}

@@ -1,8 +1,5 @@
 package client;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -71,16 +68,8 @@ public class Channel implements Runnable {
 		return connectServer.getServerIP();
 	}
 	
-	public Socket getToServerSocket() {
-		return connectServer.getToServerSocket();
-	}
-
-	public BufferedReader getFromServerMsg() {
-		return connectServer.getFromServerMsg();
-	}
-
-	public BufferedWriter getToServerMsg() {
-		return connectServer.getToServerMsg();
+	public Server getConnectServer() {
+		return connectServer;
 	}
 	
 	// ------------------------------------------------- GUI input -------------------------------------------------
@@ -214,28 +203,35 @@ public class Channel implements Runnable {
 			
 			switch (set.getFamily()) {
 			case FAMILY_PARENT:
-				Parent newParent = new Parent(this, set.getIp(), FAMILY_PORT);
-				
-				if (newParent.loginParent()) {
-					connectParent = newParent;
-					connectServer.successConnectToParent(set.getChannel(), set.getIp(), set.getSequence());
+				if (connectParent.getParentIP().equals(set.getSrcip())) {
+					Parent newParent = new Parent(this, set.getDstip(), FAMILY_PORT);
+					
+					if (newParent.loginParent()) {
+						connectParent.logoutParent();
+						
+						connectParent = newParent;
+						connectServer.successConnectToParent(set.getChannel(), set.getDstip(), set.getSequence());
+					}
+					else {
+						connectServer.failOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
+					}
 				}
 				else {
-					connectServer.failOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
+					connectServer.failOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
 				}
 				
 				break;
 			case FAMILY_CHILD:
 				if (connectChilds.getChildSize() < MAX_CHILD) {				
-					if (connectChilds.readyForChild()) {
-						connectServer.successOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
+					if (connectChilds.readyForChild(set.getDstip())) {
+						connectServer.successOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
 					}
 					else {
-						connectServer.failOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
+						connectServer.failOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
 					}
 				}
 				else {
-					connectServer.failOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
+					connectServer.failOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
 				}
 				
 				break;

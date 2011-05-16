@@ -184,11 +184,11 @@ public class GUI extends JFrame {
 			bt_login.setText("Login");
 			bt_login.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("Login actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					System.out.println("[GUI] Login 버튼을 눌렀습니다."); // TODO Auto-generated Event stub actionPerformed()
 					
-					String serverIP = tf_serverIP.getText();
-					int serverPort = Integer.parseInt(tf_serverPort.getText());
-					String nickName = tf_nickName.getText();
+					String serverIP = getTf_serverIP().getText();
+					int serverPort = Integer.parseInt(getTf_serverPort().getText());
+					String nickName = getTf_nickName().getText();
 					
 					connectManager = new Manager(nickName, gui);
 					
@@ -228,10 +228,10 @@ public class GUI extends JFrame {
 			bt_join.setText("Join");
 			bt_join.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("Join actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					System.out.println("[GUI] Join 버튼을 눌렀습니다."); // TODO Auto-generated Event stub actionPerformed()
 					
 					if (connectManager != null) {
-						String channel = tf_channel.getText();
+						String channel = getTf_channel().getText();
 						
 						boolean result = connectManager.joinChannel(channel);
 						
@@ -259,10 +259,10 @@ public class GUI extends JFrame {
 			bt_exit.setText("Exit");
 			bt_exit.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("Exit actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					System.out.println("[GUI] Exit 버튼을 눌렀습니다."); // TODO Auto-generated Event stub actionPerformed()
 					
 					if (connectManager != null) {
-						String channel = tf_channel.getText();
+						String channel = getTf_channel().getText();
 						
 						connectManager.exitChannel(channel);
 					}
@@ -286,7 +286,7 @@ public class GUI extends JFrame {
 			bt_logout.setText("Logout");
 			bt_logout.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("Logout actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					System.out.println("[GUI] Logout 버튼을 눌렀습니다."); // TODO Auto-generated Event stub actionPerformed()
 					
 					if (connectManager != null) {
 						connectManager.disconnectServer();
@@ -354,11 +354,11 @@ public class GUI extends JFrame {
 					// TODO Auto-generated Event stub keyTyped()
 					
 					if (e.getKeyChar() == KeyEvent.VK_ENTER) {
-						System.out.println("Msg keyTyped()");
+						System.out.println("[GUI] Msg 엔터를 눌렀습니다.");
 						
 						if (connectManager != null) {
-							String channel = tf_channelSend.getText();
-							String msg = tf_msg.getText();
+							String channel = getTf_channelSend().getText();
+							String msg = getTf_msg().getText();
 							
 							boolean result = connectManager.sendMsg(channel, msg);
 							
@@ -387,11 +387,11 @@ public class GUI extends JFrame {
 			bt_send.setText("Send");
 			bt_send.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("Send actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					System.out.println("[GUI] Send 버튼을 눌렀습니다."); // TODO Auto-generated Event stub actionPerformed()
 					
 					if (connectManager != null) {
-						String channel = tf_channelSend.getText();
-						String msg = tf_msg.getText();
+						String channel = getTf_channelSend().getText();
+						String msg = getTf_msg().getText();
 						
 						boolean result = connectManager.sendMsg(channel, msg);
 						

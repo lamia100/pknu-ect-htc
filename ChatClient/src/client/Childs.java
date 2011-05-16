@@ -20,6 +20,7 @@ public class Childs implements Runnable {
 	private int myPort;
 	private ServerSocket forChildSocket;
 	private Map<String, Child> childList;
+	private String acceptChildIP;
 	
 	private void debug(String msg) {
 		System.out.println("[자식들] : " + msg);
@@ -45,12 +46,14 @@ public class Childs implements Runnable {
 	 * 자식을 받을 서버 소켓을 준비하고 쓰레드로 돌림, 실질적인 초기화를 담당
 	 * @return 준비 성공 여부, 성공이라면 쓰레드로 돌아감
 	 */
-	public boolean readyForChild() {
+	public boolean readyForChild(String acceptChildIP) {
 		boolean result = false;
 		
 		try {
 			forChildSocket = new ServerSocket(myPort);
 			forChildSocket.setSoTimeout(5000);
+			
+			this.acceptChildIP = acceptChildIP;
 			
 			new Thread(this).start();
 			
@@ -192,19 +195,34 @@ public class Childs implements Runnable {
 	
 	@Override
 	public void run() {
-		if (forChildSocket.isBound()) {			
+		boolean wait = true;
+		
+		while (forChildSocket.isBound() && wait) {			
 			try {
 				Socket fromChildSocket = forChildSocket.accept();
 				
-				debug("자식(" + fromChildSocket.getInetAddress().getHostAddress() + ")이 접속함");
+				debug(fromChildSocket.getInetAddress().getHostAddress() + " 가 접속함");
 				
-				Child newChild = new Child(fromChildSocket);
-				if (newChild.readyFromChild()) {
-					childList.put(fromChildSocket.getInetAddress().getHostAddress(), newChild);
+				if (acceptChildIP.equals(fromChildSocket.getInetAddress().getHostAddress())) {
+					Child newChild = new Child(fromChildSocket);
+					if (newChild.readyFromChild()) {
+						childList.put(fromChildSocket.getInetAddress().getHostAddress(), newChild);
+					}
+					
+					wait = false;
+				}
+				else {
+					fromChildSocket.close();
+					wait = true;
+					
+					debug(fromChildSocket.getInetAddress().getHostAddress() + " 를 거부함");
 				}
 			}
 			catch (SocketTimeoutException e) {
 				e.printStackTrace();
+				wait = false;
+				
+				debug("접속 제한 시간 초과");
 			}
 			catch (IOException e) {
 				e.printStackTrace();
@@ -212,6 +230,8 @@ public class Childs implements Runnable {
 		}
 	}
 	
+	
+	// ------------------------------------------------- Child Inner Class -------------------------------------------------
 	
 	private class Child implements Runnable {
 		private Socket fromChildSocket;
