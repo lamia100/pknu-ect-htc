@@ -84,14 +84,14 @@ public class Channel implements Comparable<Channel>, Runnable {
 	}
 	
 	private void send(Message message) {
-		log("Send",message);
+		log("Send", message);
 		Send send;
 		if (message.getType() == TYPE.SEND)
 			send = (Send) message;
 		else
 			return;
 		
-		if (users.size() > 1){
+		if (users.size() > 1) {
 			send.setSeq(messageSqeuence++);
 			users.get(1).send(send);
 		}
@@ -109,7 +109,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 		//
 		
 		if (users.size() <= 1) {
-			log("삭제",message);
+			log("삭제", message);
 		}
 	}
 	
@@ -142,7 +142,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 				e.printStackTrace();
 			}
 			if (message != null) {
-				log("메세지 있음, 디큐",message.getType() , message);
+				log("메세지 있음, 디큐", message.getType(), message);
 				switch (message.getType()) {
 					case SEND:
 						send(message);
@@ -169,12 +169,14 @@ public class Channel implements Comparable<Channel>, Runnable {
 	/*-----------------------------LinkSequence---------------------------------*/
 	static final TYPE CHILD = TYPE.FAMILY_CHILD;
 	static final TYPE PARENT = TYPE.FAMILY_PARENT;
-	Channel channel=this;
+	Channel channel = this;
+	
 	abstract class LinkSequence {
 		/** 순차적으로 진행하기 위한 작업 번호. */
 		int sequence = 0;
 		/** 생성된 오브젝트의 식별자 */
 		int id = 0;
+		
 		/**
 		 * User 의 부모 자식 설정.
 		 * 
@@ -258,7 +260,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 			
 			//users.add(added);
 			parent = users.get(index / 2);
-			log("link seq : "+id,added,parent);
+			log("link seq : " + id, added, parent);
 			
 			if (parent != null) {
 				parent.send(new Set(name, added.getIP(), CHILD, id));//자식 IP 알림.
@@ -287,7 +289,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 				changes.remove(id);
 				added.add(channel);
 				send(join);
-				log("join 성공",added);
+				log("join 성공", added);
 			} else {
 				//
 				//first();
@@ -303,17 +305,34 @@ public class Channel implements Comparable<Channel>, Runnable {
 	 * 
 	 */
 	class ChangeSequence extends LinkSequence {
-		
+		//exit한놈의 부모
 		User parent;
-		User change;
+		//움직일 유저
+		User moveUser;
+		//exit 한놈의 자식들
 		User child1;
 		User child2;
-		Message message;
+		//moveUser의 원래 부모
+		User parentOfMove;
+		//exit한 유저
+		User removedUser;
+		//exit 한놈의 인덱스
+		int dstIndex;
+		//종료 메세지
+		Exit exit;
 		
-		public ChangeSequence(Message message, int sequence) {
+		public ChangeSequence(Exit exit, int sequence) {
 			// TODO Auto-generated constructor stub
 			super(sequence);
-			this.message = message;
+			
+			this.exit = exit;
+			removedUser = messageProcessor.getUser(exit.getNick());
+			//users 의 마지막 인덱스 moveUser의 원래위치
+			int srcIndex = users.size() - 1;
+			moveUser = users.remove(srcIndex);
+			parentOfMove = users.get(srcIndex / 2);
+			dstIndex = getUserIndex(removedUser);
+			
 		}
 		
 		@Override
@@ -329,14 +348,33 @@ public class Channel implements Comparable<Channel>, Runnable {
 		}
 		
 		void first() {
-			//change=
+			users.set(dstIndex, moveUser);
+			removedUser.remove(channel);
+			
+			parent = users.get(dstIndex / 2);
+			
+			if ((dstIndex * 2) < users.size()) {
+				child1 = users.get(dstIndex * 2);
+			}
+			if ((dstIndex * 2 + 1) < users.size()) {
+				child2 = users.get(dstIndex * 2 + 1);
+			}
+			// moveUser 을 부모로부터 때네는 작업.
+			parentOfMove.send(new Set(channel.name, moveUser.getIP(), CHILD, sequence));
+			// moveUser 의 부모를 parent로 설정.
+			
+			// parent 의 자식remove를 지우고 moveUser로 변경
+			
+			//child1,2 의 부모를 moveUser로 변경
+			//moveUser의 자식을 child1,2로 설정
+			
 		}
 		
 	}
 	
 	private void log(Object... logs) {
 		System.out.println("CH " + name);
-		for(Object log:logs)
+		for (Object log : logs)
 			System.out.println(log);
 		System.out.println("----------------------------");
 	}

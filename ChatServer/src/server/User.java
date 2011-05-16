@@ -187,5 +187,10 @@ public class User implements Comparable<User>, Runnable {
 		// TODO Auto-generated method stub
 		return name+socket.toString();
 	}
+
+	public void remove(Channel channel) {
+		// TODO Auto-generated method stub
+		joinChannels.remove(channel);
+	}
 	
 }
