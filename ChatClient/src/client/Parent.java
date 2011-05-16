@@ -44,11 +44,12 @@ public class Parent implements Runnable {
 	
 	/**
 	 * 부모 소켓과 연결하고 연결되었다면 쓰레드로 돌림, 실질적인 초기화를 담당
+	 * 만약 부모가 서버(0.0.0.0)라면 쓰레드를 돌리지않음
 	 * @return 연결 성공 여부, 성공이라면 쓰레드로 돌아감
 	 */
 	public boolean loginParent() {
 		boolean result = false;
-		
+
 		if ("0.0.0.0".equals(parentIP)) {
 			toParentSocket = connectChannel.getToServerSocket();
 			

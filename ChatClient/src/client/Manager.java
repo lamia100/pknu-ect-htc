@@ -166,6 +166,26 @@ public class Manager implements Runnable {
 			}
 			
 			break;
+		case JOIN:
+			Join join = (Join)packet.getMessage();
+			
+			targetChannel = channelList.get(join.getChannel());
+			
+			if (targetChannel != null) {
+				targetChannel.addFamilyPacket(packet);
+			}		
+			
+			break;
+		case EXIT:
+			Exit exit = (Exit)packet.getMessage();
+			
+			targetChannel = channelList.get(exit.getChannel());
+			
+			if (targetChannel != null) {
+				targetChannel.addFamilyPacket(packet);
+			}			
+			
+			break;
 		case SET:
 			Set set = (Set)packet.getMessage();
 			
