@@ -59,7 +59,7 @@ public class User implements Comparable<User>, Runnable {
 	}
 	
 	public String getIP() {
-		return socket.getInetAddress().toString();
+		return socket.getInetAddress().toString().substring(1);
 	}
 	
 	@Override
