@@ -222,8 +222,17 @@ public class Channel implements Runnable {
 				
 				break;
 			case FAMILY_CHILD:
-				if (connectChilds.getChildSize() < MAX_CHILD) {				
-					if (connectChilds.readyForChild(set.getDstip())) {
+				if (connectChilds.getChildSize() <= MAX_CHILD) {
+					boolean readyForChild = false;
+					
+					if (set.getSrcip() == null || "".equals(set.getSrcip())) {
+						readyForChild = connectChilds.readyForChild(set.getDstip()); 
+					}
+					else {
+						readyForChild = connectChilds.readyForChild(set.getDstip(), set.getSrcip());
+					}
+					
+					if (readyForChild) {
 						connectServer.successOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
 					}
 					else {

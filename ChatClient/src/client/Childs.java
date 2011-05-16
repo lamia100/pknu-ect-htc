@@ -21,6 +21,7 @@ public class Childs implements Runnable {
 	private ServerSocket forChildSocket;
 	private Map<String, Child> childList;
 	private String acceptChildIP;
+	private String closeChildIP;
 	
 	private void debug(String msg) {
 		System.out.println("[자식들] : " + msg);
@@ -61,6 +62,39 @@ public class Childs implements Runnable {
 		}
 		catch (IOException e) {
 			e.printStackTrace();
+			
+			this.acceptChildIP = null;
+		}
+		
+		debug("받을 준비", result);
+		
+		return result;
+	}
+	
+	public boolean readyForChild(String acceptChildIP, String closeChildIP) {
+		boolean result = false;
+		
+		if (childList.containsKey(closeChildIP)) {
+			try {
+				forChildSocket = new ServerSocket(myPort);
+				forChildSocket.setSoTimeout(5000);
+				
+				this.acceptChildIP = acceptChildIP;
+				this.closeChildIP = closeChildIP;
+				
+				new Thread(this).start();
+				
+				result = true;
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+				
+				this.acceptChildIP = null;
+				this.closeChildIP = null;
+			}
+		}
+		else {
+			debug("자식 리스트에 연결을 해제해야 할 자식이 없습니다. (SRC IP 불일치)");
 		}
 		
 		debug("받을 준비", result);
@@ -86,7 +120,6 @@ public class Childs implements Runnable {
 	 */
 	public void closeSomeChild(String childIP) {
 		childList.get(childIP).closeToChild();
-		childList.remove(childIP);
 	}
 	
 	/**
@@ -197,7 +230,7 @@ public class Childs implements Runnable {
 	public void run() {
 		boolean wait = true;
 		
-		while (forChildSocket.isBound() && wait) {			
+		while (forChildSocket.isBound() && acceptChildIP != null & wait) {			
 			try {
 				Socket fromChildSocket = forChildSocket.accept();
 				
@@ -207,6 +240,10 @@ public class Childs implements Runnable {
 					Child newChild = new Child(fromChildSocket);
 					if (newChild.readyFromChild()) {
 						childList.put(fromChildSocket.getInetAddress().getHostAddress(), newChild);
+					}
+					
+					if (closeChildIP != null) {
+						childList.get(closeChildIP).closeToChild();
 					}
 					
 					wait = false;
@@ -226,8 +263,12 @@ public class Childs implements Runnable {
 			}
 			catch (IOException e) {
 				e.printStackTrace();
+				wait = false;
 			}
 		}
+		
+		this.acceptChildIP = null;
+		this.closeChildIP = null;
 	}
 	
 	
@@ -304,6 +345,8 @@ public class Childs implements Runnable {
 			catch (IOException e) {
 				e.printStackTrace();
 			}
+			
+			childList.remove(getChildIP());
 			
 			this.debug("연결 해제", true);
 		}
