@@ -360,14 +360,60 @@ public class Channel implements Comparable<Channel>, Runnable {
 				child2 = users.get(dstIndex * 2 + 1);
 			}
 			// moveUser 을 부모로부터 때네는 작업.
-			parentOfMove.send(new Set(channel.name, moveUser.getIP(), CHILD, sequence));
+			parentOfMove.send(new Set(channel.name, moveUser.getIP(), "", CHILD, sequence));
+			
 			// moveUser 의 부모를 parent로 설정.
 			
 			// parent 의 자식remove를 지우고 moveUser로 변경
 			
 			//child1,2 의 부모를 moveUser로 변경
 			//moveUser의 자식을 child1,2로 설정
-			
+		}
+		
+		void second(Message message) {
+			if (message.getType() == TYPE.SUCCESS) {
+				// moveUser 을 부모로부터 때네는 작업. 성공
+				// parent 에 자식을 설정.
+				parent.send(new Set(channel.name, removedUser.getIP(), moveUser.getIP(), CHILD, sequence));
+			}
+		}
+		
+		void third(Message message) {
+			if (message.getType() == TYPE.SUCCESS) {
+				//parent 에 moveUser을 자식으로 설정 성공
+				// moveUser에 부모을 parent로 설정
+				moveUser.send(new Set(channel.name, "-", parent.getIP(), PARENT, sequence));
+			}
+		}
+		
+		void fourth(Message message) {
+			if (message.getType() == TYPE.SUCCESS) {
+				// moveUser에 부모을 parent로 설정 성공
+				if (child1 != null) {
+					moveUser.send(new Set(channel.name, child1.getIP(), CHILD, sequence));
+				}
+				if (child2 != null) {
+					moveUser.send(new Set(channel.name, child2.getIP(), CHILD, sequence));
+				}
+			}
+		}
+		
+		void fifth(Message message) {
+			if (message.getType() == TYPE.SUCCESS) {
+				//moveUser 각각의 자식들을 설정 성공
+				if (child1 != null) {
+					child1.send(new Set(channel.name, moveUser.getIP(), PARENT, sequence));
+				}
+				if (child2 != null) {
+					child2.send(new Set(channel.name, moveUser.getIP(), PARENT, sequence));
+				}
+			}
+		}
+		
+		void sixth(Message message) {
+			if (message.getType() == TYPE.SUCCESS) {
+				//끝			
+			}
 		}
 		
 	}
