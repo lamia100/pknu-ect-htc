@@ -49,15 +49,11 @@ public class Parent implements Runnable {
 	public boolean loginParent() {
 		boolean result = false;
 		
-		if (parentIP == connectChannel.getServerIP()) {
+		if ("0.0.0.0".equals(parentIP)) {
 			toParentSocket = connectChannel.getToServerSocket();
 			
 			fromParentMsg = connectChannel.getFromServerMsg();
 			toParentMsg = connectChannel.getToServerMsg();
-			
-			isService = true;
-			
-			new Thread(this).start();
 			
 			result = true;
 		}
@@ -93,7 +89,7 @@ public class Parent implements Runnable {
 	public void logoutParent() {
 		isService = false;
 		
-		if (parentIP == connectChannel.getServerIP()) {
+		if ("0.0.0.0".equals(parentIP)) {
 			toParentSocket = null;
 			fromParentMsg = null;
 			toParentMsg = null;
