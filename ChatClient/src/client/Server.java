@@ -406,7 +406,7 @@ public class Server implements Runnable {
 			try {
 				line = fromServerMsg.readLine();
 					
-				debug(line + "/받음");
+				debug(line + " -> 받음");
 				
 				if (line == null) {
 					logoutServer();
@@ -419,7 +419,7 @@ public class Server implements Runnable {
 					Packet packet = new Packet(fromServerMessage, toServerSocket.getInetAddress().getHostAddress());
 						
 					if (packet.getMessage().isValid()) {
-						debug(packet.getMessage().getType() + "/정상 패킷 받음");
+						debug(packet.getMessage().getType() + " -> 정상 패킷 받음");
 						connectManager.addServerPacket(packet);
 					}
 					

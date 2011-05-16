@@ -456,7 +456,7 @@ public class Childs implements Runnable {
 			while (this.isService && fromChildSocket.isConnected()) {
 				try {
 					line = fromChildMsg.readLine();
-					this.debug(line + "/받음");
+					this.debug(line + " -> 받음");
 					
 					if (line == null) {
 						closeToChild();
@@ -469,7 +469,7 @@ public class Childs implements Runnable {
 						Packet packet = new Packet(fromChildMessage, fromChildSocket.getInetAddress().getHostAddress());
 							
 						if (packet.getMessage().isValid()) {
-							this.debug(packet.getMessage().getType() + "/정상 패킷 받음");
+							this.debug(packet.getMessage().getType() + " -> 정상 패킷 받음");
 							connectChannel.addFamilyPacket(packet);
 						}
 							

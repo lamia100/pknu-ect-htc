@@ -154,7 +154,7 @@ public class Parent implements Runnable {
 			try {
 				line = fromParentMsg.readLine();
 					
-				debug(line + "/받음");
+				debug(line + " -> 받음");
 				
 				if (line == null) {
 					logoutParent();
@@ -167,7 +167,7 @@ public class Parent implements Runnable {
 					Packet packet = new Packet(fromParentMessage, toParentSocket.getInetAddress().getHostAddress());
 						
 					if (packet.getMessage().isValid()) {
-						debug(packet.getMessage().getType() + "/정상 패킷 받음");
+						debug(packet.getMessage().getType() + " -> 정상 패킷 받음");
 						connectChannel.addFamilyPacket(packet);
 					}
 						
