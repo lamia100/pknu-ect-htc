@@ -10,6 +10,16 @@ import static util.Definition.*;
  * @author inter6
  * 
  */
+/*
+ * 김성현 추가.
+ * String ip 는 사용하지 않고 srcip 와 dstip를 사용하겠음.
+ * src가 없고 dst만 있는 경우는 그냥 설정만함
+ * dst가 없고 src만 있는 경우는 해당 srcip를 부모/자식 을 제거
+ * 
+ * dst와 src가 있는 경우는 자식중 dst인 것을 src로 변경
+ * 부모인 경우는 있으나 없으나 관계없음
+ * 
+ */
 public class Set extends Message {
 	private String channel = "";
 	private TYPE family = null;
