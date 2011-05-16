@@ -2,6 +2,8 @@ package util;
 
 public class Definition {
 	public final static int DEFAULT_PORT = 41342;
+	public final static int FAMILY_PORT = 41343;
+	
 	public final static int MAX_CHILD = 2;
 	
 	public final static String TOKEN_MEAN = ":";

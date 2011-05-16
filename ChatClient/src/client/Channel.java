@@ -90,7 +90,7 @@ public class Channel implements Runnable {
 		boolean result = connectParent.loginParent();
 		
 		if (result) {			
-			connectChilds = new Childs(this, DEFAULT_PORT);
+			connectChilds = new Childs(this, FAMILY_PORT);
 			
 			new Thread(this).start();
 			
@@ -226,7 +226,7 @@ public class Channel implements Runnable {
 				
 				break;
 			case FAMILY_CHILD:
-				if (connectChilds.getChildSize() < MAX_CHILD) {
+				if (connectChilds.getChildSize() < MAX_CHILD) {				
 					if (connectChilds.readyForChild()) {
 						connectServer.successOpenSocketForChild(set.getChannel(), set.getIp(), set.getSequence());
 					}
