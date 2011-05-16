@@ -66,7 +66,7 @@ public class Server implements Runnable {
 	
 	public static String getIP() {
 		// TODO Auto-generated method stub
-		return sSocket.getInetAddress().getHostAddress().toString().substring(1);
+		return sSocket.getInetAddress().getHostAddress().toString();
 	}
 	
 	public static void main(String[] args) {
