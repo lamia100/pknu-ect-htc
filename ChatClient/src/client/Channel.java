@@ -214,7 +214,7 @@ public class Channel implements Runnable {
 			
 			switch (set.getFamily()) {
 			case FAMILY_PARENT:
-				Parent newParent = new Parent(this, set.getIp(), DEFAULT_PORT);
+				Parent newParent = new Parent(this, set.getIp(), FAMILY_PORT);
 				
 				if (newParent.loginParent()) {
 					connectParent = newParent;
