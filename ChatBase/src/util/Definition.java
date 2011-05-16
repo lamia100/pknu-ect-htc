@@ -35,6 +35,9 @@ public class Definition {
 	public final static String HEAD_FAMILY_CHILD = "c";
 	
 	public final static String HEAD_IP = "ip";
+	public final static String HEAD_DSTIP = "dstip";
+	public final static String HEAD_SRCIP = "srcip";
+	
 
 	public final static String HEAD_MSG = "msg";
 	
