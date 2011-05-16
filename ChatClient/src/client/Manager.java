@@ -178,7 +178,13 @@ public class Manager implements Runnable {
 				if (set.getFamily() == TYPE.FAMILY_PARENT) {					
 					Channel newChannel = new Channel(connectServer, set.getChannel(), nickName, gui);
 					
-					if (newChannel.connectParent(set.getIp(), FAMILY_PORT, set.getSequence())) {
+					int port = FAMILY_PORT;
+					
+					if (set.getIp().equals("0.0.0.0")) {
+						port = DEFAULT_PORT;
+					}
+					
+					if (newChannel.connectParent(set.getIp(), port, set.getSequence())) {
 						channelList.put(set.getChannel(), newChannel);
 													
 						gui.dspInfo("채널 " + set.getChannel() + " 연결에 성공하였습니다.");
