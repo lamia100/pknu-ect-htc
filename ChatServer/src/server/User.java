@@ -174,11 +174,18 @@ public class User implements Comparable<User>, Runnable {
 		disconnect();
 	}
 	
-	private void log(String log) {
+	private void log(Object...  logs) {
 		// TODO Auto-generated method stub
 		System.out.println("User " + name);
-		System.out.println(log);
+		for(Object log:logs)
+			System.out.println(log);
 		System.out.println("----------------------------");
+	}
+	
+	@Override
+	public String toString() {
+		// TODO Auto-generated method stub
+		return name+socket.toString();
 	}
 	
 }

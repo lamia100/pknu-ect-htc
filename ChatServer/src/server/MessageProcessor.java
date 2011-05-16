@@ -49,7 +49,7 @@ public class MessageProcessor implements Runnable {
 	}
 	*/
 	public synchronized void enqueue(Message message) {
-		log("enqueue\n"+message.toString());
+		log("enqueue", message);
 		messageQ.offer(message);
 	}
 	
@@ -69,7 +69,13 @@ public class MessageProcessor implements Runnable {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			log("메세지 있음\n" + message);
+			
+			if (message != null) {
+				log("메세지 있음", message);
+			} else {
+				log("메세지 없음");
+			}
+			
 			if (message != null) {
 				switch (message.getType()) {
 					case SEND:
@@ -136,9 +142,10 @@ public class MessageProcessor implements Runnable {
 		users.remove(user.getName());
 	}
 	
-	private void log(String message) {
+	private void log(Object... logs) {
 		System.out.println("MessageProcessor");
-		System.out.println(message);
+		for (Object log : logs)
+			System.out.println(log);
 		System.out.println("----------------------------");
 	}
 	
