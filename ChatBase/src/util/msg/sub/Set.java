@@ -23,8 +23,8 @@ import static util.Definition.*;
 public class Set extends Message {
 	private String channel = "";
 	private TYPE family = null;
-	@Deprecated
-	private String ip = "";
+//	@Deprecated
+//	private String ip = "";
 	private String dstip = "";
 	private String srcip = "";
 	private int sequence = 0;
@@ -33,12 +33,12 @@ public class Set extends Message {
 		super(TYPE.SET);
 	}
 	
-	public Set(String channel, String ip, TYPE family, int sequence) {
+	public Set(String channel, String dstip, TYPE family, int sequence) {
 		super(TYPE.SET);
 		
 		this.channel = channel;
 		this.family = family;
-		this.dstip = ip;
+		this.dstip = dstip;
 		this.sequence = sequence;
 	}
 	public Set(String channel, String srcip,String dstip, TYPE family, int sequence) {
@@ -81,9 +81,9 @@ public class Set extends Message {
 				}
 				
 				break;
-			case IP:
-				ip = value;
-				break;
+//			case IP:
+//				ip = value;
+//				break;
 			case SEQ:
 				try {
 					sequence = Integer.parseInt(value);
