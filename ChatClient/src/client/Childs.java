@@ -243,7 +243,7 @@ public class Childs implements Runnable {
 					}
 					
 					if (closeChildIP != null) {
-						childList.get(closeChildIP).closeToChild();
+						closeSomeChild(closeChildIP);
 					}
 					
 					wait = false;
