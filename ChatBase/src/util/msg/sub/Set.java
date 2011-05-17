@@ -138,14 +138,25 @@ public class Set extends Message {
 	
 	@Override
 	public String toString() {
-		String format = HEAD_TYPE_SET + TOKEN_HEAD +
-		HEAD_CHANNEL + ":" + channel + TOKEN_HEAD +
-		HEAD_FAMILY + ":"+ family.toString() + TOKEN_HEAD + 
-		HEAD_IP + ":" + ip + TOKEN_HEAD + 
-		HEAD_DSTIP +":"+ dstip + TOKEN_HEAD+
-		HEAD_SRCIP + ":" + srcip + TOKEN_HEAD+
-		HEAD_SEQ + ":" + sequence+ TOKEN_HEAD + 
-		TOKEN_HEAD;
+		String format = "";
+		
+		if ("".equals(srcip)) {
+			format = HEAD_TYPE_SET + TOKEN_HEAD +
+			HEAD_CHANNEL + ":" + channel + TOKEN_HEAD +
+			HEAD_FAMILY + ":"+ family.toString() + TOKEN_HEAD + 
+			HEAD_DSTIP +":"+ dstip + TOKEN_HEAD+
+			HEAD_SEQ + ":" + sequence+ TOKEN_HEAD + 
+			TOKEN_HEAD;
+		}
+		else {
+			format = HEAD_TYPE_SET + TOKEN_HEAD +
+			HEAD_CHANNEL + ":" + channel + TOKEN_HEAD +
+			HEAD_FAMILY + ":"+ family.toString() + TOKEN_HEAD + 
+			HEAD_DSTIP +":"+ dstip + TOKEN_HEAD+
+			HEAD_SRCIP + ":" + srcip + TOKEN_HEAD+
+			HEAD_SEQ + ":" + sequence+ TOKEN_HEAD + 
+			TOKEN_HEAD;
+		}
 		
 		return format;
 	}
