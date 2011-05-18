@@ -41,6 +41,9 @@ public class Childs implements Runnable {
 		
 		this.connectChannel = connectChannel;
 		this.myPort = myPort;
+		
+		acceptChildIP = null;
+		closeChildIP = null;
 	}
 	
 	/**
@@ -240,17 +243,23 @@ public class Childs implements Runnable {
 					Child newChild = new Child(fromChildSocket);
 					if (newChild.readyFromChild()) {
 						childList.put(fromChildSocket.getInetAddress().getHostAddress(), newChild);
+						
+						if (closeChildIP != null) {
+							closeSomeChild(closeChildIP);
+							
+							// 서버 <- SUC-DisCon/자식과 연결을 끊음
+						}
+						
+						// 서버 <- SUC-Con/자식과 연결됨
 					}
-					
-					if (closeChildIP != null) {
-						closeSomeChild(closeChildIP);
+					else {
+						// 서버 <- FAIL-Con/자식과 연결이 안됨
 					}
 					
 					wait = false;
 				}
 				else {
 					fromChildSocket.close();
-					wait = true;
 					
 					debug(fromChildSocket.getInetAddress().getHostAddress() + " 를 거부함");
 				}
@@ -259,11 +268,15 @@ public class Childs implements Runnable {
 				e.printStackTrace();
 				wait = false;
 				
+				// 서버 <- FAIL-Con/자식과 연결이 안됨
+				
 				debug("접속 제한 시간 초과");
 			}
 			catch (IOException e) {
 				e.printStackTrace();
 				wait = false;
+				
+				// 서버 <- FAIL-Con/자식과 연결이 안됨
 			}
 		}
 		

@@ -195,7 +195,7 @@ public class Manager implements Runnable {
 				targetChannel.addFamilyPacket(packet);
 			}
 			else {
-				if (set.getFamily() == TYPE.FAMILY_PARENT) {					
+				if (set.getFamily() == TYPE.FAMILY_PARENT && !"".equals(set.getDstip())) {					
 					Channel newChannel = new Channel(connectServer, set.getChannel(), nickName, gui);
 					
 					if (newChannel.connectParent(set.getDstip(), DEFAULT_PORT, set.getSequence())) {

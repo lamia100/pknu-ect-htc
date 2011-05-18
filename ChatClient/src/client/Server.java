@@ -277,7 +277,7 @@ public class Server implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("SUC/CHILD/" + channel + "/" + childIP + "/" + sequence + "/보내기", result);
+		debug("SUC-Open/CHILD/" + channel + "/" + childIP + "/" + sequence + "/보내기", result);
 		
 		return isService = result;
 	}
@@ -306,7 +306,7 @@ public class Server implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("FAIL/CHILD/" + channel + "/" + childIP + "/" + sequence + "/보내기", result);
+		debug("FAIL-Open/CHILD/" + channel + "/" + childIP + "/" + sequence + "/보내기", result);
 		
 		return isService = result;
 	}
@@ -335,7 +335,7 @@ public class Server implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("SUC/PARENT/" + channel + "/" + parentIP + "/" + sequence + "/보내기", result);
+		debug("SUC_Con/PARENT/" + channel + "/" + parentIP + "/" + sequence + "/보내기", result);
 		
 		return isService = result;
 	}
@@ -364,7 +364,98 @@ public class Server implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("FAIL/PARENT/" + channel + "/" + parentIP + "/" + sequence + "/보내기", result);
+		debug("FAIL-Con/PARENT/" + channel + "/" + parentIP + "/" + sequence + "/보내기", result);
+		
+		return isService = result;
+	}
+	
+	public synchronized boolean successDisconnectToParent(String channel, String parentIP, int sequence) {
+		boolean result = false;
+		
+		try {
+			toServerMsg.write(HEAD_TYPE_SUCCESS + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_PARENT + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + parentIP + TOKEN_HEAD);
+			toServerMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD);
+			toServerMsg.flush();
+			
+			result = true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		debug("SUC-DisCon/PARENT/" + channel + "/" + parentIP + "/" + sequence + "/보내기", result);
+		
+		return isService = result;
+	}
+	
+	
+	public synchronized boolean successConnectToChild(String channel, String childIP, int sequence) {
+		boolean result = false;
+		
+		try {
+			toServerMsg.write(HEAD_TYPE_SUCCESS + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + childIP + TOKEN_HEAD);
+			toServerMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD);
+			toServerMsg.flush();
+			
+			result = true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		debug("SUC-Con/CHILD/" + channel + "/" + childIP + "/" + sequence + "/보내기", result);
+		
+		return isService = result;
+	}
+	
+	
+	public synchronized boolean failConnectToChild(String channel, String childIP, int sequence) {
+		boolean result = false;
+		
+		try {
+			toServerMsg.write(HEAD_TYPE_FAIL + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + childIP + TOKEN_HEAD);
+			toServerMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD);
+			toServerMsg.flush();
+			
+			result = true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		debug("FAIL-Con/CHILD/" + channel + "/" + childIP + "/" + sequence + "/보내기", result);
+		
+		return isService = result;
+	}
+	
+	
+	public synchronized boolean successDisconnectToChild(String channel, String childIP, int sequence) {
+		boolean result = false;
+		
+		try {
+			toServerMsg.write(HEAD_TYPE_SUCCESS + TOKEN_HEAD);
+			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
+			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD);
+			toServerMsg.write(HEAD_IP + ":" + childIP + TOKEN_HEAD);
+			toServerMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD);
+			toServerMsg.flush();
+			
+			result = true;
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		debug("SUC-DisCon/CHILD/" + channel + "/" + childIP + "/" + sequence + "/보내기", result);
 		
 		return isService = result;
 	}

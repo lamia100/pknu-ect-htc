@@ -203,44 +203,89 @@ public class Channel implements Runnable {
 			
 			switch (set.getFamily()) {
 			case FAMILY_PARENT:
-				if (connectParent.getParentIP().equals(set.getSrcip())) {
+				// dst만 왔을 때, 기존 부모와 연결을 끊고 dst로 부모 변경
+				if (!"".equals(set.getDstip()) && "".equals(set.getSrcip())) {
 					Parent newParent = new Parent(this, set.getDstip(), FAMILY_PORT);
 					
 					if (newParent.loginParent()) {
 						connectParent.logoutParent();
-						
+							
 						connectParent = newParent;
 						connectServer.successConnectToParent(set.getChannel(), set.getDstip(), set.getSequence());
 					}
 					else {
-						connectServer.failOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
+						connectServer.failConnectToParent(set.getChannel(), set.getDstip(), set.getSequence());
 					}
 				}
+				
+				// src만 왔을 때, src가 부모일 경우 부모(src)와 연결을 끊음
+				else if ("".equals(set.getDstip()) && !"".equals(set.getSrcip())) {
+					if (connectParent.getParentIP().equals(set.getSrcip())) {
+						connectParent.logoutParent();
+						
+						connectParent = null;
+						
+						connectServer.successDisconnectToParent(set.getChannel(), set.getSrcip(), set.getSequence());
+					}
+				}
+				
+				// dst, src 동시에 왔을 때, src가 기존 부모일 경우 기존 부모와 연결을 끊고 dst로 부모 변경
 				else {
-					connectServer.failOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
+					if (connectParent.getParentIP().equals(set.getSrcip())) {
+						Parent newParent = new Parent(this, set.getDstip(), FAMILY_PORT);
+						
+						if (newParent.loginParent()) {
+							connectParent.logoutParent();
+							
+							connectParent = newParent;
+							connectServer.successConnectToParent(set.getChannel(), set.getDstip(), set.getSequence());
+						}
+						else {
+							connectServer.failConnectToParent(set.getChannel(), set.getDstip(), set.getSequence());
+						}
+					}
+					else {
+						connectServer.failConnectToParent(set.getChannel(), set.getDstip(), set.getSequence());
+					}
 				}
 				
 				break;
 			case FAMILY_CHILD:
-				if (connectChilds.getChildSize() <= MAX_CHILD) {
-					boolean readyForChild = false;
-					
-					if (set.getSrcip() == null || "".equals(set.getSrcip())) {
-						readyForChild = connectChilds.readyForChild(set.getDstip()); 
-					}
-					else {
-						readyForChild = connectChilds.readyForChild(set.getDstip(), set.getSrcip());
-					}
-					
-					if (readyForChild) {
-						connectServer.successOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
+				// dst만 왔을 때, 자식(dst) 추가
+				if (!"".equals(set.getDstip()) && "".equals(set.getSrcip())) {
+					if (connectChilds.getChildSize() < MAX_CHILD) {
+						if (connectChilds.readyForChild(set.getDstip())) {
+							connectServer.successOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
+						}
+						else {
+							connectServer.failOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
+						}
 					}
 					else {
 						connectServer.failOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
 					}
 				}
+				
+				// src만 왔을 때, 자식(src) 삭제
+				else if ("".equals(set.getDstip()) && !"".equals(set.getSrcip())) {
+					connectChilds.closeSomeChild(set.getSrcip());
+					
+					connectServer.successDisconnectToChild(set.getChannel(), set.getSrcip(), set.getSequence());
+				}
+				
+				// dst, src 동시에 왔을 때, 자식(src)를 삭제하고 자식(dst) 추가
 				else {
-					connectServer.failOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
+					if (connectChilds.getChildSize() <= MAX_CHILD) {
+						if (connectChilds.readyForChild(set.getDstip(), set.getSrcip())) {
+							connectServer.successOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
+						}
+						else {
+							connectServer.failOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
+						}
+					}
+					else {
+						connectServer.failOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
+					}
 				}
 				
 				break;
