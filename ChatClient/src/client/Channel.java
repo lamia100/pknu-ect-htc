@@ -24,7 +24,6 @@ public class Channel implements Runnable {
 	private boolean isService;
 	private boolean isFirstConnect;
 	
-	@SuppressWarnings("unused")
 	private void debug(String msg) {
 		System.out.println("[채널(" + channel + ")] : " + msg);
 	}
@@ -115,6 +114,7 @@ public class Channel implements Runnable {
 		case SEND:
 			Send send = (Send)msg;
 			msgList.add(send);
+			debug(send.getSeq() + " 순번의 " + send.getMsg().trim() + " 메세지를 버퍼하였습니다.");
 			gui.dspMsg(channel, send.getNick(), send.getMsg());
 			
 			break;
