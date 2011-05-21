@@ -78,7 +78,7 @@ public class Channel implements Runnable {
 		boolean result = connectParent.loginParent();
 		
 		if (result) {			
-			connectChilds = new Childs(this, FAMILY_PORT);
+			connectChilds = new Childs(this, DEFAULT_PORT);
 			
 			new Thread(this).start();
 			
@@ -205,7 +205,7 @@ public class Channel implements Runnable {
 			case FAMILY_PARENT:
 				// dst만 왔을 때, 기존 부모와 연결을 끊고 dst로 부모 변경
 				if (!"".equals(set.getDstip()) && "".equals(set.getSrcip())) {
-					Parent newParent = new Parent(this, set.getDstip(), FAMILY_PORT);
+					Parent newParent = new Parent(this, set.getDstip(), DEFAULT_PORT);
 					
 					if (newParent.loginParent()) {
 						connectParent.logoutParent();
@@ -232,7 +232,7 @@ public class Channel implements Runnable {
 				// dst, src 동시에 왔을 때, src가 기존 부모일 경우 기존 부모와 연결을 끊고 dst로 부모 변경
 				else {
 					if (connectParent.getParentIP().equals(set.getSrcip())) {
-						Parent newParent = new Parent(this, set.getDstip(), FAMILY_PORT);
+						Parent newParent = new Parent(this, set.getDstip(), DEFAULT_PORT);
 						
 						if (newParent.loginParent()) {
 							connectParent.logoutParent();
