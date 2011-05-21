@@ -60,7 +60,7 @@ public class Channel implements Runnable {
 	}
 	
 	public Send getMsg(int sequence) {
-		return msgList.get(sequence - msgOffset - 1);
+		return msgList.get(sequence/* msgOffset - 1*/);
 	}
 	
 	public String getServerIP() {
