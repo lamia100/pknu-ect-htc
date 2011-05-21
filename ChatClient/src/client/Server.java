@@ -268,7 +268,7 @@ public class Server implements Runnable {
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD);
 			toServerMsg.write(HEAD_IP + ":" + childIP + TOKEN_HEAD);
-			toServerMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD);
+			toServerMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 			
 			result = true;
