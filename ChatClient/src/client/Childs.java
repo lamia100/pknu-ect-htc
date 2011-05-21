@@ -326,15 +326,18 @@ public class Childs implements Runnable {
 				fromChildMsg = new BufferedReader(new InputStreamReader(fromChildSocket.getInputStream()));
 				toChildMsg = new BufferedWriter(new OutputStreamWriter(fromChildSocket.getOutputStream()));
 				
-				Send msg = connectChannel.getMsg(connectChannel.getLastSequence());				
-				
-				if (sendMsgToChild(msg.getChannel(), msg.getSeq(), msg.getNick(), msg.getMsg())) {
-					this.isService = true;
+				// 나중에 수정
+				if (connectChannel.getLastSequence() >= 0) {
+					Send msg = connectChannel.getMsg(connectChannel.getLastSequence());
 					
-					new Thread(this).start();
-					
-					result = true;
+					sendMsgToChild(msg.getChannel(), msg.getSeq(), msg.getNick(), msg.getMsg());
 				}
+								
+				this.isService = true;
+					
+				new Thread(this).start();
+					
+				result = true;
 			}
 			catch (IOException e) {
 				e.printStackTrace();
