@@ -55,7 +55,7 @@ public class Childs implements Runnable {
 		
 		try {
 			forChildSocket = new ServerSocket(myPort);
-			forChildSocket.setSoTimeout(5000);
+			//forChildSocket.setSoTimeout(5000);
 			
 			this.acceptChildIP = acceptChildIP;
 			
