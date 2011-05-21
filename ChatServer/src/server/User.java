@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 
 import util.Definition;
 import util.msg.Message;
@@ -34,13 +36,16 @@ public class User implements Comparable<User>, Runnable {
 	
 	public User(Socket socket) {
 		this.socket = socket;
+		joinChannels = new HashSet<Channel>();
 		try {
 			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
 	}
 	
 	/**
@@ -162,7 +167,7 @@ public class User implements Comparable<User>, Runnable {
 					}
 				} else if (message.parse(line)) {
 					// server 의 messageQ에 message를 add
-					
+					log("메세지 끝",message);
 					messageProcessor.enqueue(message);
 					message = null;
 				}

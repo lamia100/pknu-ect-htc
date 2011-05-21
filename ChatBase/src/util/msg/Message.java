@@ -64,6 +64,7 @@ public abstract class Message {
 			break;
 		case FAIL:
 			msg = new Fail();
+			break;
 		default:
 			msg = null;
 		}

@@ -118,12 +118,15 @@ public class Channel implements Comparable<Channel>, Runnable {
 	}
 	
 	private void success(Success message) {
+		log("success",message);
 		LinkSequence sequence = changes.get(message.getSequence());
 		boolean isEndSequence = false;
 		if (sequence != null) {
+			log("success not null");
 			isEndSequence = sequence.next(message);
 		}
 		if (isEndSequence) {
+			log("success, seq is end");
 			changes.remove(message.getSequence());
 		}
 	}

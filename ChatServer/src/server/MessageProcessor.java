@@ -87,6 +87,11 @@ public class MessageProcessor implements Runnable {
 					case EXIT:
 						exit((Exit) message);
 						break;
+					case SUCCESS:
+						success((Success)message);
+						break;
+					case FAIL:
+						break;
 					default:
 						break;
 				}
@@ -96,6 +101,14 @@ public class MessageProcessor implements Runnable {
 		
 	}
 	
+	private void success(Success suc) {
+		// TODO Auto-generated method stub
+		log("success",suc);
+		Channel channel = channels.get(suc.getChannel());
+		channel.enqueue(suc);
+		
+	}
+
 	private void exit(Exit exit) {
 		// TODO Auto-generated method stub
 		if (Definition.ALL.equals(exit.getChannel())) {
