@@ -18,7 +18,9 @@ public abstract class Message {
 
 	/**
 	 * 라인 단위로 파싱
-	 * @param line 파싱할 String
+	 * 
+	 * @param line
+	 *            파싱할 String
 	 * @return 메세지의 끝나면 true. 메세지가 안끝났으면 false
 	 */
 	public abstract boolean parse(String line);
@@ -31,17 +33,16 @@ public abstract class Message {
 
 	public static Message parsType(String str) {
 		Message msg;
-		if (str==null)
-		{
-			//throw new NullPointerException("Message.ParsType input is Null");
-			//return null;
+		if (str == null) {
+			// throw new NullPointerException("Message.ParsType input is Null");
+			// return null;
 		}
 		TYPE type = getTypeTable().get(str);
-		
+
 		if (type == null) {
 			return null;
 		}
-		
+
 		switch (type) {
 		case SEND:
 			msg = new Send();
@@ -58,10 +59,15 @@ public abstract class Message {
 		case REQUEST:
 			msg = new Request();
 			break;
+		case SUCCESS:
+			msg = new Success();
+			break;
+		case FAIL:
+			msg = new Fail();
 		default:
 			msg = null;
 		}
-		
+
 		return msg;
 	}
 
@@ -79,13 +85,15 @@ public abstract class Message {
 
 	/**
 	 * 바로 map 를 사용하지 말것. 초기화 문제.
+	 * 
 	 * @return {@code Message.map
+
 	 */
 	private static Map<String, TYPE> getTypeTable() {
 		if (map.isEmpty()) {
 			initialize();
 		}
-		
+
 		return map;
 	}
 

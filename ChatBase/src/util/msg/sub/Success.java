@@ -35,18 +35,16 @@ public class Success extends Message {
 		StringTokenizer token = new StringTokenizer(line, ":");
 		String typeStr;
 		String value;
-		
 		if (token.hasMoreElements()) {
 			typeStr = token.nextToken();
 			value = token.nextToken().trim();
-		}
-		else {
+		} else {
 			typeStr = line;
 			value = "";
 		}
 		
 		TYPE type = getStringToType(typeStr);
-		
+		System.out.println("Success Message Pars Type : "+ type.name());
 		switch (type) {
 		case CHANNEL:
 			channel = value;
@@ -77,7 +75,6 @@ public class Success extends Message {
 				isValid = false;
 				return false;
 			}
-			
 			break;
 		case END:
 			return true;
