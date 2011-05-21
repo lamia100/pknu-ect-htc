@@ -258,6 +258,7 @@ public class Childs implements Runnable {
 						// 서버 <- FAIL-Con/자식과 연결이 안됨
 					}
 					
+					forChildSocket.close();
 					wait = false;
 				}
 				else {
