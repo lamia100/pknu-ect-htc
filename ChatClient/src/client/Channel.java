@@ -60,7 +60,7 @@ public class Channel implements Runnable {
 	}
 	
 	public Send getMsg(int sequence) {
-		return msgList.get(sequence/* msgOffset - 1*/);
+		return msgList.get(sequence - msgOffset);
 	}
 	
 	public String getServerIP() {
@@ -69,6 +69,10 @@ public class Channel implements Runnable {
 	
 	public Server getConnectServer() {
 		return connectServer;
+	}
+	
+	public String getChannel() {
+		return channel;
 	}
 	
 	// ------------------------------------------------- GUI input -------------------------------------------------
@@ -254,7 +258,7 @@ public class Channel implements Runnable {
 				// dst만 왔을 때, 자식(dst) 추가
 				if (!"".equals(set.getDstip()) && "".equals(set.getSrcip())) {
 					if (connectChilds.getChildSize() < MAX_CHILD) {
-						if (connectChilds.readyForChild(set.getDstip())) {
+						if (connectChilds.readyForChild(set.getDstip(), set.getSequence())) {
 							connectServer.successOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
 						}
 						else {
@@ -276,7 +280,7 @@ public class Channel implements Runnable {
 				// dst, src 동시에 왔을 때, 자식(src)를 삭제하고 자식(dst) 추가
 				else {
 					if (connectChilds.getChildSize() <= MAX_CHILD) {
-						if (connectChilds.readyForChild(set.getDstip(), set.getSrcip())) {
+						if (connectChilds.readyForChild(set.getDstip(), set.getSrcip(), set.getSequence())) {
 							connectServer.successOpenSocketForChild(set.getChannel(), set.getDstip(), set.getSequence());
 						}
 						else {

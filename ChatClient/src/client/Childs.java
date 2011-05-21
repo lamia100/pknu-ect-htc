@@ -18,10 +18,13 @@ import static util.Definition.*;
 public class Childs implements Runnable {
 	private Channel connectChannel;
 	private int myPort;
+	
 	private ServerSocket forChildSocket;
 	private Map<String, Child> childList;
+	
 	private String acceptChildIP;
 	private String closeChildIP;
+	private int openSequence;
 	
 	private void debug(String msg) {
 		System.out.println("[자식들] : " + msg);
@@ -44,20 +47,24 @@ public class Childs implements Runnable {
 		
 		acceptChildIP = null;
 		closeChildIP = null;
+		openSequence = -1;
 	}
 	
 	/**
 	 * 자식을 받을 서버 소켓을 준비하고 쓰레드로 돌림, 실질적인 초기화를 담당
+	 * @param acceptChildIP
+	 * @param openSequence
 	 * @return 준비 성공 여부, 성공이라면 쓰레드로 돌아감
 	 */
-	public boolean readyForChild(String acceptChildIP) {
+	public boolean readyForChild(String acceptChildIP, int openSequence) {
 		boolean result = false;
 		
 		try {
 			forChildSocket = new ServerSocket(myPort);
-			//forChildSocket.setSoTimeout(5000);
+			forChildSocket.setSoTimeout(5000);
 			
 			this.acceptChildIP = acceptChildIP;
+			this.openSequence = openSequence;
 			
 			new Thread(this).start();
 			
@@ -67,6 +74,7 @@ public class Childs implements Runnable {
 			e.printStackTrace();
 			
 			this.acceptChildIP = null;
+			openSequence = -1;
 		}
 		
 		debug("받을 준비", result);
@@ -74,7 +82,14 @@ public class Childs implements Runnable {
 		return result;
 	}
 	
-	public boolean readyForChild(String acceptChildIP, String closeChildIP) {
+	/**
+	 * 자식을 받을 서버 소켓을 준비하고 쓰레드로 돌림, 실질적인 초기화를 담당
+	 * @param acceptChildIP
+	 * @param closeChildIP
+	 * @param openSequence
+	 * @return 준비 성공 여부, 성공이라면 쓰레드로 돌아감
+	 */
+	public boolean readyForChild(String acceptChildIP, String closeChildIP, int openSequence) {
 		boolean result = false;
 		
 		if (childList.containsKey(closeChildIP)) {
@@ -84,6 +99,7 @@ public class Childs implements Runnable {
 				
 				this.acceptChildIP = acceptChildIP;
 				this.closeChildIP = closeChildIP;
+				this.openSequence = openSequence;
 				
 				new Thread(this).start();
 				
@@ -94,10 +110,11 @@ public class Childs implements Runnable {
 				
 				this.acceptChildIP = null;
 				this.closeChildIP = null;
+				openSequence = -1;
 			}
 		}
 		else {
-			debug("자식 리스트에 연결을 해제해야 할 자식이 없습니다. (SRC IP 불일치)");
+			debug("자식 리스트에 연결을 해제할 자식이 없습니다. / SRC IP 불일치");
 		}
 		
 		debug("받을 준비", result);
@@ -106,7 +123,7 @@ public class Childs implements Runnable {
 	}
 
 	/**
-	 * 모든 자식들 연결 해제, 자식을 받을 소켓 해제, 쓰레드 멈춤
+	 * 모든 자식들 연결 해제
 	 */
 	public void closeAllChild() {
 		Iterator<Child> it = childList.values().iterator();
@@ -118,7 +135,7 @@ public class Childs implements Runnable {
 	}
 	
 	/**
-	 * 자식 하나 연결 해제, 쓰레드 계속 진행
+	 * 자식 하나 연결 해제
 	 * @param childIP
 	 */
 	public void closeSomeChild(String childIP) {
@@ -127,7 +144,7 @@ public class Childs implements Runnable {
 	
 	/**
 	 * 모든 자식들의 IP를 반환
-	 * @return 모든 자식들의 IP가 담겨있는 배열
+	 * @return 모든 자식들의 IP가 담겨있는 String 배열
 	 */
 	public String[] getChildIPList() {
 		String childIPList[] = new String[childList.size()];
@@ -193,7 +210,7 @@ public class Childs implements Runnable {
 	}
 	
 	/**
-	 * 모든 자식들에게 SEND-BROAD 메세지를 보냄
+	 * 모든 자식들에게 SEND/BROAD 메세지를 보냄
 	 * @param channel
 	 * @param sequence
 	 * @param nickName
@@ -214,7 +231,7 @@ public class Childs implements Runnable {
 	}
 	
 	/**
-	 * 특정 자식에게 SEND-BROAD 메세지를 보냄
+	 * 특정 자식에게 SEND/BROAD 메세지를 보냄
 	 * @param childIP
 	 * @param channel
 	 * @param sequence
@@ -231,35 +248,31 @@ public class Childs implements Runnable {
 	
 	@Override
 	public void run() {
-		boolean wait = true;
+		boolean isWait = true;
+		boolean result = false;
 		
-		while (forChildSocket.isBound() && acceptChildIP != null & wait) {
-			debug("11");
-			
-			try {
+		try {
+			while (isWait && forChildSocket.isBound()) {
 				Socket fromChildSocket = forChildSocket.accept();
-				debug("12");
+				
 				debug(fromChildSocket.getInetAddress().getHostAddress() + " 가 접속함");
 				
 				if (acceptChildIP.equals(fromChildSocket.getInetAddress().getHostAddress())) {
 					Child newChild = new Child(fromChildSocket);
+					
 					if (newChild.readyFromChild()) {
 						childList.put(fromChildSocket.getInetAddress().getHostAddress(), newChild);
 						
 						if (closeChildIP != null) {
 							closeSomeChild(closeChildIP);
 							
-							// 서버 <- SUC-DisCon/자식과 연결을 끊음
+							// connectChannel.getConnectServer().successDisconnectToChild(connectChannel.getChannel(), closeChildIP, openSequence);
 						}
 						
-						// 서버 <- SUC-Con/자식과 연결됨
-					}
-					else {
-						// 서버 <- FAIL-Con/자식과 연결이 안됨
+						result = true;
 					}
 					
-					forChildSocket.close();
-					wait = false;
+					isWait = false;
 				}
 				else {
 					fromChildSocket.close();
@@ -267,24 +280,30 @@ public class Childs implements Runnable {
 					debug(fromChildSocket.getInetAddress().getHostAddress() + " 를 거부함");
 				}
 			}
-			catch (SocketTimeoutException e) {
-				e.printStackTrace();
-				wait = false;
-				
-				// 서버 <- FAIL-Con/자식과 연결이 안됨
-				
-				debug("접속 제한 시간 초과");
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-				wait = false;
-				
-				// 서버 <- FAIL-Con/자식과 연결이 안됨
-			}
+			
+			forChildSocket.close();
+		}
+		catch (SocketTimeoutException e) {
+			e.printStackTrace();
+			isWait = false;
+			
+			debug("접속 제한 시간 초과");
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+			isWait = false;
+		}
+		
+		if (result) {
+			connectChannel.getConnectServer().successConnectToChild(connectChannel.getChannel(), acceptChildIP, openSequence);
+		}
+		else {
+			connectChannel.getConnectServer().failConnectToChild(connectChannel.getChannel(), acceptChildIP, openSequence);
 		}
 		
 		this.acceptChildIP = null;
 		this.closeChildIP = null;
+		this.openSequence = -1;
 	}
 	
 	
@@ -317,7 +336,7 @@ public class Childs implements Runnable {
 		}
 		
 		/**
-		 * 자식 소켓에 대한 버퍼를 준비하고 자식이 마지막 메세지를 받는다면 쓰레드로 돌림, 실질적인 초기화를 담당
+		 * 자식 소켓에 대한 버퍼를 준비하고 자식에게 마지막 메세지를 보내고 쓰레드로 돌림, 실질적인 초기화를 담당
 		 * @return 준비 성공 여부, 성공이라면 쓰레드로 돌아감
 		 */
 		private boolean readyFromChild() {
@@ -327,7 +346,6 @@ public class Childs implements Runnable {
 				fromChildMsg = new BufferedReader(new InputStreamReader(fromChildSocket.getInputStream()));
 				toChildMsg = new BufferedWriter(new OutputStreamWriter(fromChildSocket.getOutputStream()));
 				
-				// 나중에 수정
 				if (connectChannel.getLastSequence() >= 0) {
 					Send msg = connectChannel.getMsg(connectChannel.getLastSequence());
 					
@@ -434,7 +452,7 @@ public class Childs implements Runnable {
 		}
 		
 		/**
-		 * 자식에 SEND-BROAD 메세지를 보냄
+		 * 자식에 SEND/BROAD 메세지를 보냄
 		 * @param channel
 		 * @param sequence
 		 * @param nickName

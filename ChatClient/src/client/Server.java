@@ -144,7 +144,7 @@ public class Server implements Runnable {
 	 * 서버에 EXIT 메세지를 보냄
 	 * @param channel
 	 * @param nickName
-	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
+	 * @return 전송 성공 여부, 실패라면 쓰레드 멈춤
 	 */
 	public synchronized boolean exitChannel(String channel, String nickName) {
 		boolean result = false;
@@ -167,11 +167,11 @@ public class Server implements Runnable {
 	}
 	
 	/**
-	 * 서버에 SEND-BROAD 메세지를 보냄
+	 * 서버에 SEND/BROAD 메세지를 보냄
 	 * @param channel
 	 * @param nickName
 	 * @param msg
-	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
+	 * @return 전송 성공 여부, 실패라면 쓰레드 멈춤
 	 */
 	public synchronized boolean sendMsgToServer(String channel, String nickName, String msg) {
 		boolean result = false;
@@ -196,11 +196,11 @@ public class Server implements Runnable {
 	}
 	
 	/**
-	 * 서버에 SCRIPT-BROAD 메세지를 보냄
+	 * 서버에 SCRIPT/BROAD 메세지를 보냄
 	 * @param channel
 	 * @param nickName
 	 * @param script
-	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
+	 * @return 전송 성공 여부, 실패라면 쓰레드 멈춤
 	 */
 	public synchronized boolean sendScriptBroad(String channel, String nickName, String script) {
 		boolean result = false;
@@ -225,11 +225,11 @@ public class Server implements Runnable {
 	}
 	
 	/**
-	 * 서버에 SCRIPT-UNI 메세지를 보냄
+	 * 서버에 SCRIPT/UNI 메세지를 보냄
 	 * @param channel
 	 * @param nickName
 	 * @param script
-	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
+	 * @return 전송 성공 여부, 실패라면 쓰레드 멈춤
 	 */
 	public synchronized boolean sendScriptUni(String channel, String nickName, String script) {
 		boolean result = false;
@@ -254,11 +254,11 @@ public class Server implements Runnable {
 	}
 	
 	/**
-	 * 서버에 SUC-CHILD 메세지를 보냄
+	 * 서버에 SUC-Open/CHILD 메세지를 보냄
 	 * @param channel
 	 * @param childIP
 	 * @param sequence
-	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
+	 * @return 전송 성공 여부, 실패라면 쓰레드 멈춤
 	 */
 	public synchronized boolean successOpenSocketForChild(String channel, String childIP, int sequence) {
 		boolean result = false;
@@ -268,7 +268,7 @@ public class Server implements Runnable {
 			toServerMsg.write(HEAD_CHANNEL + ":" + channel + TOKEN_HEAD);
 			toServerMsg.write(HEAD_FAMILY + ":" + HEAD_FAMILY_CHILD + TOKEN_HEAD);
 			toServerMsg.write(HEAD_IP + ":" + childIP + TOKEN_HEAD);
-			toServerMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD + TOKEN_HEAD);
+			toServerMsg.write(HEAD_SEQ + ":" + sequence + TOKEN_HEAD + TOKEN_HEAD);
 			toServerMsg.flush();
 			
 			result = true;
@@ -283,11 +283,11 @@ public class Server implements Runnable {
 	}
 	
 	/**
-	 * 서버에 FAIL-CHILD 메세지를 보냄
+	 * 서버에 FAIL-Open/CHILD 메세지를 보냄
 	 * @param channel
 	 * @param childIP
 	 * @param sequence
-	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
+	 * @return 전송 성공 여부, 실패라면 쓰레드 멈춤
 	 */
 	public synchronized boolean failOpenSocketForChild(String channel, String childIP, int sequence) {
 		boolean result = false;
@@ -312,7 +312,7 @@ public class Server implements Runnable {
 	}
 	
 	/**
-	 * 서버에 SUC-PARENT 메세지를 보냄
+	 * 서버에 SUC-Con/PARENT 메세지를 보냄
 	 * @param channel
 	 * @param parentIP
 	 * @param sequence
@@ -335,13 +335,13 @@ public class Server implements Runnable {
 			e.printStackTrace();
 		}
 		
-		debug("SUC_Con/PARENT/" + channel + "/" + parentIP + "/" + sequence + "/보내기", result);
+		debug("SUC-Con/PARENT/" + channel + "/" + parentIP + "/" + sequence + "/보내기", result);
 		
 		return isService = result;
 	}
 	
 	/**
-	 * 서버에 FAIL-PARENT 메세지를 보냄
+	 * 서버에 FAIL-Con/PARENT 메세지를 보냄
 	 * @param channel
 	 * @param parentIP
 	 * @param sequence
@@ -369,6 +369,13 @@ public class Server implements Runnable {
 		return isService = result;
 	}
 	
+	/**
+	 * 서버에 SUC-DisCon/PARENT 메세지를 보냄
+	 * @param channel
+	 * @param parentIP
+	 * @param sequence
+	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
+	 */
 	public synchronized boolean successDisconnectToParent(String channel, String parentIP, int sequence) {
 		boolean result = false;
 		
@@ -391,7 +398,13 @@ public class Server implements Runnable {
 		return isService = result;
 	}
 	
-	
+	/**
+	 * 서버에 SUC-Con/CHILD 메세지를 보냄
+	 * @param channel
+	 * @param childIP
+	 * @param sequence
+	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
+	 */
 	public synchronized boolean successConnectToChild(String channel, String childIP, int sequence) {
 		boolean result = false;
 		
@@ -414,7 +427,13 @@ public class Server implements Runnable {
 		return isService = result;
 	}
 	
-	
+	/**
+	 * 서버에 FAIL-Con/CHILD 메세지를 보냄
+	 * @param channel
+	 * @param childIP
+	 * @param sequence
+	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
+	 */
 	public synchronized boolean failConnectToChild(String channel, String childIP, int sequence) {
 		boolean result = false;
 		
@@ -437,7 +456,13 @@ public class Server implements Runnable {
 		return isService = result;
 	}
 	
-	
+	/**
+	 * 서버에 SUC-DisCon/CHILD 메세지를 보냄
+	 * @param channel
+	 * @param childIP
+	 * @param sequence
+	 * @return 전송 성공 여부, 실패라면 쓰레드가 멈춤
+	 */
 	public synchronized boolean successDisconnectToChild(String channel, String childIP, int sequence) {
 		boolean result = false;
 		
