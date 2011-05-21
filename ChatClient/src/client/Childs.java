@@ -233,10 +233,12 @@ public class Childs implements Runnable {
 	public void run() {
 		boolean wait = true;
 		
-		while (forChildSocket.isBound() && acceptChildIP != null & wait) {			
+		while (forChildSocket.isBound() && acceptChildIP != null & wait) {
+			debug("11");
+			
 			try {
 				Socket fromChildSocket = forChildSocket.accept();
-				
+				debug("12");
 				debug(fromChildSocket.getInetAddress().getHostAddress() + " 가 접속함");
 				
 				if (acceptChildIP.equals(fromChildSocket.getInetAddress().getHostAddress())) {
