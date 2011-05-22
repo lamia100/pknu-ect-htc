@@ -11,9 +11,6 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import javax.swing.JTabbedPane;
 
 import client.Manager;
