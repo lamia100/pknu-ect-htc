@@ -189,7 +189,7 @@ public class User implements Comparable<User>, Runnable {
 	@Override
 	public String toString() {
 		// TODO Auto-generated method stub
-		return name+socket.toString();
+		return name+" : "+socket.toString();
 	}
 
 	public void remove(Channel channel) {

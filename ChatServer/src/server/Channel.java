@@ -95,7 +95,8 @@ public class Channel implements Comparable<Channel>, Runnable {
 	private void join(Join join) {
 		AddSequence temp = new AddSequence(join, setID);
 		changes.put(setID, temp);
-		setID++; // sync 안됨 다른걸로 수정요함.. 필요없음 공유 자원이 아님.
+		setID++; 
+		// sync 안됨 다른걸로 수정요함.. 필요없음 공유 자원이 아님.
 		temp.next(join);
 
 	}
@@ -380,13 +381,14 @@ public class Channel implements Comparable<Channel>, Runnable {
 		}
 
 		void first() {
+			log("change 1");
 			if(parentOfMove==moveUser)
 			{
 				second(new Success());
 				sequence=2;
 				return;
 			}
-			parentOfMove.send(new Set(channel.name, moveUser.getIP(), "0.0.0.0", CHILD, sequence));
+			parentOfMove.send(new Set(channel.name, moveUser.getIP(), "0.0.0.0", CHILD, id));
 			if (parent == null) {
 				sequence = 3;
 			} else {
@@ -395,22 +397,24 @@ public class Channel implements Comparable<Channel>, Runnable {
 		}
 
 		void second(Message message) {
+			log("change 2");
 			if (message.getType() == TYPE.SUCCESS) {
 				// moveUser 을 부모로부터 때네는 작업. 성공
 				// parent 에 자식을 설정.
-				parent.send(new Set(channel.name, removedUser.getIP(), moveUser.getIP(), CHILD, sequence));
+				parent.send(new Set(channel.name, removedUser.getIP(), moveUser.getIP(), CHILD, id));
 				sequence=3;
 			}
 		}
 
 		void third(Message message) {
+			log("change 3");
 			if (message.getType() == TYPE.SUCCESS) {
 				// parent 에 moveUser을 자식으로 설정 성공
 				// moveUser에 부모을 parent로 설정
 				if (parent != null) {
-					moveUser.send(new Set(channel.name, parent.getIP(), PARENT, sequence));
+					moveUser.send(new Set(channel.name, parent.getIP(), PARENT, id));
 				} else {
-					moveUser.send(new Set(channel.name, Server.getIP(), PARENT, sequence));
+					moveUser.send(new Set(channel.name, Server.getIP(), PARENT, id));
 				}
 				if (child1 != null) {
 					sequence=4;
@@ -421,17 +425,19 @@ public class Channel implements Comparable<Channel>, Runnable {
 		}
 
 		void fourth(Message message) {
+			log("change 4");
 			if (message.getType() == TYPE.SUCCESS) {
 				// child1 설정 1
-				moveUser.send(new Set(channel.name, child1.getIP(), CHILD, sequence));
+				moveUser.send(new Set(channel.name, child1.getIP(), CHILD, id));
 				sequence=5;
 			}
 		}
 
 		void fifth(Message message) {
+			log("change 5");
 			if (message.getType() == TYPE.SUCCESS) {
 				// child1 설정 2
-				child1.send(new Set(channel.name, moveUser.getIP(), PARENT, sequence));
+				child1.send(new Set(channel.name, moveUser.getIP(), PARENT, id));
 
 				if (child2 != null) {
 					sequence=6;
@@ -443,22 +449,25 @@ public class Channel implements Comparable<Channel>, Runnable {
 		}
 
 		void sixth(Message message) {
+			log("change 6");
 			if (message.getType() == TYPE.SUCCESS) {
 				// child2 설정 1
-				moveUser.send(new Set(channel.name, child2.getIP(), CHILD, sequence));
+				moveUser.send(new Set(channel.name, child2.getIP(), CHILD, id));
 				sequence=7;
 			}
 		}
 
 		void seventh(Message message) {
+			log("change 7");
 			if (message.getType() == TYPE.SUCCESS) {
 				// child2 설정 2
-				child2.send(new Set(channel.name, moveUser.getIP(), PARENT, sequence));
+				child2.send(new Set(channel.name, moveUser.getIP(), PARENT, id));
 				sequence = 100;
 			}
 		}
 
 		void last(Message message) {
+			log("change end");
 			if (message.getType() == TYPE.SUCCESS) {
 				changes.remove(id);
 				send(exit);

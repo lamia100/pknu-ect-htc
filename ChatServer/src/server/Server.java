@@ -51,12 +51,13 @@ public class Server implements Runnable {
 	public void run() {
 		// TODO Auto-generated method stub
 		try {
-			System.out.println("채팅서버 시작..." + sSocket.getLocalPort());
+			log("채팅서버 시작..." + sSocket.getLocalPort());
 			while (true) {
 				Socket socket = sSocket.accept();
-				System.out.println("입장 : " + socket);
+				log("입장 : "+socket);
 				User user = new User(socket);
 				new Thread(user).start();
+				//sSocket.close();
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -69,6 +70,13 @@ public class Server implements Runnable {
 		return sSocket.getInetAddress().getHostAddress().toString();
 	}
 	
+
+	private void log(Object... logs) {
+		System.out.println("Server");
+		for (Object log : logs)
+			System.out.println(log);
+		System.out.println("----------------------------");
+	}
 	public static void main(String[] args) {
 		new Thread(Server.server).start();
 	}
