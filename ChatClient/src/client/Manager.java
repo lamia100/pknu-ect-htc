@@ -1,5 +1,7 @@
 package client;
 
+import gui.GUI;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -7,7 +9,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import util.msg.TYPE;
 import util.msg.sub.*;
 import static util.Definition.*;
-import test.GUI;
 
 public class Manager implements Runnable {
 	private BlockingQueue<Packet> serverPacketQueue;

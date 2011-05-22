@@ -79,15 +79,18 @@ public class Server implements Runnable {
 	public void logoutServer() {
 		isService = false;
 		
-		try {
-			toServerSocket.close();
-			toServerSocket = null;
-			fromServerMsg = null;
-			toServerMsg = null;
+		if (toServerSocket != null) {
+			try {
+				toServerSocket.close();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
+		
+		toServerSocket = null;
+		fromServerMsg = null;
+		toServerMsg = null;
 		
 		debug("연결 해제", true);
 	}

@@ -90,7 +90,7 @@ public class Parent implements Runnable {
 	public void logoutParent() {
 		isService = false;
 		
-		if (!"0.0.0.0".equals(parentIP)) {
+		if (!"0.0.0.0".equals(parentIP) && toParentSocket != null) {
 			try {
 				toParentSocket.close();
 			}

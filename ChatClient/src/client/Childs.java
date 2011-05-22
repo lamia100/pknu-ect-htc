@@ -63,7 +63,6 @@ public class Childs implements Runnable {
 			if (forChildSocket == null) {
 				forChildSocket = new ServerSocket(myPort);
 			}
-			// forChildSocket.setSoTimeout(10000);
 			
 			this.acceptChildIP = acceptChildIP;
 			this.openSequence = openSequence;
@@ -99,7 +98,6 @@ public class Childs implements Runnable {
 				if (forChildSocket == null) {
 					forChildSocket = new ServerSocket(myPort);
 				}
-				// forChildSocket.setSoTimeout(10000);
 				
 				this.acceptChildIP = acceptChildIP;
 				this.closeChildIP = closeChildIP;
@@ -259,13 +257,15 @@ public class Childs implements Runnable {
 			while (isWait && forChildSocket.isBound()) {
 				Socket fromChildSocket = forChildSocket.accept();
 				
-				debug(fromChildSocket.getInetAddress().getHostAddress() + " 가 접속함");
+				String acceptIP = fromChildSocket.getInetAddress().getHostAddress();
 				
-				if (acceptChildIP.equals(fromChildSocket.getInetAddress().getHostAddress())) {
+				debug(acceptIP + " 가 접속함");
+				
+				if (acceptChildIP.equals(acceptIP)) {
 					Child newChild = new Child(fromChildSocket);
 					
 					if (newChild.readyFromChild()) {
-						childList.put(fromChildSocket.getInetAddress().getHostAddress(), newChild);
+						childList.put(acceptIP, newChild);
 						
 						if (closeChildIP != null) {
 							closeSomeChild(closeChildIP);
@@ -281,13 +281,9 @@ public class Childs implements Runnable {
 				else {
 					fromChildSocket.close();
 					
-					debug(fromChildSocket.getInetAddress().getHostAddress() + " 를 거부함");
+					debug(acceptIP + " 를 거부함");
 				}
-				
-				// forChildSocket.close();
 			}
-						
-			// forChildSocket.close();
 		}
 		catch (SocketTimeoutException e) {
 			e.printStackTrace();
@@ -316,6 +312,8 @@ public class Childs implements Runnable {
 	// ------------------------------------------------- Child Inner Class -------------------------------------------------
 	
 	private class Child implements Runnable {
+		private String childIP;
+		
 		private Socket fromChildSocket;
 		private BufferedReader fromChildMsg;
 		private BufferedWriter toChildMsg;
@@ -328,7 +326,7 @@ public class Childs implements Runnable {
 		
 		private void debug(String msg, boolean result) {
 			if (result) {
-				System.out.println("[자식(" + /*getChildIP() +*/ ")] : " + msg + " -> 성공");
+				System.out.println("[자식(" + getChildIP() + ")] : " + msg + " -> 성공");
 			}
 			else {
 				System.out.println("[자식(" + getChildIP() + ")] : " + msg + " -> 실패");
@@ -337,6 +335,7 @@ public class Childs implements Runnable {
 		
 		public Child(Socket fromChildSocket) {
 			this.fromChildSocket = fromChildSocket;
+			childIP = fromChildSocket.getInetAddress().getHostAddress();
 			
 			this.isService = false;
 		}
@@ -384,10 +383,11 @@ public class Childs implements Runnable {
 					childList.remove(getChildIP());
 					
 					fromChildSocket.close();
-					fromChildSocket = null;
-					fromChildMsg = null;
-					toChildMsg = null;
 				}
+				
+				fromChildSocket = null;
+				fromChildMsg = null;
+				toChildMsg = null;
 			}
 			catch (IOException e) {
 				e.printStackTrace();
@@ -397,7 +397,7 @@ public class Childs implements Runnable {
 		}
 		
 		public String getChildIP() {
-			return fromChildSocket.getInetAddress().getHostAddress();
+			return childIP;
 		}
 		
 		@SuppressWarnings("unused")

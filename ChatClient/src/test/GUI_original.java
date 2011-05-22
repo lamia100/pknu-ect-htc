@@ -1,5 +1,7 @@
 package test;
 
+import gui.GUI;
+
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
@@ -16,7 +18,7 @@ import javax.swing.JScrollPane;
 import client.Manager;
 import javax.swing.border.SoftBevelBorder;
 
-public class GUI extends JFrame {
+public class GUI_original extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
@@ -51,10 +53,10 @@ public class GUI extends JFrame {
 	/**
 	 * This is the default constructor
 	 */
-	public GUI() {
+	public GUI_original() {
 		super();
 		initialize();
-		gui = this;
+		// gui = this;
 	}
 
 	/**

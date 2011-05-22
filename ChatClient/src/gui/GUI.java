@@ -1,21 +1,24 @@
-package test;
+package gui;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JFrame;
-import java.awt.Dimension;
-import java.awt.GridBagLayout;
 import java.awt.FlowLayout;
+import java.awt.event.KeyEvent;
+
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
-import java.awt.GridBagConstraints;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import java.awt.CardLayout;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import javax.swing.JTabbedPane;
 
-public class AnotherGUI extends JFrame {
+import client.Manager;
+
+public class GUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
@@ -43,12 +46,15 @@ public class AnotherGUI extends JFrame {
 	private JButton bt_send = null;
 	private JLabel lb_info = null;
 	private JTabbedPane tp_channel = null;
+	private Manager connectManager = null;
+	private GUI gui = null;
 	/**
 	 * This is the default constructor
 	 */
-	public AnotherGUI() {
+	public GUI() {
 		super();
 		initialize();
+		gui = this;
 	}
 
 	/**
@@ -160,7 +166,19 @@ public class AnotherGUI extends JFrame {
 			bt_login.setText("Login");
 			bt_login.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					System.out.println("[GUI] Login 버튼을 눌렀습니다."); // TODO Auto-generated Event stub actionPerformed()
+					
+					String serverIP = getTf_serverIP().getText();
+					int serverPort = Integer.parseInt(getTf_serverPort().getText());
+					String nickName = getTf_nickName().getText();
+					
+					connectManager = new Manager(nickName, gui);
+					
+					boolean result = connectManager.connectServer(serverIP, serverPort);
+					
+					if (!result) {
+						connectManager = null;
+					}
 				}
 			});
 		}
@@ -178,7 +196,17 @@ public class AnotherGUI extends JFrame {
 			bt_logout.setText("Logout");
 			bt_logout.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					System.out.println("[GUI] Logout 버튼을 눌렀습니다."); // TODO Auto-generated Event stub actionPerformed()
+					
+					if (connectManager != null) {
+						connectManager.disconnectServer();
+						connectManager = null;
+						
+						dspInfo("서버 연결 해제");
+					}
+					else {
+						dspInfo("Login을 하세요.");
+					}
 				}
 			});
 		}
@@ -242,6 +270,7 @@ public class AnotherGUI extends JFrame {
 	private JScrollPane getSp_info() {
 		if (sp_info == null) {
 			sp_info = new JScrollPane();
+			sp_info.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 			sp_info.setViewportView(getTa_info());
 		}
 		return sp_info;
@@ -256,6 +285,7 @@ public class AnotherGUI extends JFrame {
 		if (ta_info == null) {
 			ta_info = new JTextArea();
 			ta_info.setRows(8);
+			ta_info.setLineWrap(true);
 		}
 		return ta_info;
 	}
@@ -304,7 +334,32 @@ public class AnotherGUI extends JFrame {
 			bt_join.setText("Join");
 			bt_join.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					System.out.println("[GUI] Join 버튼을 눌렀습니다."); // TODO Auto-generated Event stub actionPerformed()
+					
+					if (connectManager != null) {
+						String channel = getTf_channel().getText();
+											
+						if (getTp_channel().indexOfTab(channel) < 0) {
+							boolean result = connectManager.joinChannel(channel);
+							
+							if (result) {
+								String nickName = getTf_nickName().getText();
+								
+								getTp_channel().addTab(channel, new ChatGUI(channel, nickName));
+							}
+							else {
+								connectManager = null;
+								
+								dspInfo("서버와 연결이 끊어졌습니다. 재 Login 하세요.");
+							}
+						}
+						else {
+							dspInfo("이미 해당 채널에 접속되어 있습니다.");
+						}
+					}
+					else {
+						dspInfo("Login을 하세요.");
+					}
 				}
 			});
 		}
@@ -322,7 +377,25 @@ public class AnotherGUI extends JFrame {
 			bt_exit.setText("Exit");
 			bt_exit.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					System.out.println("[GUI] Exit 버튼을 눌렀습니다."); // TODO Auto-generated Event stub actionPerformed()
+					
+					if (connectManager != null) {
+						String channel = getTf_channel().getText();
+						
+						int targetIndex = getTp_channel().indexOfTab(channel); 
+						
+						if (targetIndex >= 0) {
+							connectManager.exitChannel(channel);
+							
+							getTp_channel().removeTabAt(targetIndex);
+						}
+						else {
+							dspInfo("이미 해당 채널에 접속되어있지 않습니다.");
+						}
+					}
+					else {
+						dspInfo("Login을 하세요.");
+					}
 				}
 			});
 		}
@@ -337,9 +410,30 @@ public class AnotherGUI extends JFrame {
 	private JTextField getTf_send() {
 		if (tf_send == null) {
 			tf_send = new JTextField();
-			tf_send.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+			tf_send.addKeyListener(new java.awt.event.KeyAdapter() {
+				public void keyTyped(java.awt.event.KeyEvent e) {
+					// TODO Auto-generated Event stub keyTyped()
+					
+					if (e.getKeyChar() == KeyEvent.VK_ENTER) {
+						System.out.println("[GUI] Send 엔터를 눌렀습니다.");
+						
+						if (connectManager != null) {
+							String channel = getTp_channel().getTitleAt(getTp_channel().getSelectedIndex());
+							String msg = getTf_send().getText();
+							
+							boolean result = connectManager.sendMsg(channel, msg);
+							
+							if (!result) {
+								connectManager = null;
+								getTp_channel().removeAll();
+								
+								dspInfo("서버와 연결이 끊어졌습니다. 재 Login 하세요.");
+							}
+						}
+						else {
+							dspInfo("Login을 하세요.");
+						}
+					}
 				}
 			});
 		}
@@ -357,7 +451,24 @@ public class AnotherGUI extends JFrame {
 			bt_send.setText("Send");
 			bt_send.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					System.out.println("[GUI] Send 버튼을 눌렀습니다."); // TODO Auto-generated Event stub actionPerformed()
+					
+					if (connectManager != null) {
+						String channel = getTp_channel().getTitleAt(getTp_channel().getSelectedIndex());
+						String msg = getTf_send().getText();
+						
+						boolean result = connectManager.sendMsg(channel, msg);
+						
+						if (!result) {
+							connectManager = null;
+							getTp_channel().removeAll();
+							
+							dspInfo("서버와 연결이 끊어졌습니다. 재 Login 하세요.");
+						}
+					}
+					else {
+						dspInfo("Login을 하세요.");
+					}
 				}
 			});
 		}
@@ -374,6 +485,20 @@ public class AnotherGUI extends JFrame {
 			tp_channel = new JTabbedPane();
 		}
 		return tp_channel;
+	}
+	
+	public void dspMsg(String channel, String nickName, String msg) {
+		int targetIndex = getTp_channel().indexOfTab(channel);
+		
+		if (targetIndex >= 0) {
+			ChatGUI target = (ChatGUI)getTp_channel().getComponentAt(targetIndex);
+			target.dspMsg(nickName, msg);
+		}
+	}
+	
+	public void dspInfo(String info) {
+		sp_info.getVerticalScrollBar().setValue(sp_info.getVerticalScrollBar().getMaximum());
+		ta_info.append(info + "\n");
 	}
 
 }

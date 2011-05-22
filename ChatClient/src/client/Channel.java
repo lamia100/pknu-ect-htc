@@ -1,12 +1,13 @@
 package client;
 
+import gui.GUI;
+
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import util.msg.Message;
 import util.msg.sub.*;
 import static util.Definition.*;
-import test.GUI;
 
 public class Channel implements Runnable {
 	private BlockingQueue<Packet> familyPacketQueue;
