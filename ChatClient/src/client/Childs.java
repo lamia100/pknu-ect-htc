@@ -60,8 +60,10 @@ public class Childs implements Runnable {
 		boolean result = false;
 		
 		try {
-			forChildSocket = new ServerSocket(myPort);
-			// forChildSocket.setSoTimeout(5000);
+			if (forChildSocket == null) {
+				forChildSocket = new ServerSocket(myPort);
+			}
+			// forChildSocket.setSoTimeout(10000);
 			
 			this.acceptChildIP = acceptChildIP;
 			this.openSequence = openSequence;
@@ -94,8 +96,10 @@ public class Childs implements Runnable {
 		
 		if (childList.containsKey(closeChildIP)) {
 			try {
-				forChildSocket = new ServerSocket(myPort);
-				// forChildSocket.setSoTimeout(5000);
+				if (forChildSocket == null) {
+					forChildSocket = new ServerSocket(myPort);
+				}
+				// forChildSocket.setSoTimeout(10000);
 				
 				this.acceptChildIP = acceptChildIP;
 				this.closeChildIP = closeChildIP;
@@ -279,18 +283,18 @@ public class Childs implements Runnable {
 					
 					debug(fromChildSocket.getInetAddress().getHostAddress() + " 를 거부함");
 				}
+				
+				// forChildSocket.close();
 			}
-			
-			forChildSocket.close();
+						
+			// forChildSocket.close();
 		}
-		/*
 		catch (SocketTimeoutException e) {
 			e.printStackTrace();
 			isWait = false;
 			
 			debug("접속 제한 시간 초과");
 		}
-		*/
 		catch (IOException e) {
 			e.printStackTrace();
 			isWait = false;
@@ -324,7 +328,7 @@ public class Childs implements Runnable {
 		
 		private void debug(String msg, boolean result) {
 			if (result) {
-				System.out.println("[자식(" + getChildIP() + ")] : " + msg + " -> 성공");
+				System.out.println("[자식(" + /*getChildIP() +*/ ")] : " + msg + " -> 성공");
 			}
 			else {
 				System.out.println("[자식(" + getChildIP() + ")] : " + msg + " -> 실패");
@@ -376,16 +380,18 @@ public class Childs implements Runnable {
 			this.isService = false;
 			
 			try {
-				fromChildSocket.close();
-				fromChildSocket = null;
-				fromChildMsg = null;
-				toChildMsg = null;
+				if (fromChildSocket != null) {
+					childList.remove(getChildIP());
+					
+					fromChildSocket.close();
+					fromChildSocket = null;
+					fromChildMsg = null;
+					toChildMsg = null;
+				}
 			}
 			catch (IOException e) {
 				e.printStackTrace();
 			}
-			
-			childList.remove(getChildIP());
 			
 			this.debug("연결 해제", true);
 		}
