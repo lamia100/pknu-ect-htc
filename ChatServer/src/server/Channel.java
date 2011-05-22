@@ -262,14 +262,12 @@ public class Channel implements Comparable<Channel>, Runnable {
 			log("link seq : " + id, added, parent);
 
 			if (parent != null) {
-				parent.send(new Set(name, added.getIP(), CHILD, id));// 자식 IP
-																		// 알림.
+				parent.send(new Set(name, added.getIP(), CHILD, id));
+				// 자식 IP 알림.
 				sequence++;
 			} else {
-				added.send(new Set(name, Server.getIP(), PARENT, id)); // 최초사용자
-																		// 이므로
-																		// 서버가
-																		// 부모
+				added.send(new Set(name, Server.getIP(), PARENT, id)); 
+				// 최초사용자 이므로 서버가  부모
 				sequence = 100;
 
 			}
@@ -301,12 +299,6 @@ public class Channel implements Comparable<Channel>, Runnable {
 		}
 	}
 
-	/**
-	 * 나중에 사용함. 지금은 바꾸는거 생각하지말자.
-	 * 
-	 * @author "김성현"
-	 * 
-	 */
 	class ChangeSequence extends LinkSequence {
 		// exit 한놈의 부모
 		User parent;
@@ -320,7 +312,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 		// exit한 유저
 		User removedUser;
 		// exit 한놈의 인덱스
-		int dstIndex;
+		
 		// 종료 메세지
 		Exit exit;
 
@@ -331,12 +323,16 @@ public class Channel implements Comparable<Channel>, Runnable {
 			this.exit = exit;
 			removedUser = messageProcessor.getUser(exit.getNick());
 			// users 의 마지막 인덱스 moveUser의 원래위치
-			int srcIndex = users.size() - 1;
-			moveUser = users.remove(srcIndex);
-			parentOfMove = users.get(srcIndex / 2);
-			dstIndex = getUserIndex(removedUser);
-
+			int moveIndex = users.size() - 1;
+			moveUser = users.remove(moveIndex);
+			int dstIndex = getUserIndex(removedUser);
+			
+			
+			
 			users.set(dstIndex, moveUser);
+			
+			parentOfMove = users.get(moveIndex / 2);
+
 			removedUser.remove(channel);
 
 			parent = users.get(dstIndex / 2);
@@ -384,11 +380,17 @@ public class Channel implements Comparable<Channel>, Runnable {
 		}
 
 		void first() {
+			if(parentOfMove==moveUser)
+			{
+				second(new Success());
+				sequence=2;
+				return;
+			}
 			parentOfMove.send(new Set(channel.name, moveUser.getIP(), "0.0.0.0", CHILD, sequence));
 			if (parent == null) {
-				sequence += 2;
+				sequence = 3;
 			} else {
-				sequence++;
+				sequence=2;
 			}
 		}
 
@@ -397,7 +399,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 				// moveUser 을 부모로부터 때네는 작업. 성공
 				// parent 에 자식을 설정.
 				parent.send(new Set(channel.name, removedUser.getIP(), moveUser.getIP(), CHILD, sequence));
-				sequence++;
+				sequence=3;
 			}
 		}
 
@@ -411,7 +413,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 					moveUser.send(new Set(channel.name, Server.getIP(), PARENT, sequence));
 				}
 				if (child1 != null) {
-					sequence++;
+					sequence=4;
 				} else {
 					sequence = 100;
 				}
@@ -422,7 +424,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 			if (message.getType() == TYPE.SUCCESS) {
 				// child1 설정 1
 				moveUser.send(new Set(channel.name, child1.getIP(), CHILD, sequence));
-				sequence++;
+				sequence=5;
 			}
 		}
 
@@ -432,7 +434,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 				child1.send(new Set(channel.name, moveUser.getIP(), PARENT, sequence));
 
 				if (child2 != null) {
-					sequence++;
+					sequence=6;
 				} else {
 					sequence = 100;
 				}
@@ -444,7 +446,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 			if (message.getType() == TYPE.SUCCESS) {
 				// child2 설정 1
 				moveUser.send(new Set(channel.name, child2.getIP(), CHILD, sequence));
-				sequence++;
+				sequence=7;
 			}
 		}
 
