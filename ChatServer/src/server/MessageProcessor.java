@@ -98,7 +98,6 @@ public class MessageProcessor implements Runnable {
 			}
 			
 		}
-		
 	}
 	
 	private void success(Success suc) {
@@ -117,6 +116,10 @@ public class MessageProcessor implements Runnable {
 				for (Channel channel : user.getChannels()) {
 					channel.enqueue(new Exit(channel.getName(), exit.getNick()));
 				}
+		}else{
+			Channel channel = channels.get(exit.getChannel());
+			channel.enqueue(exit);
+		
 		}
 	}
 	

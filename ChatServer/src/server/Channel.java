@@ -21,7 +21,7 @@ import util.msg.sub.Success;
  */
 public class Channel implements Comparable<Channel>, Runnable {
 	private static MessageProcessor messageProcessor = null;
-	
+
 	private final ArrayList<User> users;
 	private final Map<String, Integer> names;
 	private final BlockingQueue<Message> messageQ;
@@ -30,7 +30,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 	private boolean isRun = true;
 	private int messageSqeuence = 0;
 	public int setID = 0;
-	
+
 	public Channel(String name) {
 		// TODO Auto-generated constructor stub
 		this.name = name;
@@ -40,15 +40,15 @@ public class Channel implements Comparable<Channel>, Runnable {
 		changes = new HashMap<Integer, Channel.LinkSequence>();
 		messageQ = new LinkedBlockingQueue<Message>();
 	}
-	
+
 	public synchronized void enqueue(Message message) {
 		messageQ.offer(message);
 	}
-	
+
 	public ArrayList<User> getUsers() {
 		return users;
 	}
-	
+
 	/**
 	 * Server 클레스에서만 호출 할것.
 	 * 
@@ -58,31 +58,26 @@ public class Channel implements Comparable<Channel>, Runnable {
 	public static void setMessageProcessor(MessageProcessor messageProcessor) {
 		Channel.messageProcessor = messageProcessor;
 	}
-	
-	/*	
-	public synchronized void add(User user) {
-		if (!names.contains(user.getName())) {
-			names.add(user.getName());
-			users.add(user);
-		}
-	}
-	*/
+
 	/*
-	public Queue<Message> getMessageQ() {
-		return messageQ;
-	}
-	*/
+	 * public synchronized void add(User user) { if
+	 * (!names.contains(user.getName())) { names.add(user.getName());
+	 * users.add(user); } }
+	 */
+	/*
+	 * public Queue<Message> getMessageQ() { return messageQ; }
+	 */
 
 	public String getName() {
 		return name;
 	}
-	
+
 	@Override
 	public int compareTo(Channel o) {
 		// TODO Auto-generated method stub
 		return 0;
 	}
-	
+
 	private void send(Message message) {
 		log("Send", message);
 		Send send;
@@ -90,33 +85,36 @@ public class Channel implements Comparable<Channel>, Runnable {
 			send = (Send) message;
 		else
 			return;
-		
+
 		if (users.size() > 1) {
 			send.setSeq(messageSqeuence++);
 			users.get(1).send(send);
 		}
 	}
-	
-	private void join(Join message) {
-		AddSequence temp = new AddSequence(message, setID);
+
+	private void join(Join join) {
+		AddSequence temp = new AddSequence(join, setID);
 		changes.put(setID, temp);
-		setID++; // sync 안됨 다른걸로 수정요함.
-		temp.next(message);
-		
+		setID++; // sync 안됨 다른걸로 수정요함.. 필요없음 공유 자원이 아님.
+		temp.next(join);
+
 	}
-	
-	private void exit(Exit message) {
+
+	private void exit(Exit exit) {
 		//
-		
 		if (users.size() <= 1) {
-			log("삭제", message);
+			log("삭제", exit);
 		}
+		ChangeSequence temp = new ChangeSequence(exit, setID);
+		changes.put(setID, temp);
+		setID++;
+		temp.next(exit);
 	}
-	
+
 	private void set(Set message) {
 		//
 	}
-	
+
 	private void success(Success message) {
 		log("success",message);
 		LinkSequence sequence = changes.get(message.getSequence());
@@ -130,7 +128,7 @@ public class Channel implements Comparable<Channel>, Runnable {
 			changes.remove(message.getSequence());
 		}
 	}
-	
+
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -168,18 +166,18 @@ public class Channel implements Comparable<Channel>, Runnable {
 			}
 		}
 	}
-	
+
 	/*-----------------------------LinkSequence---------------------------------*/
 	static final TYPE CHILD = TYPE.FAMILY_CHILD;
 	static final TYPE PARENT = TYPE.FAMILY_PARENT;
 	Channel channel = this;
-	
+
 	abstract class LinkSequence {
 		/** 순차적으로 진행하기 위한 작업 번호. */
 		int sequence = 0;
 		/** 생성된 오브젝트의 식별자 */
 		int id = 0;
-		
+
 		/**
 		 * User 의 부모 자식 설정.
 		 * 
@@ -188,51 +186,51 @@ public class Channel implements Comparable<Channel>, Runnable {
 		 * @return 시퀀스의 종료시 true
 		 */
 		abstract boolean next(Message message);
-		
+
 		public LinkSequence(int id) {
 			// TODO Auto-generated constructor stub
 			this.id = id;
 			sequence = 1;
 		}
 	}
-	
+
 	private int getUserIndex(User user) {
-		
+
 		for (int i = 0; i < users.size(); i++) {
 			if (users.get(i) == user)
 				return i;
 		}
 		return -1;
 	}
-	
+
 	@SuppressWarnings("unused")
 	private int getUserIndex(String name) {
 		return getUserIndex(messageProcessor.getUser(name));
 	}
-	
+
 	class AddSequence extends LinkSequence {
-		
+
 		User parent;
 		User added;
 		Join join;
 		int index = 0;
-		
+
 		AddSequence(Join join, int id) {
 			// TODO Auto-generated constructor stub
 			super(id);
 			this.join = join;
 			added = messageProcessor.getUser(join.getNick());
 			if (!names.keySet().contains(added.getName())) {
-				//Channel 에 있는 필드는 공유되지 않음.
+				// Channel 에 있는 필드는 공유되지 않음.
 				index = users.size();
 				users.add(added);
 				names.put(added.getName(), index);
 			} else {
 				sequence = -1;
 			}
-			
+
 		}
-		
+
 		@Override
 		boolean next(Message message) {
 			// TODO Auto-generated method stub
@@ -251,56 +249,58 @@ public class Channel implements Comparable<Channel>, Runnable {
 			}
 			return false;
 		}
-		
+
 		/*
-		 * 1부터 시작. 0 = null
-		 * 부모의 위치 = (자신의 위치)/2;
-		 * 자식의 위치 = (자신의 위치)*2 +(0|1)
+		 * 1부터 시작. 0 = null 부모의 위치 = (자신의 위치)/2; 자식의 위치 = (자신의 위치)*2 +(0|1)
 		 */
 		private void first() {
-			//int index = users.size();
+			// int index = users.size();
 			System.out.println(index);
-			
-			//users.add(added);
+
+			// users.add(added);
 			parent = users.get(index / 2);
 			log("link seq : " + id, added, parent);
-			
+
 			if (parent != null) {
-				parent.send(new Set(name, added.getIP(), CHILD, id));//자식 IP 알림.
+				parent.send(new Set(name, added.getIP(), CHILD, id));// 자식 IP
+																		// 알림.
 				sequence++;
 			} else {
-				added.send(new Set(name, Server.getIP(), PARENT, id)); // 최초사용자 이므로 서버가 부모
+				added.send(new Set(name, Server.getIP(), PARENT, id)); // 최초사용자
+																		// 이므로
+																		// 서버가
+																		// 부모
 				sequence = 100;
-				
+
 			}
 		}
-		
+
 		private void second(Message message) {
 			if (message.getType() == TYPE.SUCCESS) {
 				added.send(new Set(name, parent.getIP(), PARENT, id));
 				sequence = 100;
 			} else {
-				//현제는 성공하는것만 가정하겠음..
-				//first();
+				// 현제는 성공하는것만 가정하겠음..
+				// first();
 			}
 		}
-		
+
 		private void last(Message message) {
-			
+
 			if (message.getType() == TYPE.SUCCESS) {
-				
+
 				changes.remove(id);
 				added.add(channel);
 				send(join);
 				log("join 성공", added);
 			} else {
 				//
-				//first();
+				// first();
 			}
-			
+
 		}
 	}
-	
+
 	/**
 	 * 나중에 사용함. 지금은 바꾸는거 생각하지말자.
 	 * 
@@ -308,119 +308,164 @@ public class Channel implements Comparable<Channel>, Runnable {
 	 * 
 	 */
 	class ChangeSequence extends LinkSequence {
-		//exit한놈의 부모
+		// exit 한놈의 부모
 		User parent;
-		//움직일 유저
+		// 움직일 유저
 		User moveUser;
-		//exit 한놈의 자식들
+		// exit 한놈의 자식들
 		User child1;
 		User child2;
-		//moveUser의 원래 부모
+		// moveUser의 원래 부모
 		User parentOfMove;
-		//exit한 유저
+		// exit한 유저
 		User removedUser;
-		//exit 한놈의 인덱스
+		// exit 한놈의 인덱스
 		int dstIndex;
-		//종료 메세지
+		// 종료 메세지
 		Exit exit;
-		
+
 		public ChangeSequence(Exit exit, int sequence) {
 			// TODO Auto-generated constructor stub
 			super(sequence);
-			
+
 			this.exit = exit;
 			removedUser = messageProcessor.getUser(exit.getNick());
-			//users 의 마지막 인덱스 moveUser의 원래위치
+			// users 의 마지막 인덱스 moveUser의 원래위치
 			int srcIndex = users.size() - 1;
 			moveUser = users.remove(srcIndex);
 			parentOfMove = users.get(srcIndex / 2);
 			dstIndex = getUserIndex(removedUser);
-			
-		}
-		
-		@Override
-		synchronized boolean next(Message message) {
-			// TODO Auto-generated method stub
-			switch (sequence) {
-				case 0:
-					break;
-				default:
-					return true;
-			}
-			return false;
-		}
-		
-		void first() {
+
 			users.set(dstIndex, moveUser);
 			removedUser.remove(channel);
-			
+
 			parent = users.get(dstIndex / 2);
-			
+
 			if ((dstIndex * 2) < users.size()) {
 				child1 = users.get(dstIndex * 2);
 			}
 			if ((dstIndex * 2 + 1) < users.size()) {
 				child2 = users.get(dstIndex * 2 + 1);
 			}
-			// moveUser 을 부모로부터 때네는 작업.
-			parentOfMove.send(new Set(channel.name, moveUser.getIP(), "", CHILD, sequence));
-			
-			// moveUser 의 부모를 parent로 설정.
-			
-			// parent 의 자식remove를 지우고 moveUser로 변경
-			
-			//child1,2 의 부모를 moveUser로 변경
-			//moveUser의 자식을 child1,2로 설정
 		}
-		
+
+		@Override
+		synchronized boolean next(Message message) {
+			// TODO Auto-generated method stub
+			switch (sequence) {
+				case 1:
+					first();
+					break;
+				case 2:
+					second(message);
+					break;
+				case 3:
+					third(message);
+					break;
+				case 4:
+					fourth(message);
+					break;
+				case 5:
+					fifth(message);
+					break;
+				case 6:
+					sixth(message);
+					break;
+				case 7:
+					seventh(message);
+					break;
+				case 100:
+					last(message);
+					break;
+				default:
+					return true;
+			}
+			return false;
+		}
+
+		void first() {
+			parentOfMove.send(new Set(channel.name, moveUser.getIP(), "0.0.0.0", CHILD, sequence));
+			if (parent == null) {
+				sequence += 2;
+			} else {
+				sequence++;
+			}
+		}
+
 		void second(Message message) {
 			if (message.getType() == TYPE.SUCCESS) {
 				// moveUser 을 부모로부터 때네는 작업. 성공
 				// parent 에 자식을 설정.
 				parent.send(new Set(channel.name, removedUser.getIP(), moveUser.getIP(), CHILD, sequence));
+				sequence++;
 			}
 		}
-		
+
 		void third(Message message) {
 			if (message.getType() == TYPE.SUCCESS) {
-				//parent 에 moveUser을 자식으로 설정 성공
+				// parent 에 moveUser을 자식으로 설정 성공
 				// moveUser에 부모을 parent로 설정
-				moveUser.send(new Set(channel.name, "-", parent.getIP(), PARENT, sequence));
+				if (parent != null) {
+					moveUser.send(new Set(channel.name, parent.getIP(), PARENT, sequence));
+				} else {
+					moveUser.send(new Set(channel.name, Server.getIP(), PARENT, sequence));
+				}
+				if (child1 != null) {
+					sequence++;
+				} else {
+					sequence = 100;
+				}
 			}
 		}
-		
+
 		void fourth(Message message) {
 			if (message.getType() == TYPE.SUCCESS) {
-				// moveUser에 부모을 parent로 설정 성공
-				if (child1 != null) {
-					moveUser.send(new Set(channel.name, child1.getIP(), CHILD, sequence));
-				}
-				if (child2 != null) {
-					moveUser.send(new Set(channel.name, child2.getIP(), CHILD, sequence));
-				}
+				// child1 설정 1
+				moveUser.send(new Set(channel.name, child1.getIP(), CHILD, sequence));
+				sequence++;
 			}
 		}
-		
+
 		void fifth(Message message) {
 			if (message.getType() == TYPE.SUCCESS) {
-				//moveUser 각각의 자식들을 설정 성공
-				if (child1 != null) {
-					child1.send(new Set(channel.name, moveUser.getIP(), PARENT, sequence));
-				}
+				// child1 설정 2
+				child1.send(new Set(channel.name, moveUser.getIP(), PARENT, sequence));
+
 				if (child2 != null) {
-					child2.send(new Set(channel.name, moveUser.getIP(), PARENT, sequence));
+					sequence++;
+				} else {
+					sequence = 100;
 				}
+
 			}
 		}
-		
+
 		void sixth(Message message) {
 			if (message.getType() == TYPE.SUCCESS) {
-				//끝			
+				// child2 설정 1
+				moveUser.send(new Set(channel.name, child2.getIP(), CHILD, sequence));
+				sequence++;
 			}
 		}
-		
+
+		void seventh(Message message) {
+			if (message.getType() == TYPE.SUCCESS) {
+				// child2 설정 2
+				child2.send(new Set(channel.name, moveUser.getIP(), PARENT, sequence));
+				sequence = 100;
+			}
+		}
+
+		void last(Message message) {
+			if (message.getType() == TYPE.SUCCESS) {
+				changes.remove(id);
+				send(exit);
+				log("exit 성공", removedUser);
+			}
+		}
+
 	}
-	
+
 	private void log(Object... logs) {
 		System.out.println("CH " + name);
 		for (Object log : logs)
