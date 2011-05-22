@@ -61,7 +61,7 @@ public class Childs implements Runnable {
 		
 		try {
 			forChildSocket = new ServerSocket(myPort);
-			forChildSocket.setSoTimeout(5000);
+			// forChildSocket.setSoTimeout(5000);
 			
 			this.acceptChildIP = acceptChildIP;
 			this.openSequence = openSequence;
@@ -95,7 +95,7 @@ public class Childs implements Runnable {
 		if (childList.containsKey(closeChildIP)) {
 			try {
 				forChildSocket = new ServerSocket(myPort);
-				forChildSocket.setSoTimeout(5000);
+				// forChildSocket.setSoTimeout(5000);
 				
 				this.acceptChildIP = acceptChildIP;
 				this.closeChildIP = closeChildIP;
@@ -283,12 +283,14 @@ public class Childs implements Runnable {
 			
 			forChildSocket.close();
 		}
+		/*
 		catch (SocketTimeoutException e) {
 			e.printStackTrace();
 			isWait = false;
 			
 			debug("접속 제한 시간 초과");
 		}
+		*/
 		catch (IOException e) {
 			e.printStackTrace();
 			isWait = false;
