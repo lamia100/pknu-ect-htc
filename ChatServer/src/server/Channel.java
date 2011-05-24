@@ -79,11 +79,10 @@ public class Channel implements Comparable<Channel>, Runnable {
 	}
 
 	private void send(Message message) {
-		log("Send", message);
-		Send send=null;
+		log("Methode Send", message);
 		if (message.getType() == TYPE.SEND){
-			send = (Send) message;
-			send.setSeq(messageSqeuence++);
+			((Send) message).setSeq(messageSqeuence);
+			messageSqeuence++;
 		}
 		
 		if (users.size() > 1) {
