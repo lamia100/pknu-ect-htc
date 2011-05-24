@@ -400,11 +400,6 @@ public class Childs implements Runnable {
 			return childIP;
 		}
 		
-		@SuppressWarnings("unused")
-		public boolean isConnect() {
-			return this.isService;
-		}
-		
 		// ------------------------------------------------- S E N D -------------------------------------------------
 		
 		/**

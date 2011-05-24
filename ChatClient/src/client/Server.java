@@ -99,10 +99,6 @@ public class Server implements Runnable {
 		return serverIP;
 	}
 	
-	public boolean isConnect() {
-		return isService;
-	}
-	
 	public Socket getToServerSocket() {
 		return toServerSocket;
 	}

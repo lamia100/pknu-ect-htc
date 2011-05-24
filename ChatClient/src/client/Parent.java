@@ -110,10 +110,6 @@ public class Parent implements Runnable {
 		return parentIP;
 	}
 	
-	public boolean isConnect() {
-		return isService;
-	}
-	
 	// ------------------------------------------------- S E N D -------------------------------------------------
 	
 	/**
