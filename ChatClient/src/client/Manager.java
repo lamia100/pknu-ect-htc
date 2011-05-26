@@ -2,6 +2,8 @@ package client;
 
 import gui.GUI;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.BlockingQueue;
@@ -15,6 +17,7 @@ public class Manager implements Runnable {
 	private Map<String, Channel> channelList;
 	
 	private Server connectServer;
+	private ServerSocket forChildSocket;
 	
 	private String nickName;
 	private GUI gui;
@@ -61,7 +64,16 @@ public class Manager implements Runnable {
 			result = connectServer.joinChannel(ALL, nickName);
 			
 			if (result) {
-				new Thread(this).start();
+				try {
+					forChildSocket = new ServerSocket(DEFAULT_PORT);
+					
+					new Thread(this).start();
+				}
+				catch (IOException e) {
+					e.printStackTrace();
+					
+					result = false;
+				}
 			}
 		}
 		
@@ -81,6 +93,13 @@ public class Manager implements Runnable {
 		
 		for (Channel ch : channelList.values()) {
 			ch.disconnectChannel();
+		}
+		
+		try {
+			forChildSocket.close();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
 		}
 		
 		connectServer.exitChannel(ALL, nickName);
@@ -197,7 +216,7 @@ public class Manager implements Runnable {
 			}
 			else {
 				if (set.getFamily() == TYPE.FAMILY_PARENT && !"".equals(set.getDstip())) {					
-					Channel newChannel = new Channel(connectServer, set.getChannel(), nickName, gui);
+					Channel newChannel = new Channel(connectServer, forChildSocket, set.getChannel(), nickName, gui);
 					
 					if (newChannel.connectParent(set.getDstip(), DEFAULT_PORT, set.getSequence())) {
 						channelList.put(set.getChannel(), newChannel);

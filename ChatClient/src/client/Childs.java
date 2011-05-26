@@ -17,7 +17,6 @@ import static util.Definition.*;
 
 public class Childs implements Runnable {
 	private Channel connectChannel;
-	private int myPort;
 	
 	private ServerSocket forChildSocket;
 	private Map<String, Child> childList;
@@ -39,11 +38,11 @@ public class Childs implements Runnable {
 		}
 	}
 	
-	public Childs(Channel connectChannel, int myPort) {
+	public Childs(Channel connectChannel, ServerSocket forChildSocket, int myPort) {
 		childList = new HashMap<String, Childs.Child>();
 		
 		this.connectChannel = connectChannel;
-		this.myPort = myPort;
+		this.forChildSocket = forChildSocket;
 		
 		acceptChildIP = null;
 		closeChildIP = null;
@@ -54,33 +53,17 @@ public class Childs implements Runnable {
 	 * 자식을 받을 서버 소켓을 준비하고 쓰레드로 돌림, 실질적인 초기화를 담당
 	 * @param acceptChildIP
 	 * @param openSequence
-	 * @return 준비 성공 여부, 성공이라면 쓰레드로 돌아감
+	 * @return 의미 없음
 	 */
 	public boolean readyForChild(String acceptChildIP, int openSequence) {
-		boolean result = false;
+		this.acceptChildIP = acceptChildIP;
+		this.openSequence = openSequence;
+			
+		new Thread(this).start();
+			
+		debug("받을 준비", true);
 		
-		try {
-			if (forChildSocket == null) {
-				forChildSocket = new ServerSocket(myPort);
-			}
-			
-			this.acceptChildIP = acceptChildIP;
-			this.openSequence = openSequence;
-			
-			new Thread(this).start();
-			
-			result = true;
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-			
-			this.acceptChildIP = null;
-			openSequence = -1;
-		}
-		
-		debug("받을 준비", result);
-		
-		return result;
+		return true;
 	}
 	
 	/**
@@ -94,26 +77,13 @@ public class Childs implements Runnable {
 		boolean result = false;
 		
 		if (childList.containsKey(closeChildIP)) {
-			try {
-				if (forChildSocket == null) {
-					forChildSocket = new ServerSocket(myPort);
-				}
+			this.acceptChildIP = acceptChildIP;
+			this.closeChildIP = closeChildIP;
+			this.openSequence = openSequence;
 				
-				this.acceptChildIP = acceptChildIP;
-				this.closeChildIP = closeChildIP;
-				this.openSequence = openSequence;
+			new Thread(this).start();
 				
-				new Thread(this).start();
-				
-				result = true;
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-				
-				this.acceptChildIP = null;
-				this.closeChildIP = null;
-				openSequence = -1;
-			}
+			result = true;
 		}
 		else {
 			debug("자식 리스트에 연결을 해제할 자식이 없습니다. / SRC IP 불일치");

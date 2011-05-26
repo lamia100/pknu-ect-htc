@@ -2,6 +2,7 @@ package client;
 
 import gui.GUI;
 
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -17,6 +18,8 @@ public class Channel implements Runnable {
 	private Server connectServer;
 	private Parent connectParent;
 	private Childs connectChilds;
+	
+	private ServerSocket forChildSocket;
 	
 	private String channel;
 	private String nickName;
@@ -38,12 +41,13 @@ public class Channel implements Runnable {
 		}
 	}
 	
-	public Channel(Server connectServer, String channel, String nickName, GUI gui) {
+	public Channel(Server connectServer, ServerSocket forChildSocket, String channel, String nickName, GUI gui) {
 		familyPacketQueue = new LinkedBlockingQueue<Packet>();
 		msgList = new ArrayList<Send>();
 		msgOffset = 0;
 		
 		this.connectServer = connectServer;
+		this.forChildSocket = forChildSocket;
 		this.channel = channel;
 		this.nickName = nickName;
 		this.gui = gui;
@@ -83,7 +87,7 @@ public class Channel implements Runnable {
 		boolean result = connectParent.loginParent();
 		
 		if (result) {			
-			connectChilds = new Childs(this, DEFAULT_PORT);
+			connectChilds = new Childs(this, forChildSocket, DEFAULT_PORT);
 			
 			new Thread(this).start();
 			
