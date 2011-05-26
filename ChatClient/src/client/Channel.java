@@ -129,12 +129,12 @@ public class Channel implements Runnable {
 			break;
 		case JOIN:
 			Join join = (Join)msg;
-			gui.dspMsg(join.getChannel(), join.getNick(), "이(가) 접속하였습니다.");
+			gui.dspMsg(join.getChannel(), join.getNick(), "이(가) 접속하였습니다.\n");
 			
 			break;
 		case EXIT:
 			Exit exit = (Exit)msg;
-			gui.dspMsg(exit.getChannel(), exit.getNick(), "이(가) 나가셨습니다.");
+			gui.dspMsg(exit.getChannel(), exit.getNick(), "이(가) 나가셨습니다.\n");
 			
 			break;
 		}
