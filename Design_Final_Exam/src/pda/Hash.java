@@ -9,6 +9,7 @@ public class Hash implements Iterable<Integer> {
 	private MyLinkedList<Pair> hashTable[];
 	private int count;
 	
+	@SuppressWarnings("unchecked")
 	public Hash() {
 		hashTable = new MyLinkedList[100];
 		count = 0;
