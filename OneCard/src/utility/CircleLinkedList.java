@@ -1,29 +1,54 @@
 package utility;
 
-import player.Player;
-
 public class CircleLinkedList<T> {
-	private Node<T> headNode;
+	private Node<T> currentNode;
 	private int count = 0;
 
+	
+	
 	public void add(T element) {
 		if (count == 0) {
-			headNode = new Node<T>(element);
+			currentNode = new Node<T>(element);
 		} else if (count == 1) {
-			new Node<T>(element, headNode, headNode);
+			new Node<T>(element, currentNode, currentNode);
 		} else {
-			new Node<T>(element, headNode.getPrev(), headNode);
+			new Node<T>(element, currentNode.getPrev(), currentNode);
 		}
 		
 		count++;
 	}
-
-	public Node<T> remove(Player player) {
+	
+	public T remove(){
+		if(currentNode==null){
+			return null;
+		}
+		count--;
+		Node<T> prev=currentNode.getPrev();
+		Node<T> next=currentNode.getNext();
+		T result=currentNode.getElement();
+		if(prev==currentNode){
+			currentNode=null;
+			return result;
+		}
+		prev.setNext(next);
+		next.setPrev(prev);
+		currentNode=next;
+		return result;
+	}
+	
+	public Node<T> remove(T e) {
 		return null;
 	}
 
 	public Node<T> getHead() {
-		return headNode;
+		return currentNode;
+	}
+	public T getElement(){
+		return currentNode.getElement();
+	}
+	public T getNext(){
+		currentNode=currentNode.getNext();
+		return currentNode.getElement();
 	}
 
 	public int size() {
