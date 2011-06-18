@@ -4,6 +4,11 @@ public class CircleLinkedList<T> {
 	private Node<T> currentNode;
 	private int count = 0;
 
+	public CircleLinkedList() {
+		currentNode = null;
+		count = 0;
+	}
+	
 	public void add(T element) {
 		if (count == 0) {
 			currentNode = new Node<T>(element);

@@ -1,9 +1,10 @@
 package data;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
-public class Deck {
+public class Deck implements Iterable<Card> {
 	private ArrayList<Card> deck;
 	private Random rand;
 
@@ -32,6 +33,10 @@ public class Deck {
 			return null;
 		}
 		
+		if (size() == 1) {
+			return deck.remove(0);
+		}
+		
 		// System.out.println(deck.size());
 		
 		return deck.remove(rand.nextInt(deck.size() - 1));
@@ -49,5 +54,10 @@ public class Deck {
 	
 	public int size() {
 		return deck.size();
+	}
+
+	@Override
+	public Iterator<Card> iterator() {
+		return deck.iterator();
 	}
 }
