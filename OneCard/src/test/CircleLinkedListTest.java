@@ -2,7 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 
-import org.junit.*;
+import org.junit.Test;
 
 public class CircleLinkedListTest {
 
@@ -17,6 +17,16 @@ public class CircleLinkedListTest {
 	}
 
 	@Test
+	public void testGetHead() {
+		fail("아직 구현되지 않음");
+	}
+
+	@Test
+	public void testGetElement() {
+		fail("아직 구현되지 않음");
+	}
+
+	@Test
 	public void testGetNext() {
 		fail("아직 구현되지 않음");
 	}
@@ -25,4 +35,10 @@ public class CircleLinkedListTest {
 	public void testGetPrev() {
 		fail("아직 구현되지 않음");
 	}
+
+	@Test
+	public void testSize() {
+		fail("아직 구현되지 않음");
+	}
+
 }
