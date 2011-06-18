@@ -152,6 +152,14 @@ public class Card implements Comparable<Card>, Serializable {
 		return ability;
 	}
 
+	public int getSuit() {
+		return suit;
+	}
+
+	public int getPips() {
+		return pips;
+	}
+
 	public String getFrontImage() {
 		return front;
 	}
@@ -162,7 +170,7 @@ public class Card implements Comparable<Card>, Serializable {
 
 	@Override
 	public int compareTo(Card o) {
-		return suit * 1000 + pips - o.suit * 1000 - o.pips;
+		return (suit * 1000 + pips) - (o.suit * 1000 + o.pips);
 	}
 
 	public String toString() {
