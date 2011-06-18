@@ -1,9 +1,5 @@
 package test;
 
-import static org.junit.Assert.*;
-
-import javax.swing.JOptionPane;
-
 import junit.framework.Assert;
 
 import main.CardLabel;

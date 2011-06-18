@@ -33,6 +33,7 @@ public class Manager {
 			playerList.add(temp);
 		}
 		
+		// 플레이어당 7장씩 패 돌림
 		for (int k = 0; k < usercount; k++) {
 			for (int i = 0; i < 7; i++) {
 				currentPlayer.getElement().addCard(deck.getCard());
@@ -49,14 +50,6 @@ public class Manager {
 		} else {
 			addCard(cl1.getCard());
 		}
-	}
-
-	public int getState() {
-		return attackcount;
-	}
-
-	public Card getOpenCard() {
-		return openCard.getCard();
 	}
 
 	public void addCard(Card c1) {
@@ -84,6 +77,14 @@ public class Manager {
 			
 			feedCard();
 		}
+	}
+	
+	public int getState() {
+		return attackcount;
+	}
+
+	public Card getOpenCard() {
+		return openCard.getCard();
 	}
 
 	private void feedCard() {
