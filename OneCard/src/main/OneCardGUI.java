@@ -8,6 +8,8 @@ import data.Card;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
+import java.util.List;
+
 import player.Player;
 import java.awt.Dimension;
 import java.awt.Rectangle;
@@ -281,5 +283,12 @@ public class OneCardGUI extends JFrame implements MouseListener,Player{
 	@Override
 	public int getHandSize() {
 		return hand.size();
+	}
+	@Override
+	public List<Card> gethand() {
+		// TODO Auto-generated method stub
+		JOptionPane.showMessageDialog(this, "졌습니다.");
+		System.exit(0);
+		return null;
 	}
 } 

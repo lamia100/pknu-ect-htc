@@ -1,5 +1,7 @@
 package main;
 
+import java.util.List;
+
 import javax.swing.JOptionPane;
 
 import org.apache.log4j.*;
@@ -9,8 +11,8 @@ import data.*;
 
 public class Manager {
 	private static Logger logger = Logger.getLogger(Manager.class);
-	
-	private Node<Player> currentPlayer;
+
+	private Player currentPlayer;
 	private Deck deck;
 	private CircleLinkedList<Player> playerList;
 	private int attackcount = 0;
@@ -22,7 +24,7 @@ public class Manager {
 	public Manager(OneCardGUI user, int usercount) {
 		this.user = user;
 		this.openCard = user.getOpenCardLabel();
-		
+
 		initialize(user, usercount);
 	}
 
@@ -30,29 +32,29 @@ public class Manager {
 		deck = new Deck();
 		playerList = new CircleLinkedList<Player>();
 		playerList.add(user);
-		currentPlayer = playerList.getHead();
-		
+		currentPlayer = playerList.getElement();
+
 		for (int i = 1; i < usercount; i++) {
 			Computer temp = new Computer(this, "컴퓨터" + i);
 			// temp.start();
 			playerList.add(temp);
 		}
-		
+
 		// 플레이어당 7장씩 패 돌림
 		for (int k = 0; k < usercount; k++) {
 			for (int i = 0; i < 7; i++) {
-				currentPlayer.getElement().addCard(deck.getCard());
-				currentPlayer = currentPlayer.getNext();
+				currentPlayer.addCard(deck.getCard());
+				currentPlayer = playerList.getNext();
 			}
 		}
-		
+
 		logger.info("게임 초기화가 완료되었습니다.");
 		logger.info("===== 유저의 턴입니다. =====");
 	}
 
 	public void addCardLabel(CardLabel cl1) {
 		user.repaintUserCard();
-		
+
 		if (cl1 == null) {
 			addCard(null);
 		} else {
@@ -62,32 +64,32 @@ public class Manager {
 
 	public void addCard(Card c1) {
 		if (playerList.size() == 1) {
-			winner(currentPlayer.getElement());
+			winner(currentPlayer);
 		}
-		
-		currentPlayer.getElement().setTurn(false);
-		
+
+		currentPlayer.setTurn(false);
+
 		// System.out.println(c1 + " : " + currentPlayer.getElement());
-		
+
 		if (c1 != null) {
 			logger.info(c1 + "를 냈습니다.");
-			
+
 			deck.add(openCard.getCard());
 			openCard.setCard(c1);
-			
-			if (currentPlayer.getElement().isEmpty()) {
-				winner(currentPlayer.getElement());
+
+			if (currentPlayer.isEmpty()) {
+				winner(currentPlayer);
 			}
-			
+
 			checkCardAbility(c1);
 		} else {
 			// System.out.println("카드를 먹습니다. 처묵처묵");
 			logger.info("카드를 내지 못했습니다.");
-			
+
 			feedCard();
 		}
 	}
-	
+
 	public int getState() {
 		return attackcount;
 	}
@@ -100,43 +102,29 @@ public class Manager {
 		if (attackcount == 0) {
 			attackcount = 1;
 		}
-		
+
 		logger.info("가져가야 할 카드는 총 " + attackcount + "장입니다.");
-		
-		for (int i = 0; i < attackcount; i++) {
-			Card fromDeck = deck.getCard();
-			
-			// 덱이 비었을 때 플레이어들이 가지고있는 카드 개수를 비교하여 승리자 선출 - 시작
-			if (fromDeck == null) {
-				int minHandSize = Integer.MAX_VALUE;
-				Player minPlayer = null;
-				
-				for (Player player : playerList) {
-					int playerHandSize = player.getHandSize();
-					
-					logger.info(player + "가 가지고있는 카드의 개수는 " + playerHandSize + "개 입니다.");
-					
-					if (playerHandSize < minHandSize) {
-						minHandSize = playerHandSize;
-						minPlayer = player;
-					}
-				}
-				
-				winner(minPlayer);
-				
-				return;
-			}
-			// 덱이 비었을 때 플레이어들이 가지고있는 카드 개수를 비교하여 승리자 선출 - 끝
-			
-			currentPlayer.getElement().addCard(fromDeck);
+
+		if (currentPlayer.getHandSize() + attackcount > 20) {
+			logger.info(currentPlayer + "는 파산했습니다.");
+			playerList.remove();
+			deck.addAll(currentPlayer.gethand());
+			currentPlayer = playerList.getElement();
+			attackcount = 0;
+			nextTurn();
+			return;
 		}
-		
+
+		for (int i = 0; i < attackcount; i++) {
+			currentPlayer.addCard(deck.getCard());
+		}
+
 		attackcount = 0;
-		
-		if (currentPlayer.getElement().equals(user)) {
+
+		if (currentPlayer.equals(user)) {
 			user.repaintUserCard();
 		}
-		
+
 		nextTurn();
 	}
 
@@ -149,15 +137,15 @@ public class Manager {
 
 	public void checkCardAbility(Card c1) {
 		// System.out.println(c1.getAbility());
-		
+
 		if (c1.getAbility() < 1) {
 			nextTurn();
 		} else if (c1.getAbility() < Card.Ability.Attack) {
 			this.attackcount += c1.getAbility();
-			
+
 			// System.out.println("공격점수" + attackcount);
 			logger.info(c1 + "의 공격점수는 " + attackcount + "장 입니다.");
-			
+
 			nextTurn();
 		} else if (c1.getAbility() == Card.Ability.Jump) {
 			jump();
@@ -173,59 +161,59 @@ public class Manager {
 	private void jump() {
 		// System.out.println("점프");
 		logger.info("점프하였습니다.");
-		
+
 		if (direction) {
-			currentPlayer = currentPlayer.getNext();
+			currentPlayer = playerList.getNext();
 		} else {
-			currentPlayer = currentPlayer.getPrev();
+			currentPlayer = playerList.getPrev();
 		}
-		
+
 		nextTurn();
 	}
 
 	private void oneMore() {
 		// System.out.println("한번더");
 		logger.info("한번 더 플레이합니다.");
-		
-		currentPlayer.getElement().setTurn(true);
+
+		currentPlayer.setTurn(true);
 	}
 
 	private void revers() {
 		// System.out.println("반대로");
 		logger.info("반대 방향으로 턴이 진행됩니다.");
-		
+
 		direction = !direction;
-		
+
 		nextTurn();
 	}
 
 	private void suitChange() {
 		deck.add(openCard.getCard());
-		int k = currentPlayer.getElement().suitChange();
-		
+		int k = currentPlayer.suitChange();
+
 		// System.out.println("SuitChange : " + k);
-		
+
 		Card temp = new Card(k, 7);
 		temp.setFake();
 		openCard.setCard(temp);
-		
+
 		// System.out.println("SuitChange : " + openCard.getCard());
 		logger.info("낼 수 있는 조건이 " + openCard.getCard() + "로 변경되었습니다.");
-		
+
 		nextTurn();
 	}
 
 	private void nextTurn() {
 		if (direction) {
-			currentPlayer = currentPlayer.getNext();
+			currentPlayer = playerList.getNext();
 		} else {
-			currentPlayer = currentPlayer.getPrev();
+			currentPlayer = playerList.getPrev();
 		}
-		
+
 		// System.out.println("턴 : " + currentPlayer.getElement());
 		logger.info("===== 턴이 종료되었습니다. =====");
-		logger.info("===== " + currentPlayer.getElement() + "의 턴입니다. =====");
-		
-		currentPlayer.getElement().setTurn(true);
+		logger.info("===== " + currentPlayer + "의 턴입니다. =====");
+
+		currentPlayer.setTurn(true);
 	}
 }

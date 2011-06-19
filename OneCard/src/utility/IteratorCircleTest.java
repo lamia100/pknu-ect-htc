@@ -15,24 +15,19 @@ public class IteratorCircleTest {
 	}
 
 	@Test
-	public void testHasNext() {
+	public void testIteratorx() {
 		CircleLinkedList<Integer> list=new CircleLinkedList<Integer>();
 		
-		for(int i=0;i<3;i++){
+		for(int i=0;i<10;i++){
 			list.add(i);
 		}
 		int count =0;
 		for(Integer i:list){
 			assertTrue(count==i);
 			count++;
-			System.out.println(i);
 		}
 		
 	}
 
-	@Test
-	public void testNext() {
-		fail("아직 구현되지 않음");
-	}
 
 }

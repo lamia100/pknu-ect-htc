@@ -1,6 +1,7 @@
 package player;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import org.apache.log4j.*;
 import main.Manager;
@@ -91,5 +92,11 @@ public class Computer implements Player {
 	@Override
 	public int getHandSize() {
 		return hand.size();
+	}
+	
+	@Override
+	public List<Card> gethand() {
+		// TODO Auto-generated method stub
+		return hand;
 	}
 }

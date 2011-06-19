@@ -1,5 +1,7 @@
 package player;
 
+import java.util.List;
+
 import data.*;
 
 public interface Player {
@@ -9,4 +11,5 @@ public interface Player {
 	public boolean isEmpty();
 	public int suitChange();
 	public int getHandSize();
+	public List<Card> gethand();
 }

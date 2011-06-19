@@ -1,6 +1,7 @@
 package data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -66,6 +67,10 @@ public class Deck implements Iterable<Card> {
 		}
 	}
 
+	public boolean addAll(Collection<? extends Card> c)
+	{
+		return deck.addAll(c);
+	}
 	public boolean isEmpty() {
 		return deck.isEmpty();
 	}

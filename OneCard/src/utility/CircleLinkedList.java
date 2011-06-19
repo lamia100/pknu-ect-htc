@@ -47,7 +47,7 @@ public class CircleLinkedList<T> implements Iterable<T> {
 
 		prev.setNext(next);
 		next.setPrev(prev);
-		currentNode = next;
+		//currentNode = next;
 
 		logger.info(result + " 가 삭제되었습니다.");
 
