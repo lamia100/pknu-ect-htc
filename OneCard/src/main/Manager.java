@@ -111,10 +111,14 @@ public class Manager {
 				int minHandSize = Integer.MAX_VALUE;
 				Player minPlayer = null;
 				
-				for (Player target : playerList) {
-					if (target.getHandSize() < minHandSize) {
-						minHandSize = target.getHandSize();
-						minPlayer = target;
+				for (Player player : playerList) {
+					int playerHandSize = player.getHandSize();
+					
+					logger.info(player + "가 가지고있는 카드의 개수는 " + playerHandSize + "개 입니다.");
+					
+					if (playerHandSize < minHandSize) {
+						minHandSize = playerHandSize;
+						minPlayer = player;
 					}
 				}
 				
