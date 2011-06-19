@@ -37,9 +37,9 @@ public class Deck implements Iterable<Card> {
 
 	public Card getCard() {
 		if (isEmpty()) {
-			JOptionPane.showMessageDialog(null, "덱에 카드가 없습니다. 게임이 종료되었습니다.");
-			logger.info("덱에 카드가 없습니다. 게임이 종료되었습니다.");
-			System.exit(1);
+			// JOptionPane.showMessageDialog(null, "덱에 카드가 없습니다. 게임이 종료되었습니다.");
+			logger.info("덱에 카드가 없습니다.");
+			// System.exit(1);
 			return null;
 		}
 		

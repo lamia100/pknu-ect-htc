@@ -1,8 +1,10 @@
 package utility;
 
+import java.util.Iterator;
+
 import org.apache.log4j.*;
 
-public class CircleLinkedList<T> {
+public class CircleLinkedList<T> implements Iterable<T> {
 	private static Logger logger = Logger.getLogger(CircleLinkedList.class);
 	
 	private Node<T> currentNode;
@@ -77,5 +79,32 @@ public class CircleLinkedList<T> {
 
 	public int size() {
 		return count;
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return new IteratorCircle();
+	}
+	
+	private class IteratorCircle implements Iterator<T> {
+		Node<T> start = currentNode;
+		Node<T> current = currentNode.getNext();
+		
+		@Override
+		public boolean hasNext() {
+			return (start != current);
+		}
+
+		@Override
+		public T next() {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public void remove() {
+			// TODO Auto-generated method stub
+			
+		}
 	}
 }

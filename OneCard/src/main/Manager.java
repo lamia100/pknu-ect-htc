@@ -104,6 +104,18 @@ public class Manager {
 		logger.info("가져가야 할 카드는 총 " + attackcount + "장입니다.");
 		
 		for (int i = 0; i < attackcount; i++) {
+			// --------------------------------------
+			Card fromDeck = deck.getCard();
+			
+			if (fromDeck == null) {
+				Player target = currentPlayer.getElement();
+				
+				// foreach
+				// min 체크
+				// winner
+			}
+			// ---------------------------------
+			
 			currentPlayer.getElement().addCard(deck.getCard());
 		}
 		
