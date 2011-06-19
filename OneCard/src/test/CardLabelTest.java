@@ -1,6 +1,8 @@
 package test;
 
-import junit.framework.Assert;
+import static org.junit.Assert.*;
+
+import java.util.Random;
 
 import main.CardLabel;
 
@@ -12,9 +14,14 @@ public class CardLabelTest {
 
 	@Test
 	public void testCardLabel() {
-		CardLableTestDialog dialog=new CardLableTestDialog(new CardLabel(new Card(Card.Suit.Heart, Card.Pips.Ace)));
-		dialog.setVisible(true);
-		Assert.assertEquals(dialog.result, 1);
+		Random rand = new Random();
+		for (int i = 0; i < 10; i++) {
+			Card card =new Card(rand.nextInt(4) + 1, rand.nextInt(13) + 1);
+			CardLableTestDialog dialog = new CardLableTestDialog(new CardLabel(card));
+			System.out.println(card.getPips()+" "+ card.getSuit());
+			dialog.setVisible(true);
+			assertEquals(dialog.result, 1);
+		}
 	}
 
 }

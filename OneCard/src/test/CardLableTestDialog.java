@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import javax.swing.BoxLayout;
 
 public class CardLableTestDialog extends JDialog {
 	/**
@@ -33,7 +34,7 @@ public class CardLableTestDialog extends JDialog {
 	 * 
 	 */
 	private void initialize() {
-        this.setSize(new Dimension(310, 410));
+        this.setSize(new Dimension(218, 298));
         this.setModal(true);
         this.setContentPane(getJPanel());
 		
@@ -118,13 +119,14 @@ public class CardLableTestDialog extends JDialog {
 //			jLabel = new JLabel();
 //			jLabel.setText("JLabel");
 			jLabel2 = new JLabel();
-			jLabel2.setText(((CardLabel)jLabel).toString());
+			jLabel2.setText(" ");
 			jPanel2 = new JPanel();
 			jPanel2.setLayout(new FlowLayout());
 			jPanel2.add(jLabel, null);
 			jPanel2.add(jLabel2, null);
+			jLabel2.setText(((CardLabel)jLabel).toString() +"가 맞습니까?");
 		}
 		return jPanel2;
 	}
 	
-}  //  @jve:decl-index=0:visual-constraint="38,10"
+}  //  @jve:decl-index=0:visual-constraint="38,122"
