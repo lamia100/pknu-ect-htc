@@ -96,6 +96,7 @@ public class CircleLinkedListTest {
 	@Test
 	public void testIteratorCircle() {
 		CircleLinkedList<Integer> list = new CircleLinkedList<Integer>();
+		@SuppressWarnings("unused")
 		Iterator<Integer> iterator = list.iterator();
 	}
 

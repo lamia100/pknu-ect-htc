@@ -191,9 +191,14 @@ public class OneCardGUI extends JFrame implements MouseListener, Player {
 	}
 	
 	@Override
-	public void mousePressed(MouseEvent e) {}
+	public void mousePressed(MouseEvent e) {
+		// No Operation
+	}
+	
 	@Override
-	public void mouseClicked(MouseEvent e) {}
+	public void mouseClicked(MouseEvent e) {
+		// No Operation
+	}
 
 	private void enableCard() {
 		Card temp_card = null;
