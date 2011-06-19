@@ -31,7 +31,8 @@ public class OneCardGUI extends JFrame implements MouseListener,Player{
 		this.setTitle("JFrame");
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent e) {
-				System.out.println("windowClosing()");
+				// System.out.println("windowClosing()");
+				logger.info("게임을 종료합니다.");
 				System.exit(0);
 			}
 		});
@@ -175,8 +176,10 @@ public class OneCardGUI extends JFrame implements MouseListener,Player{
 	}
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		System.out.println(isTurn);
+		// System.out.println(isTurn);
 		if(isTurn&&((CardLabel)e.getSource()).isEnabled()){
+			logger.info("유저가 GUI를 통해 명령을 내립니다.");
+			
 			new moveCard((CardLabel)e.getSource(),openCardLabel.getLocation()).start();
 			//isTurn=false;
 		}

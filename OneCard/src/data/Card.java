@@ -126,11 +126,11 @@ public class Card implements Comparable<Card>, Serializable {
 
 	public boolean isSameRank(Card c1) {
 		if (suit == c1.suit || pips == c1.pips || c1.suit == Card.Suit.Joker || suit == Card.Suit.Joker) {
-			logger.info(toString() + "과 " + c1 + "은 같은 랭크입니다.");
+			logger.debug(toString() + "과 " + c1 + "은 같은 랭크입니다.");
 			
 			return true;
 		} else {
-			logger.info(toString() + "과 " + c1 + "은 다른 랭크입니다.");
+			logger.debug(toString() + "과 " + c1 + "은 다른 랭크입니다.");
 			
 			return false;
 		}
@@ -142,7 +142,7 @@ public class Card implements Comparable<Card>, Serializable {
 		// c1==opencard
 		if (this.pips == c1.pips) {
 			// 같은 글자(A,2..)일때
-			logger.info(toString() + "과 " + c1 + "은 같은 우선순위입니다.");
+			logger.debug(toString() + "과 " + c1 + "은 같은 우선순위입니다.");
 			
 			return true;
 		} else if (this.priority >= c1.priority) {
@@ -153,16 +153,16 @@ public class Card implements Comparable<Card>, Serializable {
 			boolean result = (this.suit == c1.suit) || (this.suit == Card.Suit.Joker);
 			
 			if (result) {
-				logger.info(toString() + "는 " + c1 + "보다 높은 우선순위입니다.");
+				logger.debug(toString() + "는 " + c1 + "보다 높은 우선순위입니다.");
 			}
 			else {
-				logger.info(toString() + "는 " + c1 + "보다 낮은 우선순위입니다.");
+				logger.debug(toString() + "는 " + c1 + "보다 낮은 우선순위입니다.");
 			}
 			
 			return result;
 		}
 		
-		logger.info(toString() + "는 " + c1 + "보다 낮은 우선순위입니다.");
+		logger.debug(toString() + "는 " + c1 + "보다 낮은 우선순위입니다.");
 		
 		return false;
 	}

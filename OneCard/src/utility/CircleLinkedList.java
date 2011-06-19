@@ -24,7 +24,7 @@ public class CircleLinkedList<T> {
 
 		count++;
 		
-		logger.info(element + " 가 추가되었습니다.");
+		logger.info(element + "가 추가되었습니다.");
 	}
 
 	public T remove() {

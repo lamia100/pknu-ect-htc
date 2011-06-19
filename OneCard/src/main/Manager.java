@@ -45,6 +45,7 @@ public class Manager {
 		}
 		
 		logger.info("게임 초기화가 완료되었습니다.");
+		logger.info("===== 유저의 턴입니다. =====");
 	}
 
 	public void addCardLabel(CardLabel cl1) {
@@ -64,13 +65,13 @@ public class Manager {
 		
 		currentPlayer.getElement().setTurn(false);
 		
-		System.out.println(c1 + " : " + currentPlayer.getElement());
+		// System.out.println(c1 + " : " + currentPlayer.getElement());
 		
 		if (c1 != null) {
+			logger.info(c1 + "를 냈습니다.");
+			
 			deck.add(openCard.getCard());
 			openCard.setCard(c1);
-			
-			logger.info(c1 + "를 냈습니다.");
 			
 			if (currentPlayer.getElement().isEmpty()) {
 				winner(currentPlayer.getElement());
@@ -120,14 +121,15 @@ public class Manager {
 	}
 
 	public void checkCardAbility(Card c1) {
-		System.out.println(c1.getAbility());
+		// System.out.println(c1.getAbility());
 		
 		if (c1.getAbility() < 1) {
 			nextTurn();
 		} else if (c1.getAbility() < Card.Ability.Attack) {
 			this.attackcount += c1.getAbility();
 			
-			System.out.println("공격점수" + attackcount);
+			// System.out.println("공격점수" + attackcount);
+			logger.info(c1 + "의 공격점수는 " + attackcount + "장 입니다.");
 			
 			nextTurn();
 		} else if (c1.getAbility() == Card.Ability.Jump) {
@@ -142,7 +144,8 @@ public class Manager {
 	}
 
 	private void jump() {
-		System.out.println("점프");
+		// System.out.println("점프");
+		logger.info("점프하였습니다.");
 		
 		if (direction) {
 			currentPlayer = currentPlayer.getNext();
@@ -154,13 +157,15 @@ public class Manager {
 	}
 
 	private void oneMore() {
-		System.out.println("한번더");
+		// System.out.println("한번더");
+		logger.info("한번 더 플레이합니다.");
 		
 		currentPlayer.getElement().setTurn(true);
 	}
 
 	private void revers() {
-		System.out.println("반대로");
+		// System.out.println("반대로");
+		logger.info("반대 방향으로 턴이 진행됩니다.");
 		
 		direction = !direction;
 		
@@ -171,13 +176,14 @@ public class Manager {
 		deck.add(openCard.getCard());
 		int k = currentPlayer.getElement().suitChange();
 		
-		System.out.println("SuitChange : " + k);
+		// System.out.println("SuitChange : " + k);
 		
 		Card temp = new Card(k, 7);
 		temp.setFake();
 		openCard.setCard(temp);
 		
-		System.out.println("SuitChange : " + openCard.getCard());
+		// System.out.println("SuitChange : " + openCard.getCard());
+		logger.info("낼 수 있는 조건이 " + openCard.getCard() + "로 변경되었습니다.");
 		
 		nextTurn();
 	}
@@ -190,6 +196,7 @@ public class Manager {
 		}
 		
 		// System.out.println("턴 : " + currentPlayer.getElement());
+		logger.info("===== 턴이 종료되었습니다. =====");
 		logger.info("===== " + currentPlayer.getElement() + "의 턴입니다. =====");
 		
 		currentPlayer.getElement().setTurn(true);

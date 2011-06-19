@@ -49,7 +49,7 @@ public class Deck implements Iterable<Card> {
 		}
 		
 		// System.out.println(deck.size());
-		logger.info("덱에서 " + result + "를 가져갔습니다.");
+		logger.debug("덱에서 " + result + "를 가져갔습니다.");
 		
 		return result;
 	}
@@ -58,7 +58,7 @@ public class Deck implements Iterable<Card> {
 		if (!card.isFake()) {
 			deck.add(card);
 			
-			logger.info("덱에 " + card + "를 집어넣었습니다.");
+			logger.debug("덱에 " + card + "를 집어넣었습니다.");
 		}
 	}
 

@@ -59,13 +59,13 @@ public class Computer implements Player {
 			// System.out.println(c1);
 			
 			if (checkCard(c1)) {
-				System.out.print(c1 + ", ");
+				// System.out.print(c1 + ", ");
 				
 				temp.add(c1);
 			}
 		}
 		
-		System.out.println();
+		// System.out.println();
 		
 		if (temp.size() > 1) {
 			manager.addCard(hand.remove(hand.indexOf(temp.get(new Random().nextInt(temp.size() - 1)))));
