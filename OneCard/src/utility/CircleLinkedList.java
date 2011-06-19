@@ -23,6 +23,8 @@ public class CircleLinkedList<T> {
 		}
 
 		count++;
+		
+		logger.info(element + " 가 추가되었습니다.");
 	}
 
 	public T remove() {
@@ -44,6 +46,8 @@ public class CircleLinkedList<T> {
 		prev.setNext(next);
 		next.setPrev(prev);
 		currentNode = next;
+		
+		logger.info(result + " 가 삭제되었습니다.");
 		
 		return result;
 	}
