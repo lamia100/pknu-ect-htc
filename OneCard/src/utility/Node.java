@@ -12,6 +12,9 @@ public class Node<T> {
 		this.next = next;
 		this.element = element;
 	}
+	Node(Node<T> next){
+		this.next=next;
+	}
 
 	Node(T element) {
 		this.element = element;
