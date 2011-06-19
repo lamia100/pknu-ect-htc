@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
-
-import javax.swing.JOptionPane;
-
 import org.apache.log4j.*;
 
 public class Deck implements Iterable<Card> {
@@ -32,15 +29,38 @@ public class Deck implements Iterable<Card> {
 		add(new Card(Card.Suit.Joker, Card.Pips.ColorJocker));
 		add(new Card(Card.Suit.Joker, Card.Pips.GrayJocker));
 		
-		// System.out.println(deck.size());
 		logger.info("덱 초기화가 완료되었습니다.");
 	}
 
+	/**
+	 * 덱에 카드 1장을 집어넣음
+	 * @param card
+	 */
+	public void add(Card card) {
+		if (!card.isFake()) {
+			deck.add(card);
+			
+			logger.debug("덱에 " + card + "를 집어넣었습니다.");
+		}
+	}
+
+	/**
+	 * 덱에 여러개의 카드를 집어넣음
+	 * @param cardList
+	 * @return
+	 */
+	public boolean addAll(Collection<? extends Card> cardList) {
+		return deck.addAll(cardList);
+	}
+	
+	/**
+	 * 덱에서 랜덤하게 카드 1장을 가져옴
+	 * @return 랜덤 카드 1장
+	 */
 	public Card getCard() {
 		if (isEmpty()) {
-			// JOptionPane.showMessageDialog(null, "덱에 카드가 없습니다. 게임이 종료되었습니다.");
 			logger.info("덱에 카드가 없습니다.");
-			// System.exit(1);
+			
 			return null;
 		}
 		
@@ -53,24 +73,11 @@ public class Deck implements Iterable<Card> {
 			result = deck.remove(rand.nextInt(deck.size() - 1));
 		}
 		
-		// System.out.println(deck.size());
 		logger.debug("덱에서 " + result + "를 가져갔습니다.");
 		
 		return result;
 	}
-
-	public void add(Card card) {
-		if (!card.isFake()) {
-			deck.add(card);
-			
-			logger.debug("덱에 " + card + "를 집어넣었습니다.");
-		}
-	}
-
-	public boolean addAll(Collection<? extends Card> c)
-	{
-		return deck.addAll(c);
-	}
+	
 	public boolean isEmpty() {
 		return deck.isEmpty();
 	}

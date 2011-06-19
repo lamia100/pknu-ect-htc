@@ -20,6 +20,11 @@ public class CardLabel extends JLabel implements Comparable<CardLabel> {
 		setIcon(icon);
 	}
 
+	/**
+	 * 이 객체가 담고있는 카드를 변경
+	 * @param c1 변경할 카드
+	 * @return 이전 카드
+	 */
 	public Card setCard(Card c1) {
 		Card temp = card;
 		card = c1;

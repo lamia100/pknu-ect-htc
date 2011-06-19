@@ -7,7 +7,6 @@ public class Card implements Comparable<Card>, Serializable {
 
 	public static class Pips {
 		public final static int Ace = 1;
-		
 		/*
 		public final static int Two = 2;
 		public final static int Three = 3;
@@ -122,6 +121,11 @@ public class Card implements Comparable<Card>, Serializable {
 		}
 	}
 
+	/**
+	 * 이 카드가 다른 카드와 종류나 숫자가 같은지 체크
+	 * @param c1 다른 카드
+	 * @return 같으면 true, 다르면 false
+	 */
 	public boolean isSameRank(Card c1) {
 		if (suit == c1.suit || pips == c1.pips || c1.suit == Card.Suit.Joker || suit == Card.Suit.Joker) {
 			return true;
@@ -130,18 +134,18 @@ public class Card implements Comparable<Card>, Serializable {
 		}
 	}
 
+	/**
+	 * 공격시 이 카드가 다른 카드를 방어할 수 있는지 체크
+	 * @param c1 다른 카드
+	 * @return 방어 가능하면 true, 불가능하면 false
+	 */
 	public boolean isHighPriority(Card c1) {
-		// c1이 this 보다 높거나 같은 우선순위라면 true
-		// 같은 글자 또는 높은 우선순위
-		// c1==opencard
 		if (this.pips == c1.pips) {
-			// 같은 글자(A,2..)일때
+			// 같은 숫자(A,2..)일 때 방어 가능 
 						
 			return true;
 		} else if (this.priority >= c1.priority) {
-			// System.out.println(this+", "+c1+" : "+(this.priority>=c1.priority)+", "+( this.suit == c1.suit || this.suit==Card.Suit.Joker ));
-			// 우선순위가 높으면서 모양이 같을때
-			// System.out.println((this.suit == c1.suit) || (c1.suit == Card.Suit.Joker));
+			// 우선순위가 같거나 높고, 모양이 같을 때 방어 가능
 			
 			return (this.suit == c1.suit) || (this.suit == Card.Suit.Joker);
 		}

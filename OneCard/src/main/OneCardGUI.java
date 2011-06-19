@@ -14,19 +14,18 @@ import player.Player;
 import java.awt.Dimension;
 import java.awt.Rectangle;
 
-public class OneCardGUI extends JFrame implements MouseListener,Player{
+public class OneCardGUI extends JFrame implements MouseListener, Player {
 
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = Logger.getLogger(OneCardGUI.class);  //  @jve:decl-index=0:
+	private static Logger logger = Logger.getLogger(OneCardGUI.class); // @jve:decl-index=0:
 	private JPanel jContentPane = null;
-	private ArrayList<CardLabel> hand=null;  //  @jve:decl-index=0:
+	private ArrayList<CardLabel> hand = null; // @jve:decl-index=0:
 	private JPanel MainPanel = null;
 	private JButton deckButton = null;
 	private CardLabel openCardLabel = null;
 	private JLabel userCardLabel = null;
-	private Manager manager=null;
-	private boolean isTurn=true;
-
+	private Manager manager = null;
+	private boolean isTurn = true;
 
 	private void initialize() {
 		this.setContentPane(getJContentPane());
@@ -37,17 +36,18 @@ public class OneCardGUI extends JFrame implements MouseListener,Player{
 				System.exit(0);
 			}
 		});
+		
 		this.pack();
-		hand=new ArrayList<CardLabel>();
-		manager=new Manager(this,3);
+		hand = new ArrayList<CardLabel>();
+		manager = new Manager(this, 3);
 		enableCard();
 	}
+
 	public OneCardGUI() {
 		super();
 		initialize();
-		//Card c=new Card(0,14);
-		//card.setIcon(c.getFrontImage());
 	}
+
 	private JPanel getJContentPane() {
 		if (jContentPane == null) {
 			jContentPane = new JPanel();
@@ -56,6 +56,7 @@ public class OneCardGUI extends JFrame implements MouseListener,Player{
 		}
 		return jContentPane;
 	}
+
 	private JPanel getMainPanel() {
 		if (MainPanel == null) {
 			userCardLabel = new JLabel();
@@ -70,165 +71,159 @@ public class OneCardGUI extends JFrame implements MouseListener,Player{
 		}
 		return MainPanel;
 	}
-	public CardLabel getOpenCardLabel()
-	{
-		if(openCardLabel==null){
-			openCardLabel = new CardLabel(new Card(1,2));
+
+	public CardLabel getOpenCardLabel() {
+		if (openCardLabel == null) {
+			openCardLabel = new CardLabel(new Card(1, 2));
 			openCardLabel.setText("JLabel");
 			openCardLabel.setSize(new Dimension(150, 200));
 			openCardLabel.setLocation(new Point(420, 40));
 		}
 		return openCardLabel;
 	}
+
 	private JButton getDeckButton() {
 		if (deckButton == null) {
 			deckButton = new JButton();
 			deckButton.setBounds(new Rectangle(225, 35, 160, 210));
-			ImageIcon icon=new ImageIcon(getClass().getResource("/image/back_up.png"));
+			
+			ImageIcon icon = new ImageIcon(getClass().getResource("/image/back_up.png"));
 			icon.setImage(icon.getImage().getScaledInstance(150, 200, Image.SCALE_SMOOTH));
 			deckButton.setIcon(icon);
-			icon=new ImageIcon(getClass().getResource("/image/back_dn.png"));
+			
+			icon = new ImageIcon(getClass().getResource("/image/back_dn.png"));
 			icon.setImage(icon.getImage().getScaledInstance(150, 200, Image.SCALE_SMOOTH));
 			deckButton.setSelectedIcon(icon);
-			icon=new ImageIcon(getClass().getResource("/image/back.png"));
+			
+			icon = new ImageIcon(getClass().getResource("/image/back.png"));
 			icon.setImage(icon.getImage().getScaledInstance(150, 200, Image.SCALE_SMOOTH));
 			deckButton.setRolloverIcon(icon);
+			
 			deckButton.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					manager.addCard(null);
+					manager.dropCard(null);
 				}
 			});
 		}
+		
 		return deckButton;
 	}
-	void repaintUserCard() {
-		//System.out.println(hand.size());
+
+	public void repaintUserCard() {
 		Collections.sort(hand);
-		Rectangle r=new Rectangle(10+30*hand.size(),330,150,200);
-		for(int i=hand.size()-1;i>=0;i--)
-		{
-			CardLabel temp=hand.get(i);
-			if(MainPanel.getComponentZOrder(temp)!=-1)
+		Rectangle r = new Rectangle(10 + 30 * hand.size(), 330, 150, 200);
+		
+		for (int i = hand.size() - 1; i >= 0; i--) {
+			CardLabel temp = hand.get(i);
+			
+			if (MainPanel.getComponentZOrder(temp) != -1) {
 				MainPanel.remove(temp);
+			}
+			
 			temp.setBounds(r);
 			r.translate(-30, 0);
-			MainPanel.add(temp,null);
-			if(temp.getMouseListeners().length==0)
+			MainPanel.add(temp, null);
+			
+			if (temp.getMouseListeners().length == 0) {
 				temp.addMouseListener(this);
-		}
-		MainPanel.repaint();
-		//enableCard();
-	}
-	class moveCard extends Thread
-	{
-		CardLabel cl;
-		Point p;
-		int count =10;
-		public moveCard(CardLabel cl,Point p)
-		{
-			this.cl=cl;
-			this.p=new Point((p.x-cl.getLocation().x)/count ,(p.y-cl.getLocation().y)/count);
+			}
 		}
 		
-		public void run()
-		{
-			while(p.equals(cl.getLocation()))
-			{
-				Point p1=cl.getLocation();
+		MainPanel.repaint();
+	}
+
+	private class moveCard extends Thread {
+		CardLabel cl;
+		Point p;
+		int count = 10;
+
+		public moveCard(CardLabel cl, Point p) {
+			this.cl = cl;
+			this.p = new Point((p.x - cl.getLocation().x) / count, (p.y - cl.getLocation().y) / count);
+		}
+
+		public void run() {
+			while (p.equals(cl.getLocation())) {
+				Point p1 = cl.getLocation();
 				p1.translate(p.x, p.y);
 				cl.setLocation(p1);
 			}
-			for(int i=0;i<count-1;i++)
-			{
-				Point p1=cl.getLocation();
+			
+			for (int i = 0; i < count - 1; i++) {
+				Point p1 = cl.getLocation();
 				p1.translate(p.x, p.y);
 				cl.setLocation(p1);
+				
 				try {
 					sleep(10);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
 			}
+			
 			MainPanel.remove(cl);
-			manager.addCardLabel(hand.remove(hand.indexOf(cl)));
-			//repaintUserCard();
-			//openCardLabel.setCard(cl.getCard());
-			//repaint();
+			manager.dropCardLabel(hand.remove(hand.indexOf(cl)));
 		}
 	}
-	public void mouseClicked(MouseEvent e) {
-	}
-	public void mouseEntered(MouseEvent e) {
 
-		Point p =((JLabel)e.getSource()).getLocation();
-		p.y=300;
-		((JLabel)e.getSource()).setLocation(p);
-
-	}
-	public void mouseExited(MouseEvent e) {
-		Point p =((JLabel)e.getSource()).getLocation();
-		p.y=330;
-		((JLabel)e.getSource()).setLocation(p);
-
-	}
 	@Override
-	public void mousePressed(MouseEvent e) {
+	public void mouseEntered(MouseEvent e) {
+		Point p = ((JLabel) e.getSource()).getLocation();
+		p.y = 300;
+		((JLabel) e.getSource()).setLocation(p);
 
 	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		Point p = ((JLabel) e.getSource()).getLocation();
+		p.y = 330;
+		((JLabel) e.getSource()).setLocation(p);
+	}
+
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		// System.out.println(isTurn);
-		if(isTurn&&((CardLabel)e.getSource()).isEnabled()){
+		if (isTurn && ((CardLabel) e.getSource()).isEnabled()) {
 			logger.info("유저가 GUI를 통해 명령을 내립니다.");
-			
-			new moveCard((CardLabel)e.getSource(),openCardLabel.getLocation()).start();
-			//isTurn=false;
+
+			new moveCard((CardLabel) e.getSource(), openCardLabel.getLocation()).start();
 		}
 	}
-	private void enableCard()
-	{
-		Card temp_card;
-		if(manager!=null){
-			temp_card=manager.getOpenCard();
-			int state=manager.getState();
-			
-			/*
-			Iterator<CardLabel> ite=hand.iterator();
-			while(ite.hasNext())
-			{
-				CardLabel temp=ite.next();
-				if(state>1){
-					temp.setEnabled(temp.getCard().isHighPriority(temp_card));
-				}else{
-					temp.setEnabled(temp.getCard().isSameRank(temp_card));
-				}
-			}
-			*/
-			
+	
+	@Override
+	public void mousePressed(MouseEvent e) {}
+	@Override
+	public void mouseClicked(MouseEvent e) {}
+
+	private void enableCard() {
+		Card temp_card = null;
+		if (manager != null) {
+			temp_card = manager.getOpenCard();
+			int state = manager.getState();
+
 			for (CardLabel target : hand) {
 				boolean result = false;
-				
+
 				if (state > 1) {
 					result = target.getCard().isHighPriority(temp_card);
-				}
-				else {
+				} else {
 					result = target.getCard().isSameRank(temp_card);
 				}
-				
+
 				target.setEnabled(result);
-				
+
 				if (result) {
 					logger.debug(target + "를 낼 수 있습니다.");
-				}
-				else {
+				} else {
 					logger.debug(target + "는 낼 수 없습니다.");
 				}
 			}
 		}
 	}
+
 	@Override
-	public void addCard(Card c1) {
-		hand.add(new CardLabel(c1));
+	public void addCard(Card addCard) {
+		hand.add(new CardLabel(addCard));
 		repaintUserCard();
 	}
 
@@ -236,59 +231,59 @@ public class OneCardGUI extends JFrame implements MouseListener,Player{
 	public boolean isEmpty() {
 		return hand.isEmpty();
 	}
+
 	@Override
 	public void setTurn(boolean isTurn) {
-		this.isTurn=isTurn;
-		if(isTurn){
+		this.isTurn = isTurn;
+		if (isTurn) {
 			enableCard();
 		}
 	}
-	public String toString()
-	{
+
+	public String toString() {
 		return "유저";
 	}
-	
+
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				try {
 					UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
 				} catch (ClassNotFoundException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (InstantiationException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (UnsupportedLookAndFeelException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				
 				OneCardGUI thisClass = new OneCardGUI();
 				thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				thisClass.setVisible(true);
 			}
 		});
 	}
+
 	@Override
 	public int suitChange() {
 		return JOptionPane.showOptionDialog(null, "Select a Card Suit",
-				"Card Game WAR",
-				JOptionPane.YES_NO_CANCEL_OPTION,
+				"Card Game WAR", JOptionPane.YES_NO_CANCEL_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null,
-				new String[]{"클로버","다이아몬드","하트","스페이드"}, "스페이드")+1;
+				new String[] { "클로버", "다이아몬드", "하트", "스페이드" }, "스페이드") + 1;
 	}
+
 	@Override
 	public int getHandSize() {
 		return hand.size();
 	}
+
 	@Override
-	public List<Card> gethand() {
-		// TODO Auto-generated method stub
+	public List<Card> getHand() {
 		JOptionPane.showMessageDialog(this, "졌습니다.");
 		System.exit(0);
+		
 		return null;
 	}
-} 
+}

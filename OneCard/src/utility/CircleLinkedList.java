@@ -91,13 +91,12 @@ public class CircleLinkedList<T> implements Iterable<T> {
 		Node<T> current = null;
 
 		public IteratorCircle() {
-			// TODO Auto-generated constructor stub
 			current=end=currentNode;
+			
 			if (end != null) {
 				end = end.getPrev();
 				current = new Node<T>(currentNode);
 			} 
-			
 		}
 
 		@Override
@@ -107,15 +106,13 @@ public class CircleLinkedList<T> implements Iterable<T> {
 
 		@Override
 		public T next() {
-			// TODO Auto-generated method stub
 			current = current.getNext();
 			return current.getElement();
 		}
 
 		@Override
 		public void remove() {
-			// TODO Auto-generated method stub
-
+			throw new UnsupportedOperationException();
 		}
 	}
 }

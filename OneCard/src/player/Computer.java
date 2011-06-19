@@ -20,22 +20,22 @@ public class Computer implements Player {
 		this.name = name;
 	}
 
-	private boolean checkCard(Card c1) {
+	private boolean checkCard(Card card) {
 		Card temp = manager.getOpenCard();
 		int state = manager.getState();
 		boolean result = false;
 		
 		if (state > 1) {
-			result = c1.isHighPriority(temp);
+			result = card.isHighPriority(temp);
 		} else {
-			result = c1.isSameRank(temp);
+			result = card.isSameRank(temp);
 		}
 		
 		if (result) {
-			logger.debug(c1 + "를 낼 수 있습니다.");
+			logger.debug(card + "를 낼 수 있습니다.");
 		}
 		else {
-			logger.debug(c1 + "는 낼 수 없습니다.");
+			logger.debug(card + "는 낼 수 없습니다.");
 		}
 		
 		return result;
@@ -47,19 +47,14 @@ public class Computer implements Player {
 		}
 	}
 
-	public void addCard(Card c1) {
-		hand.add(c1);
+	public void addCard(Card card) {
+		hand.add(card);
 	}
 
+	/**
+	 * 컴퓨터가 갖고있는 카드 중, 랜덤하게 낼 수 있는 카드 1장을 냄
+	 */
 	private void dropCard() {
-		/*
-		try {
-			sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		*/
-		
 		ArrayList<Card> temp = new ArrayList<Card>();
 		
 		for (Card target : hand) {
@@ -69,11 +64,11 @@ public class Computer implements Player {
 		}
 		
 		if (temp.size() > 1) {
-			manager.addCard(hand.remove(hand.indexOf(temp.get(new Random().nextInt(temp.size() - 1)))));
+			manager.dropCard(hand.remove(hand.indexOf(temp.get(new Random().nextInt(temp.size() - 1)))));
 		} else if (temp.size() == 1) {
-			manager.addCard(hand.remove(hand.indexOf(temp.get(0))));
+			manager.dropCard(hand.remove(hand.indexOf(temp.get(0))));
 		} else {
-			manager.addCard(null);
+			manager.dropCard(null);
 		}
 	}
 
@@ -95,8 +90,7 @@ public class Computer implements Player {
 	}
 	
 	@Override
-	public List<Card> gethand() {
-		// TODO Auto-generated method stub
+	public List<Card> getHand() {
 		return hand;
 	}
 }
