@@ -42,12 +42,16 @@ public class Deck implements Iterable<Card> {
 		Card result = null;
 		
 		if (size() == 1) {
-			return deck.remove(0);
+			result = deck.remove(0);
+		}
+		else {
+			result = deck.remove(rand.nextInt(deck.size() - 1));
 		}
 		
 		// System.out.println(deck.size());
+		logger.info("µ¦¿¡¼­ " + result + "¸¦ °¡Á®°¬½À´Ï´Ù.");
 		
-		return deck.remove(rand.nextInt(deck.size() - 1));
+		return result;
 	}
 
 	public void add(Card card) {
