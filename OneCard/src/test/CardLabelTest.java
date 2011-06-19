@@ -21,6 +21,7 @@ public class CardLabelTest {
 			System.out.println(card.getPips()+" "+ card.getSuit());
 			dialog.setVisible(true);
 			assertEquals(dialog.result, 1);
+			
 		}
 	}
 
