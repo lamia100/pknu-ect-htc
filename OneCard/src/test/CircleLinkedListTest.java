@@ -2,6 +2,7 @@ package test;
 
 import static org.junit.Assert.*;
 
+import java.util.Iterator;
 import java.util.Random;
 
 import org.junit.Test;
@@ -66,10 +67,15 @@ public class CircleLinkedListTest {
 
 		for (int i = 1; i <= 5; i++) {
 			assertTrue(cl.remove() == i);
+			cl.getNext();
 		}
 		
 		for (int i = 6; i <= 10; i++) {
 			assertTrue(cl.remove() == i);
+			
+			System.out.println(i);
+			
+			cl.getNext();
 		}
 	}
 
@@ -85,5 +91,26 @@ public class CircleLinkedListTest {
 		}
 
 		assertEquals(cl.size(), count);
+	}
+	
+	@Test
+	public void testIteratorCircle() {
+		CircleLinkedList<Integer> list = new CircleLinkedList<Integer>();
+		Iterator<Integer> iterator = list.iterator();
+	}
+
+	@Test
+	public void testIteratorx() {
+		CircleLinkedList<Integer> list = new CircleLinkedList<Integer>();
+
+		for (int i = 0; i < 10; i++) {
+			list.add(i);
+		}
+		
+		int count = 0;
+		for (Integer i : list) {
+			assertTrue(count == i);
+			count++;
+		}
 	}
 }

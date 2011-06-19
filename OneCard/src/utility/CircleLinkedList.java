@@ -68,6 +68,10 @@ public class CircleLinkedList<T> implements Iterable<T> {
 	}
 
 	public T getNext() {
+		if (currentNode == null) {
+			return null;
+		}
+		
 		currentNode = currentNode.getNext();
 		return currentNode.getElement();
 	}
