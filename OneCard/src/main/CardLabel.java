@@ -30,6 +30,8 @@ public class CardLabel extends JLabel implements Comparable<CardLabel> {
 		
 		this.repaint();
 		
+		logger.info("카드가 " + temp + "에서 " + card + "로 변경되었습니다.");
+		
 		return temp;
 	}
 

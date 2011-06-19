@@ -43,6 +43,8 @@ public class Manager {
 				currentPlayer = currentPlayer.getNext();
 			}
 		}
+		
+		logger.info("게임 초기화가 완료되었습니다.");
 	}
 
 	public void addCardLabel(CardLabel cl1) {
@@ -68,7 +70,7 @@ public class Manager {
 			deck.add(openCard.getCard());
 			openCard.setCard(c1);
 			
-			System.out.println("OpenCard : " + openCard.getCard());
+			logger.info(c1 + "를 냈습니다.");
 			
 			if (currentPlayer.getElement().isEmpty()) {
 				winner(currentPlayer.getElement());
@@ -76,7 +78,8 @@ public class Manager {
 			
 			checkCardAbility(c1);
 		} else {
-			System.out.println("카드를 먹습니다. 처묵처묵");
+			// System.out.println("카드를 먹습니다. 처묵처묵");
+			logger.info("카드를 내지 못했습니다.");
 			
 			feedCard();
 		}
@@ -95,6 +98,8 @@ public class Manager {
 			attackcount = 1;
 		}
 		
+		logger.info("가져가야 할 카드는 총 " + attackcount + "장입니다.");
+		
 		for (int i = 0; i < attackcount; i++) {
 			currentPlayer.getElement().addCard(deck.getCard());
 		}
@@ -109,7 +114,8 @@ public class Manager {
 	}
 
 	public void winner(Player player) {
-		System.out.println("Winner is" + player);
+		// System.out.println("Winner is" + player);
+		logger.info(player + "의 승리입니다.");
 		System.exit(0);
 	}
 
@@ -183,7 +189,8 @@ public class Manager {
 			currentPlayer = currentPlayer.getPrev();
 		}
 		
-		System.out.println("턴 : " + currentPlayer.getElement());
+		// System.out.println("턴 : " + currentPlayer.getElement());
+		logger.info("===== " + currentPlayer.getElement() + "의 턴입니다. =====");
 		
 		currentPlayer.getElement().setTurn(true);
 	}

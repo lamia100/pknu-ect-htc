@@ -57,6 +57,8 @@ public class Deck implements Iterable<Card> {
 	public void add(Card card) {
 		if (!card.isFake()) {
 			deck.add(card);
+			
+			logger.info("덱에 " + card + "를 집어넣었습니다.");
 		}
 	}
 
