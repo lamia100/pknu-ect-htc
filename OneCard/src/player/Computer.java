@@ -61,29 +61,11 @@ public class Computer implements Player {
 		
 		ArrayList<Card> temp = new ArrayList<Card>();
 		
-		/*
-		Iterator<Card> ite = hand.iterator();
-		
-		while (ite.hasNext()) {
-			Card c1 = ite.next();
-			
-			// System.out.println(c1);
-			
-			if (checkCard(c1)) {
-				// System.out.print(c1 + ", ");
-				
-				temp.add(c1);
-			}
-		}
-		*/
-		
 		for (Card target : hand) {
 			if (checkCard(target)) {
 				temp.add(target);
 			}
 		}
-		
-		// System.out.println();
 		
 		if (temp.size() > 1) {
 			manager.addCard(hand.remove(hand.indexOf(temp.get(new Random().nextInt(temp.size() - 1)))));
