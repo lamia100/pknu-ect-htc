@@ -1,7 +1,6 @@
 package player;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Random;
 import org.apache.log4j.*;
 import main.Manager;
@@ -23,12 +22,22 @@ public class Computer implements Player {
 	private boolean checkCard(Card c1) {
 		Card temp = manager.getOpenCard();
 		int state = manager.getState();
+		boolean result = false;
 		
 		if (state > 1) {
-			return c1.isHighPriority(temp);
+			result = c1.isHighPriority(temp);
 		} else {
-			return c1.isSameRank(temp);
+			result = c1.isSameRank(temp);
 		}
+		
+		if (result) {
+			logger.debug(c1 + "를 낼 수 있습니다.");
+		}
+		else {
+			logger.debug(c1 + "는 낼 수 없습니다.");
+		}
+		
+		return result;
 	}
 
 	public void setTurn(boolean isTurn) {
@@ -51,6 +60,8 @@ public class Computer implements Player {
 		*/
 		
 		ArrayList<Card> temp = new ArrayList<Card>();
+		
+		/*
 		Iterator<Card> ite = hand.iterator();
 		
 		while (ite.hasNext()) {
@@ -62,6 +73,13 @@ public class Computer implements Player {
 				// System.out.print(c1 + ", ");
 				
 				temp.add(c1);
+			}
+		}
+		*/
+		
+		for (Card target : hand) {
+			if (checkCard(target)) {
+				temp.add(target);
 			}
 		}
 		

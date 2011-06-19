@@ -1,11 +1,9 @@
 package data;
 
 import java.io.Serializable;
-import org.apache.log4j.*;
 
 public class Card implements Comparable<Card>, Serializable {
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = Logger.getLogger(Card.class);
 
 	public static class Pips {
 		public final static int Ace = 1;
@@ -126,12 +124,8 @@ public class Card implements Comparable<Card>, Serializable {
 
 	public boolean isSameRank(Card c1) {
 		if (suit == c1.suit || pips == c1.pips || c1.suit == Card.Suit.Joker || suit == Card.Suit.Joker) {
-			logger.debug(toString() + "과 " + c1 + "은 같은 랭크입니다.");
-			
 			return true;
 		} else {
-			logger.debug(toString() + "과 " + c1 + "은 다른 랭크입니다.");
-			
 			return false;
 		}
 	}
@@ -142,27 +136,15 @@ public class Card implements Comparable<Card>, Serializable {
 		// c1==opencard
 		if (this.pips == c1.pips) {
 			// 같은 글자(A,2..)일때
-			logger.debug(toString() + "과 " + c1 + "은 같은 우선순위입니다.");
-			
+						
 			return true;
 		} else if (this.priority >= c1.priority) {
 			// System.out.println(this+", "+c1+" : "+(this.priority>=c1.priority)+", "+( this.suit == c1.suit || this.suit==Card.Suit.Joker ));
 			// 우선순위가 높으면서 모양이 같을때
 			// System.out.println((this.suit == c1.suit) || (c1.suit == Card.Suit.Joker));
 			
-			boolean result = (this.suit == c1.suit) || (this.suit == Card.Suit.Joker);
-			
-			if (result) {
-				logger.debug(toString() + "는 " + c1 + "보다 높은 우선순위입니다.");
-			}
-			else {
-				logger.debug(toString() + "는 " + c1 + "보다 낮은 우선순위입니다.");
-			}
-			
-			return result;
+			return (this.suit == c1.suit) || (this.suit == Card.Suit.Joker);
 		}
-		
-		logger.debug(toString() + "는 " + c1 + "보다 낮은 우선순위입니다.");
 		
 		return false;
 	}

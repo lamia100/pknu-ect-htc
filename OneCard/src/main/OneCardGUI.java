@@ -190,6 +190,8 @@ public class OneCardGUI extends JFrame implements MouseListener,Player{
 		if(manager!=null){
 			temp_card=manager.getOpenCard();
 			int state=manager.getState();
+			
+			/*
 			Iterator<CardLabel> ite=hand.iterator();
 			while(ite.hasNext())
 			{
@@ -198,6 +200,27 @@ public class OneCardGUI extends JFrame implements MouseListener,Player{
 					temp.setEnabled(temp.getCard().isHighPriority(temp_card));
 				}else{
 					temp.setEnabled(temp.getCard().isSameRank(temp_card));
+				}
+			}
+			*/
+			
+			for (CardLabel target : hand) {
+				boolean result = false;
+				
+				if (state > 1) {
+					result = target.getCard().isHighPriority(temp_card);
+				}
+				else {
+					result = target.getCard().isSameRank(temp_card);
+				}
+				
+				target.setEnabled(result);
+				
+				if (result) {
+					logger.debug(target + "를 낼 수 있습니다.");
+				}
+				else {
+					logger.debug(target + "는 낼 수 없습니다.");
 				}
 			}
 		}
