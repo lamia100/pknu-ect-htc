@@ -92,11 +92,12 @@ public class CircleLinkedList<T> implements Iterable<T> {
 
 		public IteratorCircle() {
 			// TODO Auto-generated constructor stub
-			end=currentNode;
+			current=end=currentNode;
 			if (end != null) {
 				end = end.getPrev();
+				current = new Node<T>(currentNode);
 			} 
-			current = new Node<T>(null, null, currentNode);
+			
 		}
 
 		@Override
