@@ -3,8 +3,11 @@ package data;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+import org.apache.log4j.*;
 
 public class Deck implements Iterable<Card> {
+	private static Logger logger = Logger.getLogger(Deck.class);
+	
 	private ArrayList<Card> deck;
 	private Random rand;
 

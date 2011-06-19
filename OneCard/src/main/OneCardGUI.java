@@ -2,6 +2,8 @@ package main;
 
 import javax.swing.*;
 
+import org.apache.log4j.*;
+
 import data.Card;
 import java.awt.*;
 import java.awt.event.*;
@@ -13,6 +15,7 @@ import java.awt.Rectangle;
 public class OneCardGUI extends JFrame implements MouseListener,Player{
 
 	private static final long serialVersionUID = 1L;
+	private static Logger logger = Logger.getLogger(OneCardGUI.class);
 	private JPanel jContentPane = null;
 	private ArrayList<CardLabel> hand=null;  //  @jve:decl-index=0:
 	private JPanel MainPanel = null;

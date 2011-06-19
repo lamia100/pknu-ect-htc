@@ -1,10 +1,13 @@
 package main;
 
+import org.apache.log4j.*;
 import utility.*;
 import player.*;
 import data.*;
 
 public class Manager {
+	private static Logger logger = Logger.getLogger(Manager.class);
+	
 	private Node<Player> currentPlayer;
 	private Deck deck;
 	private CircleLinkedList<Player> playerList;

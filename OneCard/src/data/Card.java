@@ -1,9 +1,11 @@
 package data;
 
 import java.io.Serializable;
+import org.apache.log4j.*;
 
 public class Card implements Comparable<Card>, Serializable {
 	private static final long serialVersionUID = 1L;
+	private static Logger logger = Logger.getLogger(Card.class);
 
 	public static class Pips {
 		public final static int Ace = 1;

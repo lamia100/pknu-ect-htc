@@ -1,6 +1,10 @@
 package utility;
 
+import org.apache.log4j.*;
+
 public class CircleLinkedList<T> {
+	private static Logger logger = Logger.getLogger(CircleLinkedList.class);
+	
 	private Node<T> currentNode;
 	private int count = 0;
 

@@ -1,13 +1,14 @@
 package main;
 
 import java.awt.Image;
-
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import org.apache.log4j.*;
 import data.*;
 
 public class CardLabel extends JLabel implements Comparable<CardLabel> {
 	private static final long serialVersionUID = 1L;
+	private static Logger logger = Logger.getLogger(CardLabel.class);
 	private Card card;
 
 	public CardLabel(Card c1) {

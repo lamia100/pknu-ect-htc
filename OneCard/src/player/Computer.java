@@ -3,14 +3,16 @@ package player;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
-
+import org.apache.log4j.*;
 import main.Manager;
 import data.Card;
 
 public class Computer implements Player {
-	Manager manager = null;
-	ArrayList<Card> hand;
-	String name;
+	private static Logger logger = Logger.getLogger(Computer.class);
+	
+	private Manager manager = null;
+	private ArrayList<Card> hand;
+	private String name;
 
 	public Computer(Manager manager, String name) {
 		this.manager = manager;
