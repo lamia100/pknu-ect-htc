@@ -6,7 +6,7 @@ import org.apache.log4j.*;
 
 public class CircleLinkedList<T> implements Iterable<T> {
 	private static Logger logger = Logger.getLogger(CircleLinkedList.class);
-	
+
 	private Node<T> currentNode;
 	private int count = 0;
 
@@ -14,7 +14,7 @@ public class CircleLinkedList<T> implements Iterable<T> {
 		currentNode = null;
 		count = 0;
 	}
-	
+
 	public void add(T element) {
 		if (count == 0) {
 			currentNode = new Node<T>(element);
@@ -25,7 +25,7 @@ public class CircleLinkedList<T> implements Iterable<T> {
 		}
 
 		count++;
-		
+
 		logger.info(element + "가 추가되었습니다.");
 	}
 
@@ -33,24 +33,24 @@ public class CircleLinkedList<T> implements Iterable<T> {
 		if (currentNode == null) {
 			return null;
 		}
-		
+
 		count--;
-		
+
 		Node<T> prev = currentNode.getPrev();
 		Node<T> next = currentNode.getNext();
 		T result = currentNode.getElement();
-		
+
 		if (prev == currentNode) {
 			currentNode = null;
 			return result;
 		}
-		
+
 		prev.setNext(next);
 		next.setPrev(prev);
 		currentNode = next;
-		
+
 		logger.info(result + " 가 삭제되었습니다.");
-		
+
 		return result;
 	}
 
@@ -71,7 +71,7 @@ public class CircleLinkedList<T> implements Iterable<T> {
 		currentNode = currentNode.getNext();
 		return currentNode.getElement();
 	}
-	
+
 	public T getPrev() {
 		currentNode = currentNode.getPrev();
 		return currentNode.getElement();
@@ -85,26 +85,36 @@ public class CircleLinkedList<T> implements Iterable<T> {
 	public Iterator<T> iterator() {
 		return new IteratorCircle();
 	}
-	
+
 	private class IteratorCircle implements Iterator<T> {
-		Node<T> start = currentNode;
-		Node<T> current = currentNode.getNext();
-		
+		Node<T> end = null;
+		Node<T> current = null;
+
+		public IteratorCircle() {
+			// TODO Auto-generated constructor stub
+			end=currentNode;
+			if (end != null) {
+				end = end.getPrev();
+			} 
+			current = new Node<T>(null, null, currentNode);
+		}
+
 		@Override
 		public boolean hasNext() {
-			return (start != current);
+			return current != end;
 		}
 
 		@Override
 		public T next() {
 			// TODO Auto-generated method stub
-			return null;
+			current = current.getNext();
+			return current.getElement();
 		}
 
 		@Override
 		public void remove() {
 			// TODO Auto-generated method stub
-			
+
 		}
 	}
 }
