@@ -278,4 +278,8 @@ public class OneCardGUI extends JFrame implements MouseListener,Player{
 				JOptionPane.QUESTION_MESSAGE, null,
 				new String[]{"클로버","다이아몬드","하트","스페이드"}, "스페이드")+1;
 	}
+	@Override
+	public int getHandSize() {
+		return hand.size();
+	}
 } 

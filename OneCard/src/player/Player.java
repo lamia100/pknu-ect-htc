@@ -8,4 +8,5 @@ public interface Player {
 	public void setTurn(boolean isTurn);
 	public boolean isEmpty();
 	public int suitChange();
+	public int getHandSize();
 }

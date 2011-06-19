@@ -87,4 +87,9 @@ public class Computer implements Player {
 	public int suitChange() {
 		return new Random().nextInt(3) + 1;
 	}
+
+	@Override
+	public int getHandSize() {
+		return hand.size();
+	}
 }

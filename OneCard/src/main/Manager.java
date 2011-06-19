@@ -104,19 +104,27 @@ public class Manager {
 		logger.info("가져가야 할 카드는 총 " + attackcount + "장입니다.");
 		
 		for (int i = 0; i < attackcount; i++) {
-			// --------------------------------------
 			Card fromDeck = deck.getCard();
 			
+			// 덱이 비었을 때 플레이어들이 가지고있는 카드 개수를 비교하여 승리자 선출 - 시작
 			if (fromDeck == null) {
-				Player target = currentPlayer.getElement();
+				int minHandSize = Integer.MAX_VALUE;
+				Player minPlayer = null;
 				
-				// foreach
-				// min 체크
-				// winner
+				for (Player target : playerList) {
+					if (target.getHandSize() < minHandSize) {
+						minHandSize = target.getHandSize();
+						minPlayer = target;
+					}
+				}
+				
+				winner(minPlayer);
+				
+				return;
 			}
-			// ---------------------------------
+			// 덱이 비었을 때 플레이어들이 가지고있는 카드 개수를 비교하여 승리자 선출 - 끝
 			
-			currentPlayer.getElement().addCard(deck.getCard());
+			currentPlayer.getElement().addCard(fromDeck);
 		}
 		
 		attackcount = 0;
