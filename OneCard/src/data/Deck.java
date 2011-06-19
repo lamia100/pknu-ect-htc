@@ -29,12 +29,17 @@ public class Deck implements Iterable<Card> {
 		add(new Card(Card.Suit.Joker, Card.Pips.GrayJocker));
 		
 		// System.out.println(deck.size());
+		logger.info("덱 초기화가 완료되었습니다.");
 	}
 
 	public Card getCard() {
 		if (isEmpty()) {
+			logger.info("덱에 카드가 없습니다. 게임이 종료되었습니다.");
+			
 			return null;
 		}
+		
+		Card result = null;
 		
 		if (size() == 1) {
 			return deck.remove(0);
