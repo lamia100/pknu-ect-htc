@@ -15,7 +15,7 @@ import java.awt.Rectangle;
 public class OneCardGUI extends JFrame implements MouseListener,Player{
 
 	private static final long serialVersionUID = 1L;
-	private static Logger logger = Logger.getLogger(OneCardGUI.class);
+	private static Logger logger = Logger.getLogger(OneCardGUI.class);  //  @jve:decl-index=0:
 	private JPanel jContentPane = null;
 	private ArrayList<CardLabel> hand=null;  //  @jve:decl-index=0:
 	private JPanel MainPanel = null;

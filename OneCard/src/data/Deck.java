@@ -3,6 +3,9 @@ package data;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+
+import javax.swing.JOptionPane;
+
 import org.apache.log4j.*;
 
 public class Deck implements Iterable<Card> {
@@ -34,8 +37,9 @@ public class Deck implements Iterable<Card> {
 
 	public Card getCard() {
 		if (isEmpty()) {
+			JOptionPane.showMessageDialog(null, "덱에 카드가 없습니다. 게임이 종료되었습니다.");
 			logger.info("덱에 카드가 없습니다. 게임이 종료되었습니다.");
-			
+			System.exit(1);
 			return null;
 		}
 		

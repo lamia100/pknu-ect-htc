@@ -1,5 +1,7 @@
 package main;
 
+import javax.swing.JOptionPane;
+
 import org.apache.log4j.*;
 import utility.*;
 import player.*;
@@ -116,6 +118,7 @@ public class Manager {
 
 	public void winner(Player player) {
 		// System.out.println("Winner is" + player);
+		JOptionPane.showMessageDialog(user, player + "의 승리입니다.");
 		logger.info(player + "의 승리입니다.");
 		System.exit(0);
 	}
