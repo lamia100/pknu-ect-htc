@@ -41,6 +41,10 @@ public class CircleLinkedListTest {
 		for (int i = 10; i >= 1; i--) {
 			assertTrue(cl.getPrev() == i);
 		}
+		
+		for (int i = 10; i >= 1; i--) {
+			assertTrue(cl.getPrev() == i);
+		}
 	}
 	
 	@Test
@@ -51,6 +55,11 @@ public class CircleLinkedListTest {
 			cl.add(i);
 		}
 
+		for (int i = 1; i <= 10; i++) {
+			assertTrue(cl.getElement() == i);
+			cl.getNext();
+		}
+		
 		for (int i = 1; i <= 10; i++) {
 			assertTrue(cl.getElement() == i);
 			cl.getNext();
@@ -69,14 +78,13 @@ public class CircleLinkedListTest {
 			assertTrue(cl.remove() == i);
 			cl.getNext();
 		}
+		assertEquals(cl.size(), 5);
 		
 		for (int i = 6; i <= 10; i++) {
-			assertTrue(cl.remove() == i);
-			
-			System.out.println(i);
-			
+			assertTrue(cl.remove() == i);			
 			cl.getNext();
 		}
+		assertEquals(cl.size(), 0);
 	}
 
 	@Test
@@ -101,7 +109,7 @@ public class CircleLinkedListTest {
 	}
 
 	@Test
-	public void testIteratorx() {
+	public void testIterator() {
 		CircleLinkedList<Integer> list = new CircleLinkedList<Integer>();
 
 		for (int i = 0; i < 10; i++) {
