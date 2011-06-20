@@ -2,9 +2,13 @@
 
 <project default="main" basedir=".">
 	<target name="main">
+		<antcall target="compile"></antcall>
 		<antcall target="run"></antcall>
 	</target>
 	<target name="run">
 		<java classpath="./bin;./log4j-1.2.16.jar" classname="main.OneCardGUI" fork="true"></java>
+	</target>
+	<target name="compile">
+		<javac srcdir="./src" destdir="./bin"></javac>
 	</target>
 </project>
