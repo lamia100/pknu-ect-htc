@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+
+<project default="main" basedir=".">
+	<target name="main">
+		<antcall target="run"></antcall>
+	</target>
+	<target name="run">
+		<java classpath="./bin;./log4j-1.2.16.jar" classname="main.OneCardGUI" fork="true"></java>
+	</target>
+</project>
