@@ -29,7 +29,7 @@ public class OneCardGUI extends JFrame implements MouseListener, Player {
 
 	private void initialize() {
 		this.setContentPane(getJContentPane());
-		this.setTitle("JFrame");
+		this.setTitle("프로그램 설계 102분반 - 200611516 김성현 / 200611604 서보룡");
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			public void windowClosing(java.awt.event.WindowEvent e) {
 				logger.info("게임을 종료합니다.");
