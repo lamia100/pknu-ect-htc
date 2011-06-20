@@ -119,4 +119,48 @@ public class CircleLinkedList<T> implements Iterable<T> {
 			throw new UnsupportedOperationException();
 		}
 	}
+	class Node<T1> {
+		private Node<T1> next;
+		private Node<T1> prev;
+		private T1 element;
+
+		Node(T1 element, Node<T1> prev, Node<T1> next) {
+			prev.setNext(this);
+			this.prev = prev;
+			next.setPrev(this);
+			this.next = next;
+			this.element = element;
+		}
+		Node(Node<T1> next){
+			this.next=next;
+		}
+
+		Node(T1 element) {
+			this.element = element;
+		}
+
+		public T1 getElement() {
+			return element;
+		}
+
+		public void setElement(T1 element) {
+			this.element = element;
+		}
+
+		public Node<T1> getNext() {
+			return next;
+		}
+
+		public Node<T1> getPrev() {
+			return prev;
+		}
+
+		public void setNext(Node<T1> node) {
+			next = node;
+		}
+
+		public void setPrev(Node<T1> node) {
+			prev = node;
+		}
+	}
 }

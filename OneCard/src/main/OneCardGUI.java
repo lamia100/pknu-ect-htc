@@ -131,12 +131,16 @@ public class OneCardGUI extends JFrame implements MouseListener, Player {
 		
 		MainPanel.repaint();
 	}
+	JFrame getThis(){
+		return this;
+	}
 
 	private class moveCard extends Thread {
 		CardLabel cl;
 		Point p;
 		int count = 10;
-
+		JFrame frame=getThis();
+		
 		public moveCard(CardLabel cl, Point p) {
 			this.cl = cl;
 			this.p = new Point((p.x - cl.getLocation().x) / count, (p.y - cl.getLocation().y) / count);
@@ -163,6 +167,7 @@ public class OneCardGUI extends JFrame implements MouseListener, Player {
 			
 			MainPanel.remove(cl);
 			manager.dropCard(hand.remove(hand.indexOf(cl)).getCard());
+			frame.repaint();
 		}
 	}
 
