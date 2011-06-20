@@ -49,10 +49,9 @@ public class Manager {
 		logger.info("===== 유저의 턴입니다. =====");
 	}
 
-	/**
+	/*
 	 * 유저 GUI가 낸 카드를 게임 룰에 따라 처리
 	 * @param dropCardLabel 유저 GUI로부터 받은 카드가 담긴 레이블
-	 */
 	public void dropCardLabel(CardLabel dropCardLabel) {
 		user.repaintUserCard();
 
@@ -62,7 +61,7 @@ public class Manager {
 			dropCard(dropCardLabel.getCard());
 		}
 	}
-
+	 */
 	/**
 	 * 플레이어가 낸 카드를 게임 룰에 따라 처리
 	 * @param dropCard

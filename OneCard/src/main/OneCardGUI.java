@@ -162,7 +162,7 @@ public class OneCardGUI extends JFrame implements MouseListener, Player {
 			}
 			
 			MainPanel.remove(cl);
-			manager.dropCardLabel(hand.remove(hand.indexOf(cl)));
+			manager.dropCard(hand.remove(hand.indexOf(cl)).getCard());
 		}
 	}
 
