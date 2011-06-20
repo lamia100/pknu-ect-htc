@@ -59,7 +59,7 @@ public class CircleLinkedList<T> implements Iterable<T> {
 		return null;
 	}
 
-	public Node<T> getHead() {
+	public Node<T> getCurrentNode() {
 		return currentNode;
 	}
 
