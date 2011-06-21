@@ -11,6 +11,9 @@ public class CardLabel extends JLabel implements Comparable<CardLabel> {
 	private static Logger logger = Logger.getLogger(CardLabel.class);
 	private Card card;
 
+	public CardLabel() {
+		super();
+	}
 	public CardLabel(Card c1) {
 		super();
 		card = c1;
