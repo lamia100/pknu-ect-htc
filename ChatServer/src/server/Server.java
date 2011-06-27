@@ -20,33 +20,32 @@ public class Server implements Runnable {
 	private static ServerSocket sSocket;
 	private static Server server = null;
 	private static MessageProcessor messageProcessor = null;
-	
-	static{
+
+	static {
 		try {
 			initialize();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			System.exit(1);
 		}
+
 	}
-	
-	
+
 	private static void initialize() throws IOException {
-		server=new Server();
+		server = new Server();
 		sSocket = new ServerSocket(Definition.DEFAULT_PORT);
 		messageProcessor = new MessageProcessor();
 		new Thread(messageProcessor).start();
 		User.setMessageProcessor(messageProcessor);
 		Channel.setMessageProcessor(messageProcessor);
 	}
-	
+
 	public static Server getServer() {
 		if (server == null)
 			throw new NullPointerException("서버가 없다");
 		return server;
 	}
-	
+
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
@@ -54,7 +53,7 @@ public class Server implements Runnable {
 			log("채팅서버 시작..." + sSocket.getLocalPort());
 			while (true) {
 				Socket socket = sSocket.accept();
-				log("입장 : "+socket);
+				log("입장 : " + socket);
 				User user = new User(socket);
 				new Thread(user).start();
 				//sSocket.close();
@@ -64,12 +63,11 @@ public class Server implements Runnable {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static String getIP() {
 		// TODO Auto-generated method stub
 		return sSocket.getInetAddress().getHostAddress().toString();
 	}
-	
 
 	private void log(Object... logs) {
 		System.out.println("Server");
@@ -77,8 +75,9 @@ public class Server implements Runnable {
 			System.out.println(log);
 		System.out.println("----------------------------");
 	}
+
 	public static void main(String[] args) {
 		new Thread(Server.server).start();
 	}
-	
+
 }
