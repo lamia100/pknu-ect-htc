@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+
+<project default="main" basedir="D:\NetworkProject2">
+	<target name="main">
+		<antcall target="makeClient">
+		</antcall>
+		<antcall target="makeServer"></antcall>
+	</target>
+	
+	<target name="makeClient">
+		<jar destfile="C:/Users/Malloc/Desktop/client.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="gui.ClientJFrame" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<fileset dir="D:/NetworkProject2/ChatClientV2/bin" />
+			<fileset dir="D:/NetworkProject2/ChatBaseV2/bin" />
+		</jar>
+	</target>
+	<target name="makeServer">
+		<jar destfile="C:/Users/Malloc/Desktop/server.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="server.Server" />
+				<attribute name="Class-Path" value="." />
+			</manifest>
+			<fileset dir="D:/NetworkProject2/ChatServerV2/bin" />
+			<fileset dir="D:/NetworkProject2/ChatBaseV2/bin" />
+		</jar>
+	</target>
+</project>

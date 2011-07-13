@@ -1,0 +1,24 @@
+package msg;
+
+import static msg.Definition.*;
+
+public enum TYPE {
+	CAST(TYPE_CAST),CAST_BROAD(TYPE_CAST_BROAD), CAST_UNI(TYPE_CAST_UNI),
+	CHANNEL(TYPE_CHANNEL),
+	SEQ(TYPE_SEQ),
+	NICK(TYPE_NICK),
+	FAMILY(TYPE_FAMILY),FAMILY_PARENT(TYPE_FAMILY_PARENT), FAMILY_CHILD1(TYPE_FAMILY_CHILD1), FAMILY_CHILD2(TYPE_FAMILY_CHILD2),
+	IP(TYPE_IP),// DSTIP(TYPE_DSTIP),SRCIP(TYPE_SRCIP),
+	MSG(TYPE_MSG),
+	END(TYPE_END);
+
+	String str;
+
+	TYPE(String str) {
+		this.str = str;
+	}
+
+	public String toString() {
+		return str;
+	}
+}
