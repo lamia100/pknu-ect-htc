@@ -31,8 +31,6 @@ public class TodayCarte {
 				Element table = target.getAllElements(HTMLElementName.TABLE).get(targetTableIndex);
 				List<Element> trList = table.getAllElements(HTMLElementName.TR);
 				
-				Iterator<Element> trIter = trList.iterator();
-
 				for(Element tr:trList){
 					List<Element> tdList = tr.getAllElements(HTMLElementName.TD);
 					
