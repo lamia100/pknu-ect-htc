@@ -5,7 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import net.htmlparser.jericho.*;
 
-public class Test {
+public class TodayCarte {
 	public static void main(String[] args) {
 		String targetURL = "http://dormitory.pknu.ac.kr/";
 				
@@ -41,7 +41,7 @@ public class Test {
 					
 					while (tdIter.hasNext()) {
 						Element td = tdIter.next();
-						String value = td.getContent().getTextExtractor().toString();
+						String value = td.getContent().getTextExtractor().toString().trim();
 						
 						switch (i) {
 						case 0:
