@@ -33,14 +33,11 @@ public class TodayCarte {
 				
 				Iterator<Element> trIter = trList.iterator();
 
-				while (trIter.hasNext()) {
-					Element tr = trIter.next();
+				for(Element tr:trList){
 					List<Element> tdList = tr.getAllElements(HTMLElementName.TD);
 					
-					Iterator<Element> tdIter = tdList.iterator();
-					
-					while (tdIter.hasNext()) {
-						Element td = tdIter.next();
+					for(Element td:tdList){
+						
 						String value = td.getContent().getTextExtractor().toString().trim();
 						
 						switch (i) {
