@@ -28,6 +28,7 @@ public final class ParseCarte {
 		
 		try {
 			Source target = new Source(new URL(targetURL));
+			target.setLogger(null);
 			target.fullSequentialParse();
 			
 			// 타이틀 시작
