@@ -1,15 +1,14 @@
 package logic;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.io.IOException;
-import java.net.URL;
-import java.net.MalformedURLException;
 
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
-
 import data.Const;
 import data.MonthlyCarte;
 import data.TodayCarte;

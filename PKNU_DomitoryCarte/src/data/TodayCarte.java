@@ -1,6 +1,7 @@
 package data;
 
 import java.util.ArrayList;
+
 import javax.swing.table.AbstractTableModel;
 
 public class TodayCarte extends AbstractTableModel {

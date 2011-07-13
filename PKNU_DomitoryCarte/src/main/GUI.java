@@ -1,27 +1,23 @@
 package main;
 
-import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
-import javax.swing.JPanel;
-import javax.swing.JFrame;
-import java.awt.Dimension;
-import javax.swing.JToolBar;
-import javax.swing.JMenuItem;
-import java.awt.GridBagLayout;
-import java.awt.GridBagConstraints;
 import java.awt.FlowLayout;
 
 import javax.swing.ButtonGroup;
-import javax.swing.JRadioButton;
-import javax.swing.JTable;
-import javax.swing.JScrollPane;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JToolBar;
+import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 
+import logic.ParseCarte;
 import data.MonthlyCarte;
 import data.TodayCarte;
-
-import logic.ParseCarte;
 
 public class GUI extends JFrame {
 
@@ -292,6 +288,7 @@ public class GUI extends JFrame {
 	 * 	
 	 * @return javax.swing.table.TableColumn	
 	 */
+	@SuppressWarnings("unused")
 	private TableColumn getTableColumn() {
 		if (tableColumn == null) {
 			tableColumn = new TableColumn();

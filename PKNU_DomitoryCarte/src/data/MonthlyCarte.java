@@ -1,6 +1,7 @@
 package data;
 
 import java.util.ArrayList;
+
 import javax.swing.table.AbstractTableModel;
 
 public class MonthlyCarte extends AbstractTableModel {
