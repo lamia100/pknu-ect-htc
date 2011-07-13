@@ -37,25 +37,19 @@ public class MonthlyCarte {
 			Element menu_table = target.getAllElements(HTMLElementName.TABLE).get(targetTableIndexList[1]);
 			List<Element> menu_trList = menu_table.getAllElements(HTMLElementName.TR);
 			
-			Iterator<Element> menu_trIter = menu_trList.iterator();
 
 			int count = 0;
-			while (menu_trIter.hasNext()) {
+			for(Element menu_tr:menu_trList){
 				count++;
 				
 				if (count <= 2) {
-					menu_trIter.next();
 					continue;
 				}
 				
-				Element menu_tr = menu_trIter.next();
 				List<Element> menu_tdList = menu_tr.getAllElements(HTMLElementName.TD);
 				
-				Iterator<Element> menu_tdIter = menu_tdList.iterator();
-				
 				int i = 0;
-				while (menu_tdIter.hasNext()) {
-					Element td = menu_tdIter.next();
+				for(Element td: menu_tdList){
 					String value = td.getContent().getTextExtractor().toString().trim();
 					
 					if ("".equals(value)) {
