@@ -19,6 +19,25 @@ public class MonthlyCarte extends AbstractTableModel {
 		return month;
 	}
 	
+	public String getCarteByString() {
+		String carteByString = "";
+		
+		if (carte == null) {
+			return null;
+		}
+		
+		for (int i = 0; i < carte.size(); i++) {
+			if (i != 0) {
+				carteByString += "\n";
+			}
+			
+			carteByString += (carte.get(i).getDate() + "\n");
+			carteByString += carte.get(i).getCarteByString();
+		}
+		
+		return carteByString;
+	}
+	
 	public void printCarte() {
 		System.out.println(month);
 		

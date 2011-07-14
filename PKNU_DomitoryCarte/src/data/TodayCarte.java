@@ -2,7 +2,6 @@ package data;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
-
 import javax.swing.table.AbstractTableModel;
 
 public class TodayCarte extends AbstractTableModel {
@@ -50,6 +49,24 @@ public class TodayCarte extends AbstractTableModel {
 	
 	public String getDate() {
 		return date;
+	}
+	
+	public String getCarteByString() {
+		String carteByString = "";
+		
+		if (transCarte == null) {
+			return null;
+		}
+		
+		for (int i = 1; i < transCarte.length; i++) {
+			if (i != 1) {
+				carteByString += "\n";
+			}
+			
+			carteByString += (transCarte[i][0] + " : " + transCarte[i][1]);
+		}
+		
+		return carteByString;
 	}
 	
 	public void printCarte() {

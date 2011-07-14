@@ -79,7 +79,8 @@ public final class ParseCarte {
 		
 		try {
 			Source target = new Source(new URL(targetURL));
-			target.fullSequentialParse(); // 시작부터 끝까지 태그들만 파싱
+			target.setLogger(null);
+			target.fullSequentialParse();
 			
 			// 타이틀 시작
 			Element title_table = target.getAllElements(HTMLElementName.TABLE).get(targetTableIndexList[0]);

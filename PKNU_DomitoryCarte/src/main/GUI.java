@@ -1,11 +1,13 @@
 package main;
 
 import java.awt.BorderLayout;
+import java.awt.FileDialog;
 import java.awt.FlowLayout;
 
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
@@ -18,6 +20,9 @@ import data.MonthlyCarte;
 import data.TodayCarte;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Font;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import javax.swing.JButton;
 
 public class GUI extends JFrame {
@@ -41,6 +46,9 @@ public class GUI extends JFrame {
 	private JPanel p_menu = null;
 	private JButton bt_save = null;
 	private JButton bt_print = null;
+	private static GUI thisClass = null;
+	private TodayCarte todayCarte = null;
+	private MonthlyCarte monthlyCarte = null;
 	/**
 	 * This method initializes p_main	
 	 * 	
@@ -96,17 +104,18 @@ public class GUI extends JFrame {
 		if (rb_carteD == null) {
 			rb_carteD = new JRadioButton();
 			rb_carteD.setText("대연(세종관)");
+			rb_carteD.setSelected(true);
 			rb_carteD.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					// 오늘 식단 시작
-					TodayCarte todayCarte = ParseCarte.getTodayCarteD();
+					todayCarte = ParseCarte.getTodayCarteD();
 					lb_date.setText("오늘 (" + todayCarte.getDate() + ") 식단");
 					
 					tb_todayCarte.setModel(todayCarte);
 					// 오늘 식단 끝
 					
 					// 주간 식단 시작
-					MonthlyCarte monthlyCarte = ParseCarte.getMonthlyCarteD();
+					monthlyCarte = ParseCarte.getMonthlyCarteD();
 					lb_monthly.setText("이번주 (" + monthlyCarte.getMonth() + ") 식단");
 					
 					tb_monthlyCarte.setModel(monthlyCarte);
@@ -131,14 +140,14 @@ public class GUI extends JFrame {
 			rb_carteY.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					// 오늘 식단 시작
-					TodayCarte todayCarte = ParseCarte.getTodayCarteY();
+					todayCarte = ParseCarte.getTodayCarteY();
 					lb_date.setText("오늘 (" + todayCarte.getDate() + ") 식단");
 					
 					tb_todayCarte.setModel(todayCarte);
 					// 오늘 식단 끝
 					
 					// 주간 식단 시작
-					MonthlyCarte monthlyCarte = ParseCarte.getMonthlyCarteY();
+					monthlyCarte = ParseCarte.getMonthlyCarteY();
 					lb_monthly.setText("이번주 (" + monthlyCarte.getMonth() + ") 식단");
 					
 					tb_monthlyCarte.setModel(monthlyCarte);
@@ -197,9 +206,8 @@ public class GUI extends JFrame {
 			TableColumn tc_today2 = new TableColumn();
 			tc_today2.setModelIndex(1);
 			tc_today2.setCellRenderer(CenterTableCellRenderer);
-			tc_today2.setPreferredWidth(515);
 			TableColumn tc_today1 = new TableColumn();
-			tc_today1.setPreferredWidth(10);
+			tc_today1.setMaxWidth(50);
 			tc_today1.setCellRenderer(CenterTableCellRenderer);
 			tb_todayCarte = new JTable();
 			tb_todayCarte.setAutoCreateColumnsFromModel(false);
@@ -230,18 +238,17 @@ public class GUI extends JFrame {
 	 */
 	private JTable getTb_monthlyCarte() {
 		if (tb_monthlyCarte == null) {
-			TableColumn tableColumn2 = new TableColumn();
-			tableColumn2.setModelIndex(1);
-			tableColumn2.setPreferredWidth(500);
-			tableColumn2.setCellRenderer(CenterTableCellRenderer);
-			TableColumn tableColumn1 = new TableColumn();
-			tableColumn1.setPreferredWidth(10);
-			tableColumn1.setCellRenderer(CenterTableCellRenderer);
+			TableColumn tc_monthly2 = new TableColumn();
+			tc_monthly2.setModelIndex(1);
+			tc_monthly2.setCellRenderer(CenterTableCellRenderer);
+			TableColumn tc_monthly1 = new TableColumn();
+			tc_monthly1.setMaxWidth(50);
+			tc_monthly1.setCellRenderer(CenterTableCellRenderer);
 			tb_monthlyCarte = new JTable();
 			tb_monthlyCarte.setAutoCreateColumnsFromModel(false);
 			tb_monthlyCarte.setRowHeight(30);
-			tb_monthlyCarte.addColumn(tableColumn1);
-			tb_monthlyCarte.addColumn(tableColumn2);
+			tb_monthlyCarte.addColumn(tc_monthly1);
+			tb_monthlyCarte.addColumn(tc_monthly2);
 			tb_monthlyCarte.setTableHeader(null);
 		}
 		return tb_monthlyCarte;
@@ -273,7 +280,52 @@ public class GUI extends JFrame {
 			bt_save.setText("Save");
 			bt_save.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+					FileDialog fd_save = new FileDialog(thisClass, "파일로 저장", FileDialog.SAVE);
+					fd_save.setVisible(true);
+					String savePath = fd_save.getDirectory() + fd_save.getFile();
+					
+					if (savePath == null || savePath.equals("")) {
+						JOptionPane.showMessageDialog(thisClass, "파일 경로를 선택하지 않으셨습니다.");
+						return;
+					}
+					
+					if (!saveFile(savePath)) {
+						JOptionPane.showMessageDialog(thisClass, "I/O 에러로 인해 파일을 저장하지 못했습니다.\n"
+								+ "디렉토리 권한이 제한되었을 수 있습니다.");
+					}
+				}
+				
+				public boolean saveFile(String savePath) {
+					try {
+						PrintWriter out = new PrintWriter(new FileWriter(savePath));
+						
+						if (bg_select.getSelection() == getRb_carteD().getModel()) {
+							out.println("대연(세종관) 기숙사 식단표");
+						}
+						else {
+							out.println("용당(광개토관) 기숙사 식단표");
+						}
+						
+						out.println();
+						
+						out.println("오늘 (" + todayCarte.getDate() + ") 식단");
+						out.println(todayCarte.getCarteByString());
+						
+						out.println();
+						
+						out.println("이번주 (" + monthlyCarte.getMonth() + ") 식단");
+						out.print(monthlyCarte.getCarteByString());
+						
+						out.flush();
+						out.close();
+						
+						return true;
+					}
+					catch (IOException e) {
+						e.printStackTrace();
+					}
+					
+					return false;
 				}
 			});
 		}
@@ -289,6 +341,7 @@ public class GUI extends JFrame {
 		if (bt_print == null) {
 			bt_print = new JButton();
 			bt_print.setText("Print");
+			bt_print.setEnabled(false);
 			bt_print.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
 					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
@@ -305,7 +358,7 @@ public class GUI extends JFrame {
 		// TODO Auto-generated method stub
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				GUI thisClass = new GUI();
+				thisClass = new GUI();
 				thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 				thisClass.setVisible(true);
 			}
