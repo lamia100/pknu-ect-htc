@@ -386,7 +386,7 @@ public class GUI extends JFrame {
 		
 		this.setSize(640, 820);
 		this.setContentPane(getJContentPane());
-		this.setTitle("JFrame");
+		this.setTitle("부경대 기숙사 식단표");
 	}
 
 	/**
