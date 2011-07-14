@@ -19,6 +19,7 @@ import logic.ParseCarte;
 import data.MonthlyCarte;
 import data.TodayCarte;
 import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.Dimension;
 
 public class GUI extends JFrame {
 
@@ -137,8 +138,6 @@ public class GUI extends JFrame {
 			rb_carteD.setText("대연(세종관)");
 			rb_carteD.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
-					
 					// 오늘 식단 시작
 					TodayCarte todayCarte = ParseCarte.getTodayCarteD();
 					lb_date.setText("오늘 (" + todayCarte.getDate() + ") 식단");
@@ -171,8 +170,6 @@ public class GUI extends JFrame {
 			rb_carteY.setText("용당(광개토관)");
 			rb_carteY.addActionListener(new java.awt.event.ActionListener() {
 				public void actionPerformed(java.awt.event.ActionEvent e) {
-					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
-					
 					// 오늘 식단 시작
 					TodayCarte todayCarte = ParseCarte.getTodayCarteY();
 					lb_date.setText("오늘 (" + todayCarte.getDate() + ") 식단");

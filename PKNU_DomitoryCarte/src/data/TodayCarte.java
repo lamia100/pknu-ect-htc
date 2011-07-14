@@ -28,22 +28,21 @@ public class TodayCarte extends AbstractTableModel {
 				StringTokenizer st = new StringTokenizer(menu);
 				
 				boolean isFirst = true;
-				String concat = "";
+				String refactMenu = "";
 				while (st.hasMoreTokens()) {
 					String token = st.nextToken();
 					
-					System.out.println(token);
-					
 					if (isFirst) {
-						concat += token;
+						refactMenu += token;
 						isFirst = false;
 						continue;
 					}
 					
-					concat += (" + " + token); 
+					// 메뉴 사이에 + 붙임
+					refactMenu += (" + " + token); 
 				}
 				
-				transCarte[i][1] = concat;
+				transCarte[i][1] = refactMenu;
 				i++;
 			}
 		}
