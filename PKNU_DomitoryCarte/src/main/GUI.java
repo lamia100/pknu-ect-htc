@@ -18,6 +18,7 @@ import javax.swing.table.TableColumn;
 import logic.ParseCarte;
 import data.MonthlyCarte;
 import data.TodayCarte;
+import javax.swing.table.DefaultTableCellRenderer;
 
 public class GUI extends JFrame {
 
@@ -39,8 +40,7 @@ public class GUI extends JFrame {
 	private JLabel lb_date = null;
 	private JLabel lb_monthly = null;
 	private ButtonGroup bg_select = new ButtonGroup();  //  @jve:decl-index=0:
-	private TableColumn tableColumn = null;  //  @jve:decl-index=0:visual-constraint="978,416"
-
+	private DefaultTableCellRenderer CenterTableCellRenderer = null;
 	/**
 	 * This method initializes tb_main	
 	 * 	
@@ -237,9 +237,11 @@ public class GUI extends JFrame {
 		if (tb_todayCarte == null) {
 			TableColumn tc_today2 = new TableColumn();
 			tc_today2.setModelIndex(1);
-			tc_today2.setPreferredWidth(500);
+			tc_today2.setCellRenderer(CenterTableCellRenderer);
+			tc_today2.setPreferredWidth(515);
 			TableColumn tc_today1 = new TableColumn();
 			tc_today1.setPreferredWidth(10);
+			tc_today1.setCellRenderer(CenterTableCellRenderer);
 			tb_todayCarte = new JTable();
 			tb_todayCarte.setAutoCreateColumnsFromModel(false);
 			tb_todayCarte.setRowHeight(30);
@@ -272,28 +274,18 @@ public class GUI extends JFrame {
 			TableColumn tableColumn2 = new TableColumn();
 			tableColumn2.setModelIndex(1);
 			tableColumn2.setPreferredWidth(500);
+			tableColumn2.setCellRenderer(CenterTableCellRenderer);
 			TableColumn tableColumn1 = new TableColumn();
 			tableColumn1.setPreferredWidth(10);
+			tableColumn1.setCellRenderer(CenterTableCellRenderer);
 			tb_monthlyCarte = new JTable();
 			tb_monthlyCarte.setAutoCreateColumnsFromModel(false);
 			tb_monthlyCarte.setRowHeight(30);
 			tb_monthlyCarte.addColumn(tableColumn1);
 			tb_monthlyCarte.addColumn(tableColumn2);
+			tb_monthlyCarte.setTableHeader(null);
 		}
 		return tb_monthlyCarte;
-	}
-
-	/**
-	 * This method initializes tableColumn	
-	 * 	
-	 * @return javax.swing.table.TableColumn	
-	 */
-	@SuppressWarnings("unused")
-	private TableColumn getTableColumn() {
-		if (tableColumn == null) {
-			tableColumn = new TableColumn();
-		}
-		return tableColumn;
 	}
 
 	/**
@@ -316,6 +308,8 @@ public class GUI extends JFrame {
 	public GUI() {
 		super();
 		initialize();
+		
+		getRb_carteD().doClick();
 	}
 
 	/**
@@ -324,6 +318,9 @@ public class GUI extends JFrame {
 	 * @return void
 	 */
 	private void initialize() {
+		CenterTableCellRenderer = new DefaultTableCellRenderer();
+		CenterTableCellRenderer.setHorizontalAlignment(DefaultTableCellRenderer.CENTER);
+		
 		this.setSize(640, 820);
 		this.setContentPane(getJContentPane());
 		this.setTitle("JFrame");

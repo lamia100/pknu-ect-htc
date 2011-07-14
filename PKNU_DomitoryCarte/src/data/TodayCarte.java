@@ -1,6 +1,7 @@
 package data;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 import javax.swing.table.AbstractTableModel;
 
@@ -24,7 +25,25 @@ public class TodayCarte extends AbstractTableModel {
 			
 			int i = 1;
 			for (String menu : carte) {
-				transCarte[i][1] = menu;
+				StringTokenizer st = new StringTokenizer(menu);
+				
+				boolean isFirst = true;
+				String concat = "";
+				while (st.hasMoreTokens()) {
+					String token = st.nextToken();
+					
+					System.out.println(token);
+					
+					if (isFirst) {
+						concat += token;
+						isFirst = false;
+						continue;
+					}
+					
+					concat += (" + " + token); 
+				}
+				
+				transCarte[i][1] = concat;
 				i++;
 			}
 		}
