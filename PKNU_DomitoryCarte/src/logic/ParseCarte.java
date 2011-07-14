@@ -54,6 +54,8 @@ public final class ParseCarte {
 				}
 			}
 			// 메뉴 끝
+			
+			target.clearCache();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			return null;
@@ -128,6 +130,8 @@ public final class ParseCarte {
 				}
 			}
 			// 메뉴 끝
+			
+			target.clearCache();
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			return null;
