@@ -19,7 +19,6 @@ import logic.ParseCarte;
 import data.MonthlyCarte;
 import data.TodayCarte;
 import javax.swing.table.DefaultTableCellRenderer;
-import java.awt.Dimension;
 
 public class GUI extends JFrame {
 
