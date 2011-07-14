@@ -6,12 +6,10 @@ import java.awt.FlowLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JToolBar;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 
@@ -19,14 +17,13 @@ import logic.ParseCarte;
 import data.MonthlyCarte;
 import data.TodayCarte;
 import javax.swing.table.DefaultTableCellRenderer;
+import java.awt.Font;
+import javax.swing.JButton;
 
 public class GUI extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
-	private JToolBar tb_main = null;
-	private JMenuItem mi_save = null;
-	private JMenuItem mi_print = null;
 	private JPanel p_main = null;
 	private JPanel p_select = null;
 	private JPanel p_carte = null;
@@ -41,46 +38,9 @@ public class GUI extends JFrame {
 	private JLabel lb_monthly = null;
 	private ButtonGroup bg_select = new ButtonGroup();  //  @jve:decl-index=0:
 	private DefaultTableCellRenderer CenterTableCellRenderer = null;
-	/**
-	 * This method initializes tb_main	
-	 * 	
-	 * @return javax.swing.JToolBar	
-	 */
-	private JToolBar getTb_main() {
-		if (tb_main == null) {
-			tb_main = new JToolBar();
-			tb_main.add(getMi_save());
-			tb_main.add(getMi_print());
-		}
-		return tb_main;
-	}
-
-	/**
-	 * This method initializes mi_save	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getMi_save() {
-		if (mi_save == null) {
-			mi_save = new JMenuItem();
-			mi_save.setText("Save");
-		}
-		return mi_save;
-	}
-
-	/**
-	 * This method initializes mi_print	
-	 * 	
-	 * @return javax.swing.JMenuItem	
-	 */
-	private JMenuItem getMi_print() {
-		if (mi_print == null) {
-			mi_print = new JMenuItem();
-			mi_print.setText("Print");
-		}
-		return mi_print;
-	}
-
+	private JPanel p_menu = null;
+	private JButton bt_save = null;
+	private JButton bt_print = null;
 	/**
 	 * This method initializes p_main	
 	 * 	
@@ -92,6 +52,7 @@ public class GUI extends JFrame {
 			p_main.setLayout(new BorderLayout());
 			p_main.add(getP_select(), BorderLayout.NORTH);
 			p_main.add(getP_carte(), BorderLayout.CENTER);
+			p_main.add(getP_menu(), BorderLayout.SOUTH);
 		}
 		return p_main;
 	}
@@ -199,6 +160,7 @@ public class GUI extends JFrame {
 		if (p_todayCarte == null) {
 			lb_date = new JLabel();
 			lb_date.setText("오늘 식단");
+			lb_date.setFont(new Font("Dialog", Font.BOLD, 14));
 			p_todayCarte = new JPanel();
 			p_todayCarte.setLayout(new BorderLayout());
 			p_todayCarte.add(lb_date, BorderLayout.NORTH);
@@ -216,6 +178,7 @@ public class GUI extends JFrame {
 		if (p_monthlyCarte == null) {
 			lb_monthly = new JLabel();
 			lb_monthly.setText("이번주 식단");
+			lb_monthly.setFont(new Font("Dialog", Font.BOLD, 14));
 			p_monthlyCarte = new JPanel();
 			p_monthlyCarte.setLayout(new BorderLayout());
 			p_monthlyCarte.add(lb_monthly, BorderLayout.NORTH);
@@ -285,6 +248,57 @@ public class GUI extends JFrame {
 	}
 
 	/**
+	 * This method initializes p_menu	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getP_menu() {
+		if (p_menu == null) {
+			p_menu = new JPanel();
+			p_menu.setLayout(new FlowLayout());
+			p_menu.add(getBt_save(), null);
+			p_menu.add(getBt_print(), null);
+		}
+		return p_menu;
+	}
+
+	/**
+	 * This method initializes bt_save	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getBt_save() {
+		if (bt_save == null) {
+			bt_save = new JButton();
+			bt_save.setText("Save");
+			bt_save.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+				}
+			});
+		}
+		return bt_save;
+	}
+
+	/**
+	 * This method initializes bt_print	
+	 * 	
+	 * @return javax.swing.JButton	
+	 */
+	private JButton getBt_print() {
+		if (bt_print == null) {
+			bt_print = new JButton();
+			bt_print.setText("Print");
+			bt_print.addActionListener(new java.awt.event.ActionListener() {
+				public void actionPerformed(java.awt.event.ActionEvent e) {
+					System.out.println("actionPerformed()"); // TODO Auto-generated Event stub actionPerformed()
+				}
+			});
+		}
+		return bt_print;
+	}
+
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -331,7 +345,6 @@ public class GUI extends JFrame {
 		if (jContentPane == null) {
 			jContentPane = new JPanel();
 			jContentPane.setLayout(new BorderLayout());
-			jContentPane.add(getTb_main(), BorderLayout.NORTH);
 			jContentPane.add(getP_main(), BorderLayout.CENTER);
 		}
 		return jContentPane;
