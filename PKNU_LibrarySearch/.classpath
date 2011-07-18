@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="swt.jar"/>
+	<classpathentry kind="lib" path="DJNativeSwing.jar"/>
+	<classpathentry kind="lib" path="DJNativeSwing-SWT.jar"/>
+	<classpathentry kind="lib" path="jericho-html-3.2.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
