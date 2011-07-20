@@ -30,7 +30,6 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import java.awt.Font;
 import java.util.Stack;
-import java.awt.GridBagLayout;
 
 public class GUI extends JFrame {
 
