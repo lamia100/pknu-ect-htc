@@ -30,6 +30,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import java.awt.Font;
 import java.util.Stack;
+import java.awt.GridBagLayout;
 
 public class GUI extends JFrame {
 
@@ -63,9 +64,10 @@ public class GUI extends JFrame {
 	private JPanel p_state = null;
 	private JLabel lb_state = null;
 	private int tableMouseClickedCount = 0;
-	private JButton bt_back = null;
 	private JButton bt_prev = null;
 	private JButton bt_next = null;
+	private JPanel p_result_in = null;
+	private JWebBrowser detailBrowser = null;
 	
 	/**
 	 * This method initializes p_searchWord	
@@ -214,7 +216,6 @@ public class GUI extends JFrame {
 			p_input.add(getTf_searchWord(), null);
 			p_input.add(getCb_inSearch(), null);
 			p_input.add(getBt_search(), null);
-			p_input.add(getBt_back(), null);
 		}
 		return p_input;
 	}
@@ -255,64 +256,47 @@ public class GUI extends JFrame {
 		if (p_browser == null) {
 			p_browser = new JPanel();
 			p_browser.setLayout(new BorderLayout());
+			
 			webBrowser = new JWebBrowser();
 			webBrowser.addWebBrowserListener(new WebBrowserListener() {
-				
-				@Override
-				public void windowWillOpen(WebBrowserWindowWillOpenEvent arg0) {
-					// TODO Auto-generated method stub
-				}
-				
-				@Override
-				public void windowOpening(WebBrowserWindowOpeningEvent arg0) {
-					// TODO Auto-generated method stub
-				}
-				
-				@Override
-				public void windowClosing(WebBrowserEvent arg0) {
-					// TODO Auto-generated method stub
-				}
-				
-				@Override
-				public void titleChanged(WebBrowserEvent arg0) {
-					// TODO Auto-generated method stub
-				}
-				
-				@Override
-				public void statusChanged(WebBrowserEvent arg0) {
-					// TODO Auto-generated method stub				
-				}
-				
-				@Override
-				public void locationChanging(WebBrowserNavigationEvent arg0) {
-					// TODO Auto-generated method stub
-				}
-				
-				@Override
 				public void locationChanged(WebBrowserNavigationEvent arg0) {
-					// TODO Auto-generated method stub					
 					bookTable = ParseTable.parseTable(webBrowser.getHTMLContent());
 					
 					getTb_result().setModel(bookTable);
 					lb_state.setText("[INFO] " + bookTable.getTitle());
 				}
 				
-				@Override
-				public void locationChangeCanceled(WebBrowserNavigationEvent arg0) {
-					// TODO Auto-generated method stub
-				}
-				
-				@Override
-				public void loadingProgressChanged(WebBrowserEvent arg0) {
-					// TODO Auto-generated method stub				
-				}
-				
-				@Override
-				public void commandReceived(WebBrowserCommandEvent arg0) {
-					// TODO Auto-generated method stub
-				}
+				public void windowWillOpen(WebBrowserWindowWillOpenEvent arg0) {}
+				public void windowOpening(WebBrowserWindowOpeningEvent arg0) {}
+				public void windowClosing(WebBrowserEvent arg0) {}
+				public void titleChanged(WebBrowserEvent arg0) {}
+				public void statusChanged(WebBrowserEvent arg0) {}
+				public void locationChanging(WebBrowserNavigationEvent arg0) {}
+				public void locationChangeCanceled(WebBrowserNavigationEvent arg0) {}
+				public void loadingProgressChanged(WebBrowserEvent arg0) {}
+				public void commandReceived(WebBrowserCommandEvent arg0) {}
 			});
+			
+			detailBrowser = new JWebBrowser();
+			detailBrowser.addWebBrowserListener(new WebBrowserListener() {
+				public void locationChanged(WebBrowserNavigationEvent arg0) {
+					// TODO Auto-generated method stub
+					System.out.println(detailBrowser.getHTMLContent());
+				}
+				
+				public void windowWillOpen(WebBrowserWindowWillOpenEvent arg0) {}
+				public void windowOpening(WebBrowserWindowOpeningEvent arg0) {}
+				public void windowClosing(WebBrowserEvent arg0) {}
+				public void titleChanged(WebBrowserEvent arg0) {}
+				public void statusChanged(WebBrowserEvent arg0) {}
+				public void locationChanging(WebBrowserNavigationEvent arg0) {}
+				public void locationChangeCanceled(WebBrowserNavigationEvent arg0) {}
+				public void loadingProgressChanged(WebBrowserEvent arg0) {}
+				public void commandReceived(WebBrowserCommandEvent arg0) {}
+			});
+			
 			p_browser.add(webBrowser, BorderLayout.CENTER);
+			p_browser.add(detailBrowser, BorderLayout.SOUTH);
 		}
 		return p_browser;
 	}
@@ -344,7 +328,8 @@ public class GUI extends JFrame {
 					
 					String searchURL = Const.getSearchURL(searchQuery);
 					
-					webBrowser.navigate(searchURL);					
+					webBrowser.navigate(searchURL);
+					detailBrowser.navigate(searchURL);
 					
 					searchQueryStack.push(searchQuery);
 				}
@@ -363,7 +348,7 @@ public class GUI extends JFrame {
 			p_result = new JPanel();
 			p_result.setLayout(new BorderLayout());
 			p_result.add(getP_state(), BorderLayout.NORTH);
-			p_result.add(getSp_result(), BorderLayout.CENTER);
+			p_result.add(getP_result_in(), BorderLayout.CENTER);
 			p_result.add(getP_page(), BorderLayout.SOUTH);
 		}
 		return p_result;
@@ -403,7 +388,7 @@ public class GUI extends JFrame {
 			tb_result.setRowHeight(30);
 			tb_result.addColumn(tc_title);
 			tb_result.addColumn(tc_author);
-			tb_result.addColumn(tc_press);
+			tb_result.addColumn(tc_press);			
 			tb_result.addMouseListener(new java.awt.event.MouseAdapter() {
 				public void mouseReleased(java.awt.event.MouseEvent e) {
 					if (tableMouseClickedCount == 0) {
@@ -411,7 +396,7 @@ public class GUI extends JFrame {
 						return;
 					}
 					
-					// Const.goToDetailPage(webBrowser, getTb_result().getSelectedRow());
+					Const.goToDetailPage(detailBrowser, getTb_result().getSelectedRow());
 					
 					tableMouseClickedCount = 0;
 				}
@@ -429,6 +414,7 @@ public class GUI extends JFrame {
 		if (p_page == null) {
 			p_page = new JPanel();
 			p_page.setLayout(new FlowLayout());
+			p_page.setVisible(true);
 			p_page.add(getBt_prev(), null);
 			p_page.add(getBt_next(), null);
 		}
@@ -452,24 +438,6 @@ public class GUI extends JFrame {
 	}
 
 	/**
-	 * This method initializes bt_back	
-	 * 	
-	 * @return javax.swing.JButton	
-	 */
-	private JButton getBt_back() {
-		if (bt_back == null) {
-			bt_back = new JButton();
-			bt_back.setText("µÚ·Î");
-			bt_back.addActionListener(new java.awt.event.ActionListener() {
-				public void actionPerformed(java.awt.event.ActionEvent e) {
-					webBrowser.navigateBack();
-				}
-			});
-		}
-		return bt_back;
-	}
-
-	/**
 	 * This method initializes bt_prev	
 	 * 	
 	 * @return javax.swing.JButton	
@@ -487,7 +455,10 @@ public class GUI extends JFrame {
 						return;
 					}
 					
-					Const.goToSelectPage(webBrowser, --currentPage);
+					--currentPage;
+					
+					Const.goToSelectPage(webBrowser, currentPage);
+					Const.goToSelectPage(detailBrowser, currentPage);
 				}
 			});
 		}
@@ -512,11 +483,28 @@ public class GUI extends JFrame {
 						return;
 					}
 					
-					Const.goToSelectPage(webBrowser, ++currentPage);
+					++currentPage;
+					
+					Const.goToSelectPage(webBrowser, currentPage);
+					Const.goToSelectPage(detailBrowser, currentPage);
 				}
 			});
 		}
 		return bt_next;
+	}
+
+	/**
+	 * This method initializes p_result_in	
+	 * 	
+	 * @return javax.swing.JPanel	
+	 */
+	private JPanel getP_result_in() {
+		if (p_result_in == null) {
+			p_result_in = new JPanel();
+			p_result_in.setLayout(new BorderLayout());
+			p_result_in.add(getSp_result(), BorderLayout.CENTER);
+		}
+		return p_result_in;
 	}
 
 	/**

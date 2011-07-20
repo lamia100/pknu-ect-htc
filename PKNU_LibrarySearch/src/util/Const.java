@@ -39,27 +39,27 @@ public class Const {
 	}
 	
 	public final static void goToDetailPage(JWebBrowser webBrowser, int num) {
-		webBrowser.executeJavascript("javascript:handleLink(" + num + ",\"0\",\"FullView\",\"AbbrTD\")");
+		// webBrowser.executeJavascript("javascript:handleLink(" + num + ",\"0\",\"FullView\",\"AbbrTD\")");
+		
+		/*
+		 * <form action="TOTWSearchFullView.asp" method="post" id=form1 name=form1>
+		 * <input type="hidden" name="FullViewDataNo">
+		 * <input type="hidden" name="FullViewSysDiv" value="CATCATCATCATCATCATCATCATCATCATCATCATCATCATCAT">
+		 * <input type="hidden" name="FullViewControlNo" value="000000298641000000180247000000425196000000425170000000339529000000424785000000423085000000422823000000422400000000421452000000265127000000416471000000415143000000414807000000414638">
+		 * <input type="hidden" name="OriginFullViewSysDiv" value="CATCATCATCATCATCATCATCATCATCATCATCATCATCATCAT">
+		 * <input type="hidden" name="OriginFullViewControlNo" value="000000298641000000180247000000425196000000425170000000339529000000424785000000423085000000422823000000422400000000421452000000265127000000416471000000415143000000414807000000414638">
+		 * <input type="hidden" name="InitialSysKey" value="SYSTOT">
+		 * <input type="hidden" name="InitialSysDiv" value="TOT">
+		 * <input type="hidden" name="SearchQuery" value=" ([java,TOT00,2,0,3])AND NOT [1,TOT00,3,25,3]">
+		 * <input type="hidden" name="ComMethod" value="">
+		 * <input type="hidden" name="MainMenuNo" value="MainBody">
+		 * <input type="hidden" name="ResultPerPage" value="15">
+		 * <input type="hidden" name="RetdMaxResultNo" value="363">
+		 * <input type="hidden" name="SearchMainHisToGo" value="-1">
+		 * <input type="hidden" name="FullViewPageNo" value="1" id="FullViewPageNo">
+		 * <input type="hidden" name="EachBasketContent" value="">
+		 * <input type="hidden" name="ReserveBookRequest" value="">
+		 * </form>
+		 */
 	}
-	
-	/*
-	 * <form action="TOTWSearchFullView.asp" method="post" id=form1 name=form1>
-	 * <input type="hidden" name="FullViewDataNo">
-	 * <input type="hidden" name="FullViewSysDiv" value="CATCATCATCATCATCATCATCATCATCATCATCATCATCATCAT">
-	 * <input type="hidden" name="FullViewControlNo" value="000000298641000000180247000000425196000000425170000000339529000000424785000000423085000000422823000000422400000000421452000000265127000000416471000000415143000000414807000000414638">
-	 * <input type="hidden" name="OriginFullViewSysDiv" value="CATCATCATCATCATCATCATCATCATCATCATCATCATCATCAT">
-	 * <input type="hidden" name="OriginFullViewControlNo" value="000000298641000000180247000000425196000000425170000000339529000000424785000000423085000000422823000000422400000000421452000000265127000000416471000000415143000000414807000000414638">
-	 * <input type="hidden" name="InitialSysKey" value="SYSTOT">
-	 * <input type="hidden" name="InitialSysDiv" value="TOT">
-	 * <input type="hidden" name="SearchQuery" value=" ([java,TOT00,2,0,3])AND NOT [1,TOT00,3,25,3]">
-	 * <input type="hidden" name="ComMethod" value="">
-	 * <input type="hidden" name="MainMenuNo" value="MainBody">
-	 * <input type="hidden" name="ResultPerPage" value="15">
-	 * <input type="hidden" name="RetdMaxResultNo" value="363">
-	 * <input type="hidden" name="SearchMainHisToGo" value="-1">
-	 * <input type="hidden" name="FullViewPageNo" value="1" id="FullViewPageNo">
-	 * <input type="hidden" name="EachBasketContent" value="">
-	 * <input type="hidden" name="ReserveBookRequest" value="">
-	 * </form>
-	 */
 }
