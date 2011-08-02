@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, PKNU_DomitoryCarte_AndroidActivity!</string>
+    <string name="app_name">기숙사 식단표</string>
+</resources>

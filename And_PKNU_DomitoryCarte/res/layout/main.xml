@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <RadioGroup android:orientation="horizontal" android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/rg_where">
+        <RadioButton android:layout_height="wrap_content" android:checked="true" android:text="세종관(대연)" android:layout_weight="1" android:id="@+id/rb_whereD" android:layout_width="wrap_content" android:ellipsize="none"></RadioButton>
+        <RadioButton android:layout_height="wrap_content" android:text="광개토관(용당)" android:layout_weight="1" android:id="@+id/rb_whereY" android:layout_width="wrap_content"></RadioButton>
+    </RadioGroup>
+    <TextView android:layout_height="wrap_content" android:id="@+id/tv_todayDate" android:layout_width="wrap_content"></TextView>
+    <View android:layout_width="fill_parent" android:layout_height="2px" android:background="#FFFFFF"></View>
+    <ScrollView android:layout_height="fill_parent" android:layout_width="fill_parent" android:layout_weight="1">
+        <LinearLayout android:orientation="vertical" android:layout_height="fill_parent" android:layout_width="fill_parent">
+            <TableLayout android:layout_weight="1" android:layout_width="fill_parent" android:layout_height="wrap_content">
+                <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:gravity="center" android:layout_height="fill_parent" android:text="아침" android:layout_width="wrap_content" android:textSize="10pt"></TextView>
+                    <TextView android:gravity="center" android:layout_height="fill_parent" android:layout_width="wrap_content" android:id="@+id/tv_morning" android:layout_weight="1" android:textSize="10pt"></TextView>
+                </TableRow>
+                <View android:layout_width="fill_parent" android:background="#FFFFFF" android:layout_height="2px"></View>
+                <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:gravity="center" android:layout_height="fill_parent" android:text="점심" android:layout_width="wrap_content" android:textSize="10pt"></TextView>
+                    <TextView android:gravity="center" android:layout_height="fill_parent" android:layout_width="wrap_content" android:id="@+id/tv_afternoon" android:layout_weight="1" android:textSize="10pt"></TextView>
+                </TableRow>
+                <View android:layout_width="fill_parent" android:background="#FFFFFF" android:layout_height="2px"></View>
+                <TableRow android:layout_width="wrap_content" android:layout_height="wrap_content">
+                    <TextView android:gravity="center" android:layout_height="fill_parent" android:text="저녁" android:layout_width="wrap_content" android:textSize="10pt"></TextView>
+                    <TextView android:gravity="center" android:layout_height="fill_parent" android:layout_width="wrap_content" android:id="@+id/tv_evening" android:layout_weight="1" android:textSize="10pt"></TextView>
+                </TableRow>
+            </TableLayout>
+        </LinearLayout>
+    </ScrollView>
+    <Button android:id="@+id/bt_refresh" android:layout_height="wrap_content" android:layout_width="fill_parent" android:text="갱신"></Button>
+</LinearLayout>
