@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="horizontal" android:layout_width="fill_parent" android:layout_height="wrap_content">
+    <TextView android:id="@+id/tv_subject" android:layout_height="wrap_content" android:layout_width="fill_parent" android:gravity="center" android:layout_weight="1"></TextView>
+    <TextView android:id="@+id/tv_grade" android:layout_height="wrap_content" android:layout_width="fill_parent" android:gravity="center" android:layout_weight="1"></TextView>
+    <TextView android:layout_weight="1" android:layout_height="wrap_content" android:id="@+id/tv_result" android:gravity="center" android:layout_width="fill_parent"></TextView>
+    
+</LinearLayout>

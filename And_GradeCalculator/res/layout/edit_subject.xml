@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_height="fill_parent" android:layout_width="fill_parent">
+    <LinearLayout android:layout_height="wrap_content" android:orientation="horizontal" android:layout_width="fill_parent">
+        <TextView android:text="과목명 : " android:layout_height="fill_parent" android:gravity="right|center_vertical" android:layout_width="90px"></TextView>
+        <EditText android:layout_weight="1" android:hint="ex) 알고리즘" android:id="@+id/et_subject" android:layout_width="fill_parent" android:layout_height="fill_parent">
+            <requestFocus></requestFocus>
+        </EditText>
+    </LinearLayout>
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent">
+        <TextView android:text="학점 : " android:layout_height="fill_parent" android:gravity="right|center_vertical" android:layout_width="90px"></TextView>
+        <Spinner android:layout_weight="1" android:id="@+id/sp_grade" android:layout_width="fill_parent" android:layout_height="fill_parent"></Spinner>
+    </LinearLayout>
+    <ListView android:layout_width="fill_parent" android:layout_height="fill_parent" android:layout_weight="1" android:id="@android:id/list" android:clickable="true"></ListView>
+    <LinearLayout android:layout_height="wrap_content" android:orientation="horizontal" android:layout_width="fill_parent">
+        <Button android:text="확인" android:layout_weight="2" android:id="@+id/bt_ok" android:layout_width="wrap_content" android:layout_height="fill_parent"></Button>
+        <Button android:layout_width="wrap_content" android:layout_weight="1" android:text="삭제" android:id="@+id/bt_delete" android:layout_height="fill_parent"></Button>
+    </LinearLayout>
+    
+</LinearLayout>
