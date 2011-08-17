@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+    <RadioGroup android:id="@+id/rg_week_where" android:layout_height="wrap_content" android:layout_width="fill_parent" android:orientation="horizontal">
+        <RadioButton android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="세종관(대연)" android:layout_weight="1" android:id="@+id/rb_week_whereD"></RadioButton>
+        <RadioButton android:layout_height="wrap_content" android:layout_width="wrap_content" android:text="광개토관(용당)" android:layout_weight="1" android:id="@+id/rb_week_whereY"></RadioButton>
+    </RadioGroup>
+    <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/tv_week_week"></TextView>
+    <ListView android:id="@android:id/list" android:layout_height="wrap_content" android:layout_width="fill_parent" android:layout_weight="1"></ListView>
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent">
+        <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/bt_week_changeToToday" android:text="일일 식단표 보기"></Button>
+        <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/bt_week_refresh" android:text="갱신" android:layout_weight="1"></Button>
+    </LinearLayout>
+    
+</LinearLayout>

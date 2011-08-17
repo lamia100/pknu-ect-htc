@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+  xmlns:android="http://schemas.android.com/apk/res/android"
+  android:orientation="vertical"
+  android:layout_width="match_parent"
+  android:layout_height="match_parent">
+    <View android:background="#FFFFFF" android:layout_height="2px" android:layout_width="fill_parent"></View>
+    <TextView android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/tv_week_date"></TextView>
+    <View android:background="#FFFFFF" android:layout_height="2px" android:layout_width="fill_parent"></View>
+    <TableLayout android:layout_height="wrap_content" android:layout_width="fill_parent">
+        <TableRow android:id="@+id/tableRow1" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="아침" android:gravity="center" android:textSize="8pt"></TextView>
+            <TextView android:id="@+id/tv_week_breakfast" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_weight="1" android:gravity="center" android:textSize="8pt"></TextView>
+        </TableRow>
+        <View android:background="#FFFFFF" android:layout_height="2px" android:layout_width="fill_parent"></View>
+        <TableRow android:id="@+id/tableRow2" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="점심" android:gravity="center" android:textSize="8pt"></TextView>
+            <TextView android:layout_weight="1" android:id="@+id/tv_week_lunch" android:layout_height="wrap_content" android:layout_width="wrap_content" android:gravity="center" android:textSize="8pt"></TextView>
+        </TableRow>
+        <View android:layout_height="2px" android:layout_width="fill_parent" android:background="#FFFFFF"></View>
+        <TableRow android:id="@+id/tableRow3" android:layout_width="wrap_content" android:layout_height="wrap_content">
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="저녁" android:gravity="center" android:textSize="8pt"></TextView>
+            <TextView android:layout_weight="1" android:id="@+id/tv_week_dinner" android:layout_height="wrap_content" android:layout_width="wrap_content" android:gravity="center" android:textSize="8pt"></TextView>
+        </TableRow>
+    </TableLayout>
+    
+</LinearLayout>

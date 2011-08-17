@@ -6,13 +6,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.inter6.pknu.domitorycarte.data.Const;
-// import com.inter6.pknu.domitorycarte.data.MonthlyCarte;
-import com.inter6.pknu.domitorycarte.data.TodayCarte;
-
 import net.htmlparser.jericho.Element;
 import net.htmlparser.jericho.HTMLElementName;
 import net.htmlparser.jericho.Source;
+
+import com.inter6.pknu.domitorycarte.data.Const;
+import com.inter6.pknu.domitorycarte.data.TodayCarte;
+import com.inter6.pknu.domitorycarte.data.WeeklyCarte;
 
 public final class ParseCarte {	
 	public static TodayCarte getTodayCarteD() {
@@ -69,16 +69,15 @@ public final class ParseCarte {
 		return new TodayCarte(title, valueList);
 	}
 	
-	/*
-	public static MonthlyCarte getMonthlyCarteD() {
-		return parseMonthlyCarte(Const.MONTHLY_CARTE_URL_D, Const.MONTHLY_CARTE_TABLE_INDEX_LIST);
+	public static WeeklyCarte getWeeklyCarteD() {
+		return parseWeeklyCarte(Const.MONTHLY_CARTE_URL_D, Const.MONTHLY_CARTE_TABLE_INDEX_LIST);
 	}
 	
-	public static MonthlyCarte getMonthlyCarteY() {
-		return parseMonthlyCarte(Const.MONTHLY_CARTE_URL_Y, Const.MONTHLY_CARTE_TABLE_INDEX_LIST);
+	public static WeeklyCarte getWeeklyCarteY() {
+		return parseWeeklyCarte(Const.MONTHLY_CARTE_URL_Y, Const.MONTHLY_CARTE_TABLE_INDEX_LIST);
 	}
 	
-	private static MonthlyCarte parseMonthlyCarte(String targetURL, int targetTableIndexList[]) {
+	private static WeeklyCarte parseWeeklyCarte(String targetURL, int targetTableIndexList[]) {
 		String title = "";
 		ArrayList<TodayCarte> valueList = new ArrayList<TodayCarte>();
 		
@@ -143,7 +142,6 @@ public final class ParseCarte {
 			return null;
 		}
 		
-		return new MonthlyCarte(title, valueList);
+		return new WeeklyCarte(title, valueList);
 	}
-	*/
 }
