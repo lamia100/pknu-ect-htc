@@ -35,8 +35,6 @@ public class WeeklyCarteAdapter extends ArrayAdapter<TodayCarte> {
 			TextView tv_lunch = (TextView)carteView.findViewById(R.id.tv_week_lunch);
 			TextView tv_dinner = (TextView)carteView.findViewById(R.id.tv_week_dinner);
 			
-			System.out.println("1");
-			
 			tv_date.setText(todayCarte.getDate());
 			tv_breakfast.setText(todayCarte.getCarte(Const.WHEN_BREAKFAST));
 			tv_lunch.setText(todayCarte.getCarte(Const.WHEN_LUNCH));

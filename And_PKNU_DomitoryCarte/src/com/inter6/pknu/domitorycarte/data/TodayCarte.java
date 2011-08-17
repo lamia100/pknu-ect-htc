@@ -29,7 +29,7 @@ public class TodayCarte {
 						continue;
 					}
 					
-					// 메뉴 사이에 + 붙임
+					// 메뉴 사이에 줄내림
 					refactMenu += ("\n" + token);
 				}
 				
