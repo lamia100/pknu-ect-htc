@@ -71,7 +71,6 @@ public class GradeCalculator extends ListActivity {
 		Cursor recordsCursor = dbAdapter.fetchAllNotes();
 		startManagingCursor(recordsCursor);
 		
-		
 		String grade_s = null;
 		String result_s = null;
 		int grade = 0;
@@ -102,7 +101,9 @@ public class GradeCalculator extends ListActivity {
 			recordsCursor.moveToNext();
 		}
 		
-		totalResult /= (float)totalGrade;
+		if (totalGrade != 0f) {
+			totalResult /= (float)totalGrade;
+		}
 		
 		tv_totalResult.setText(String.format("%.2f", totalResult));
 		
