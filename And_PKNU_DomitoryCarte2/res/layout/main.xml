@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <RadioGroup android:orientation="horizontal" android:layout_height="wrap_content" android:layout_width="fill_parent" android:id="@+id/rg_where">
+        <RadioButton android:layout_height="wrap_content" android:text="세종관(대연)" android:layout_weight="1" android:layout_width="wrap_content" android:ellipsize="none" android:id="@+id/rb_whereD"></RadioButton>
+        <RadioButton android:layout_height="wrap_content" android:text="광개토관(용당)" android:layout_weight="1" android:layout_width="wrap_content" android:id="@+id/rb_whereY"></RadioButton>
+    </RadioGroup>
+    <ViewFlipper android:layout_width="fill_parent" android:id="@+id/vf_flip" android:layout_height="wrap_content" android:layout_weight="1"></ViewFlipper>
+    <LinearLayout android:layout_height="wrap_content" android:layout_width="fill_parent">
+        <Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/bt_refresh" android:text="갱신" android:layout_weight="2"></Button>
+        <Button android:layout_height="wrap_content" android:layout_width="wrap_content" android:id="@+id/bt_flip" android:text="일일↔주간" android:layout_weight="1"></Button>
+    </LinearLayout>
+</LinearLayout>
