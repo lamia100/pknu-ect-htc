@@ -22,7 +22,7 @@ public final class Const {
 	 * 0번째 : 월/주차 테이블 번호
 	 * 1번째 : 메뉴판 테이블 번호
 	 */
-	public static final int[] MONTHLY_CARTE_TABLE_INDEX_LIST = {15, 16};
+	public static final int[] WEEKLY_CARTE_TABLE_INDEX_LIST = {15, 16};
 	
 	public static final int TODAY_CARTE = 0;
 	public static final int WEEKLY_CARTE = 1;
@@ -35,4 +35,13 @@ public final class Const {
 	public static final int WHEN_DINNER = 2;
 	
 	public static final int TOAST_DUR = Toast.LENGTH_SHORT;
+	
+	public static final int CONNECTION_TIMEOUT = 5000;
+	public static final int SO_TIMEOUT = 5000;
+	
+	public static final int REQUEST_REFRESH = 101;
+	public static final int REQUEST_CHANGE_WHERE = 102;
+	public static final int REQUEST_CHANGE_CARTE = 103;
+	
+	public static final int DIALOG_PROGRESS = 201;
 }

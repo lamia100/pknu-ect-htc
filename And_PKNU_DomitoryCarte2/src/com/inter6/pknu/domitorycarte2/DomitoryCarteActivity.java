@@ -3,11 +3,12 @@ package com.inter6.pknu.domitorycarte2;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.RadioGroup;
@@ -16,23 +17,24 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.inter6.pknu.domitorycarte2.data.Const;
+import com.inter6.pknu.domitorycarte2.data.TodayCarte;
+import com.inter6.pknu.domitorycarte2.data.WeeklyCarte;
 import com.inter6.pknu.domitorycarte2.logic.ParseCarte;
 
-public class DomitoryCarteActivity extends Activity {
+public class DomitoryCarteActivity extends Activity {	
 	private RadioGroup rg_where;
 	private ViewFlipper vf_flip;
-	private Button bt_flip;
+	private Button bt_carte;
 	private Button bt_refresh;
 	
-	private float startPointX;
-	private float endPointX;
-	
-	private int where;
+	private int currentWhere;
 	private int currentCarte;
 	
-	private Toast toast;
+	private EventHandler eventHandler;
+	private boolean isWait;
 	
-    /** Called when the activity is first created. */
+	// private ProgressDialog progressDialog;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,10 +42,9 @@ public class DomitoryCarteActivity extends Activity {
         
         // 컴포넌트 할당
         rg_where = (RadioGroup)findViewById(R.id.rg_where);
-        rg_where.setOnCheckedChangeListener(radioChangeEvent);
+        rg_where.setOnCheckedChangeListener(changeWhereEvent);
         
         vf_flip = (ViewFlipper)findViewById(R.id.vf_flip);
-        vf_flip.setOnTouchListener(flipTouchEvent);
         
         LayoutInflater layoutInflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         vf_flip.addView(layoutInflater.inflate(R.layout.today, null), Const.TODAY_CARTE);
@@ -52,179 +53,229 @@ public class DomitoryCarteActivity extends Activity {
         bt_refresh = (Button)findViewById(R.id.bt_refresh);
         bt_refresh.setOnClickListener(refreshEvent);
         
-        bt_flip = (Button)findViewById(R.id.bt_flip);
-        bt_flip.setOnClickListener(flipEvent);
+        bt_carte = (Button)findViewById(R.id.bt_flip);
+        bt_carte.setOnClickListener(changeCarteEvent);
+        
+        eventHandler = new EventHandler();
+        isWait = false;
         
         // 첫 화면에는 세종관 일일식단표를 띄움
+        currentWhere = Const.WHERE_D;
         currentCarte = Const.TODAY_CARTE;
-        rg_where.check(R.id.rb_whereD);
+        // bt_refresh.performClick();
     }
     
     
     /* 동작들 */
     
-    /**
-     * 화면 전환 트리거
-     */
-    private void flip() {
+    private void changeCarte() {
+    	boolean isRefresh = false;
+    	
     	switch (currentCarte) {
 		case Const.TODAY_CARTE:
-			flipWeek();
+			isRefresh = refresh(currentWhere, Const.WEEKLY_CARTE);
 			break;
 		case Const.WEEKLY_CARTE:
-			flipToday();
+			isRefresh = refresh(currentWhere, Const.TODAY_CARTE);
 			break;
 		}
     	
-    	refresh();
+    	if (!isRefresh) {
+    		return;
+    	}
+    	
+    	switch (currentCarte) {
+    		case Const.TODAY_CARTE:
+    			changeToWeeklyCarte();
+    			break;
+    		case Const.WEEKLY_CARTE:
+    			changeToTodayCarte();
+    			break;
+    	}
     }
     
-    /**
-     * 일일식단표로 플립
-     */
-    private void flipToday() {
+    private void changeToTodayCarte() {
     	// 애니메이션
     	vf_flip.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.today_in));
     	vf_flip.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.today_out));
+    	vf_flip.showPrevious();
     	
-    	if (currentCarte == Const.TODAY_CARTE) {
-    		return;
-    	}
+    	bt_carte.setText("일일");
     	
-    	currentCarte = Const.TODAY_CARTE;
-    	
-    	vf_flip.showPrevious();  	
+    	currentCarte = Const.TODAY_CARTE; 
     }
     
-    /**
-     * 주간식단표로 플립
-     */
-    private void flipWeek() {
+    private void changeToWeeklyCarte() {    	
     	// 애니메이션
     	vf_flip.setInAnimation(AnimationUtils.loadAnimation(this, R.anim.week_in));
     	vf_flip.setOutAnimation(AnimationUtils.loadAnimation(this, R.anim.week_out));
+    	vf_flip.showNext();
     	
-    	if (currentCarte == Const.WEEKLY_CARTE) {
+    	bt_carte.setText("주간");
+    	
+    	currentCarte = Const.WEEKLY_CARTE;
+    }
+    
+    private void changeWhere() {
+    	boolean isRefresh = false;
+    	
+    	switch (currentWhere) {
+		case Const.WHERE_D:
+			isRefresh = refresh(Const.WHERE_Y, currentCarte);
+			break;
+		case Const.WHERE_Y:
+			isRefresh = refresh(Const.WHERE_D, currentCarte);
+			break;
+		}
+    	
+    	if (!isRefresh) {
     		return;
     	}
     	
-    	currentCarte = Const.WEEKLY_CARTE;
-    	
-    	vf_flip.showNext();
+    	switch (currentWhere) {
+    		case Const.WHERE_D:
+    			changeToY();
+    			break;
+    		case Const.WHERE_Y:
+    			changeToD();
+    			break;
+    	}
+    }
+    
+    private void changeToD() {
+    	currentWhere = Const.WHERE_D;
+    }
+    
+    private void changeToY() {
+    	currentWhere = Const.WHERE_Y;
     }
     
     /**
      * 갱신 트리거
      */
-    private void refresh() {
+    private boolean refresh(int where, int carte) {
+    	boolean result = false;
+    	
     	switch (where) {
     	case Const.WHERE_D:
-    		refreshD();
+    		result = refreshD(carte);
     		break;
     	case Const.WHERE_Y:
-    		refreshY();
+    		result = refreshY(carte);
     		break;
     	}
     	
-    	toast.show();
+    	if (!result) {
+    		Toast.makeText(this, "연결 시간 초과", Const.TOAST_DUR).show();
+    	}
+    	
+    	return result;
     }
 
     /**
      * 세종관 갱신
      */
-    private void refreshD() {
-    	View currentView = vf_flip.getChildAt(currentCarte);
+    private boolean refreshD(int carte) {
+    	View currentView = vf_flip.getChildAt(carte);
     	
-    	switch (currentCarte) {
+    	switch (carte) {
     	case Const.TODAY_CARTE:
-    		ParseCarte.getTodayCarteD().setView(currentView);
+    		TodayCarte todayCarteD = ParseCarte.getTodayCarteD();
+    		if (todayCarteD == null) {
+    			return false;
+    		}
     		
-        	toast = Toast.makeText(this, "세종관 - 일일식단표", Const.TOAST_DUR);
+    		todayCarteD.setView(currentView);
+        	Toast.makeText(this, "세종관 - 일일식단표", Const.TOAST_DUR).show();
         	
         	break;
     	case Const.WEEKLY_CARTE:
-    		ParseCarte.getWeeklyCarteD().setView(currentView);
+    		WeeklyCarte weeklyCarteD = ParseCarte.getWeeklyCarteD();
+    		if (weeklyCarteD == null) {
+    			return false;
+    		}
     		
-    		toast = Toast.makeText(this, "세종관 - 주간식단표", Const.TOAST_DUR);
+    		weeklyCarteD.setView(currentView);
+    		Toast.makeText(this, "세종관 - 주간식단표", Const.TOAST_DUR).show();
     		
     		break;
     	}
+    	
+    	return true;
     }
     
     /**
      * 광개토관 갱신
      */
-    private void refreshY() {
-    	View currentView = vf_flip.getChildAt(currentCarte);
+    private boolean refreshY(int carte) {
+    	View currentView = vf_flip.getChildAt(carte);
     	
-    	switch (currentCarte) {
+    	switch (carte) {
     	case Const.TODAY_CARTE:
-    		ParseCarte.getTodayCarteY().setView(currentView);
+    		TodayCarte todayCarteY = ParseCarte.getTodayCarteY();
+    		if (todayCarteY == null) {
+    			return false;
+    		}
     		
-        	toast = Toast.makeText(this, "광개토관 - 일일식단표", Const.TOAST_DUR);
+    		todayCarteY.setView(currentView);
+        	Toast.makeText(this, "광개토관 - 일일식단표", Const.TOAST_DUR).show();
         	
     		break;
     	case Const.WEEKLY_CARTE:
-    		ParseCarte.getWeeklyCarteY().setView(currentView);
+    		WeeklyCarte weeklyCarteY = ParseCarte.getWeeklyCarteY();
+    		if (weeklyCarteY == null) {
+    			return false;
+    		}
     		
-    		toast = Toast.makeText(this, "광개토관 - 주간식단표", Const.TOAST_DUR);
+    		weeklyCarteY.setView(currentView);
+    		Toast.makeText(this, "광개토관 - 주간식단표", Const.TOAST_DUR).show();
     		
     		break;
     	}
+    	
+    	return true;
     }
     
     /* 리스너들 */
     
     // 라디오버튼 체크가 변경될 때
-    private OnCheckedChangeListener radioChangeEvent = new OnCheckedChangeListener() {
+    private OnCheckedChangeListener changeWhereEvent = new OnCheckedChangeListener() {
 		
 		@Override
 		public void onCheckedChanged(RadioGroup group, int checkedId) {
-			// TODO Auto-generated method stub
+			int checkWhere = -1;
+			
 			switch (checkedId) {
 			case R.id.rb_whereD:
-				where = Const.WHERE_D;
+				checkWhere = Const.WHERE_D;
 				break;
 			case R.id.rb_whereY:
-				where = Const.WHERE_Y;
+				checkWhere = Const.WHERE_Y;
 				break;
 			}
 			
-			refresh();
-		}
-	};
-	
-	// 플립뷰에서 터치할 때
-	private OnTouchListener flipTouchEvent = new OnTouchListener() {
-		
-		@Override
-		public boolean onTouch(View v, MotionEvent event) {
-			// TODO Auto-generated method stub			
-			if (event.getAction() == MotionEvent.ACTION_DOWN) {
-				startPointX = event.getX();
-			}
-			else if (event.getAction() == MotionEvent.ACTION_UP) {
-				endPointX = event.getY();
-				
-				if (startPointX < endPointX) {
-					flipToday();
-				}
-				else if (startPointX > endPointX) {
-					flipWeek();
-				}
+			if (checkWhere == currentWhere) {
+				return;
 			}
 			
-			return true;
+			// showDialog(Const.DIALOG_PROGRESS);
+			
+			Message msg = eventHandler.obtainMessage();
+			msg.what = Const.REQUEST_CHANGE_WHERE;
+			eventHandler.sendMessage(msg);
 		}
 	};
 	
 	// 전환 버튼을 눌렀을 때
-	private OnClickListener flipEvent = new OnClickListener() {
+	private OnClickListener changeCarteEvent = new OnClickListener() {
 		
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			flip();
+			// showDialog(Const.DIALOG_PROGRESS);
+			
+			Message msg = eventHandler.obtainMessage();
+			msg.what = Const.REQUEST_CHANGE_CARTE;
+			eventHandler.sendMessage(msg);
 		}
 	};
 	
@@ -233,8 +284,62 @@ public class DomitoryCarteActivity extends Activity {
 		
 		@Override
 		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			refresh();
+			// showDialog(Const.DIALOG_PROGRESS);
+			
+			Message msg = eventHandler.obtainMessage();
+			msg.what = Const.REQUEST_REFRESH;
+			eventHandler.sendMessage(msg);
 		}
 	};
+	
+	
+	/* 핸들러 */
+	
+	private class EventHandler extends Handler {
+		@Override
+		public void handleMessage(Message msg) {
+			if (isWait) {
+				return;
+			}
+			
+			isWait = true;
+			
+			switch (msg.what) {
+				case Const.REQUEST_REFRESH:
+					Log.d("[EventHandler]", "REQUEST_REFRESH");
+					refresh(currentWhere, currentCarte);
+					break;
+				case Const.REQUEST_CHANGE_WHERE:
+					Log.d("[EventHandler]", "REQUEST_CHANGE_WHERE");
+					changeWhere();
+					break;
+				case Const.REQUEST_CHANGE_CARTE:
+					Log.d("[EventHandler]", "REQUEST_CHANGE_CARTE");
+					changeCarte();
+					break;
+			}
+			
+			// progressDialog.dismiss();
+			
+			isWait = false;
+			
+			super.handleMessage(msg);
+		}
+	}
+	
+	/*
+	@Override
+	protected Dialog onCreateDialog(int id) {		
+		switch (id) {
+			case Const.DIALOG_PROGRESS:
+				progressDialog = ProgressDialog.show(DomitoryCarteActivity.this, "", "로딩 중");
+				break;
+			default:
+				progressDialog = null;
+				break;
+		}
+		
+		return progressDialog;
+	}
+	*/
 }
